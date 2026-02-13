@@ -1,0 +1,7 @@
+project_id = "qifuvbfyqntktzafzgac"
+
+[functions.submit-candidatura]
+verify_jwt = false
+
+[functions.export-candidature]
+verify_jwt = false
