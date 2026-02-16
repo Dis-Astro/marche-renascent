@@ -8,7 +8,7 @@ import {
   PROVINCE_MARCHE,
 } from "@/config/formFields";
 import ConditionalField from "./ConditionalField";
-import CollapsibleSection from "./CollapsibleSection";
+import CheckboxGroup from "./CheckboxGroup";
 
 interface Props {
   tipo: TipoUtente;
@@ -16,34 +16,6 @@ interface Props {
   update: (field: string, value: any) => void;
   inputClass: string;
 }
-
-const SelectField = ({
-  label,
-  value,
-  options,
-  onChange,
-  inputClass,
-  required,
-}: {
-  label: string;
-  value: string;
-  options: string[];
-  onChange: (v: string) => void;
-  inputClass: string;
-  required?: boolean;
-}) => (
-  <div>
-    <label className="text-xs font-semibold text-foreground block mb-1">
-      {label} {required && <span className="text-primary">*</span>}
-    </label>
-    <select value={value || ""} onChange={(e) => onChange(e.target.value)} className={inputClass}>
-      <option value="">Seleziona...</option>
-      {options.map((o) => (
-        <option key={o} value={o}>{o}</option>
-      ))}
-    </select>
-  </div>
-);
 
 const InputField = ({
   label,
@@ -78,29 +50,27 @@ const InputField = ({
 );
 
 const Step1Anagrafica = ({ tipo, form, update, inputClass }: Props) => {
-  const isPrivato = tipo === "privato";
-
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-bold text-foreground mb-4">Anagrafica</h3>
 
       <InputField label="Denominazione edificio" value={form.denominazione} onChange={(v) => update("denominazione", v)} inputClass={inputClass} required />
 
-      <SelectField label="Forma giuridica" value={form.forma_giuridica} options={FORME_GIURIDICHE} onChange={(v) => update("forma_giuridica", v)} inputClass={inputClass} required />
+      <CheckboxGroup label="Forma giuridica" value={form.forma_giuridica} options={FORME_GIURIDICHE} onChange={(v) => update("forma_giuridica", v)} required />
       <ConditionalField show={form.forma_giuridica === "Altro"}>
         <InputField label="Specifica forma giuridica" value={form.forma_giuridica_altro} onChange={(v) => update("forma_giuridica_altro", v)} inputClass={inputClass} required />
       </ConditionalField>
 
       <div className="grid grid-cols-2 gap-3">
         <InputField label="Regione" value={form.regione || "Marche"} onChange={(v) => update("regione", v)} inputClass={inputClass} required />
-        <SelectField label="Provincia" value={form.provincia} options={PROVINCE_MARCHE} onChange={(v) => update("provincia", v)} inputClass={inputClass} required />
+        <CheckboxGroup label="Provincia" value={form.provincia} options={PROVINCE_MARCHE} onChange={(v) => update("provincia", v)} required />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <InputField label="Città" value={form.citta} onChange={(v) => update("citta", v)} inputClass={inputClass} required />
         <InputField label="Via / Indirizzo" value={form.via} onChange={(v) => update("via", v)} inputClass={inputClass} required />
       </div>
 
-      <SelectField label="Referente edificio" value={form.referente_tipo} options={REFERENTE_OPTIONS} onChange={(v) => update("referente_tipo", v)} inputClass={inputClass} required />
+      <CheckboxGroup label="Referente edificio" value={form.referente_tipo} options={REFERENTE_OPTIONS} onChange={(v) => update("referente_tipo", v)} required />
       <ConditionalField show={form.referente_tipo === "Altro"}>
         <InputField label="Specifica referente" value={form.referente_altro} onChange={(v) => update("referente_altro", v)} inputClass={inputClass} required />
       </ConditionalField>
@@ -109,7 +79,7 @@ const Step1Anagrafica = ({ tipo, form, update, inputClass }: Props) => {
       <InputField label="Telefono" value={form.telefono} onChange={(v) => update("telefono", v)} inputClass={inputClass} required type="tel" />
       <InputField label="Email" value={form.email} onChange={(v) => update("email", v)} inputClass={inputClass} required type="email" />
 
-      <SelectField label="Vincoli" value={form.vincoli} options={VINCOLI_OPTIONS} onChange={(v) => update("vincoli", v)} inputClass={inputClass} required />
+      <CheckboxGroup label="Vincoli" value={form.vincoli} options={VINCOLI_OPTIONS} onChange={(v) => update("vincoli", v)} required />
       <ConditionalField show={form.vincoli === "Presenti"}>
         <div>
           <label className="text-xs font-semibold text-foreground block mb-1">
@@ -123,12 +93,12 @@ const Step1Anagrafica = ({ tipo, form, update, inputClass }: Props) => {
         </div>
       </ConditionalField>
 
-      <SelectField label="Contesto normativo" value={form.contesto_normativo} options={CONTESTO_NORMATIVO} onChange={(v) => update("contesto_normativo", v)} inputClass={inputClass} required />
+      <CheckboxGroup label="Contesto normativo" value={form.contesto_normativo} options={CONTESTO_NORMATIVO} onChange={(v) => update("contesto_normativo", v)} required />
       <ConditionalField show={form.contesto_normativo === "Altro"}>
         <InputField label="Specifica contesto" value={form.contesto_altro} onChange={(v) => update("contesto_altro", v)} inputClass={inputClass} required />
       </ConditionalField>
 
-      <SelectField label="Tipo intervento richiesto" value={form.tipo_intervento} options={TIPO_INTERVENTO} onChange={(v) => update("tipo_intervento", v)} inputClass={inputClass} required />
+      <CheckboxGroup label="Tipo intervento richiesto" value={form.tipo_intervento} options={TIPO_INTERVENTO} onChange={(v) => update("tipo_intervento", v)} required />
       <ConditionalField show={form.tipo_intervento === "Altro"}>
         <InputField label="Specifica intervento" value={form.tipo_intervento_altro} onChange={(v) => update("tipo_intervento_altro", v)} inputClass={inputClass} required />
       </ConditionalField>
