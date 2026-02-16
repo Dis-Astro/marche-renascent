@@ -4,8 +4,7 @@ import * as XLSX from "https://esm.sh/xlsx@0.18.5";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 serve(async (req) => {
@@ -14,12 +13,12 @@ serve(async (req) => {
   }
 
   try {
-    // Check for admin secret
-    const adminSecret = Deno.env.get("EXPORT_SECRET");
+    // Check admin password
+    const adminPassword = Deno.env.get("ADMIN_PASSWORD");
     const url = new URL(req.url);
     const token = url.searchParams.get("token");
 
-    if (adminSecret && token !== adminSecret) {
+    if (adminPassword && token !== adminPassword) {
       return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     }
 
@@ -35,7 +34,16 @@ serve(async (req) => {
 
     if (error) throw error;
 
-    const ws = XLSX.utils.json_to_sheet(data || []);
+    // Flatten payload for export
+    const rows = (data || []).map((c: any) => {
+      const { payload, ...rest } = c;
+      if (payload && typeof payload === "object") {
+        return { ...rest, ...payload };
+      }
+      return rest;
+    });
+
+    const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Candidature");
     const buf = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });

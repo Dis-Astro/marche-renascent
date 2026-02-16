@@ -18,35 +18,89 @@ export type Database = {
         Row: {
           comune: string
           created_at: string
+          denominazione: string | null
           descrizione: string | null
           email: string
           file_url: string | null
           id: string
           nome: string
+          payload: Json | null
+          referente: string | null
+          stato: string | null
           telefono: string
+          tipo: string | null
           tipologia: string | null
         }
         Insert: {
           comune: string
           created_at?: string
+          denominazione?: string | null
           descrizione?: string | null
           email: string
           file_url?: string | null
           id?: string
           nome: string
+          payload?: Json | null
+          referente?: string | null
+          stato?: string | null
           telefono: string
+          tipo?: string | null
           tipologia?: string | null
         }
         Update: {
           comune?: string
           created_at?: string
+          denominazione?: string | null
           descrizione?: string | null
           email?: string
           file_url?: string | null
           id?: string
           nome?: string
+          payload?: Json | null
+          referente?: string | null
+          stato?: string | null
           telefono?: string
+          tipo?: string | null
           tipologia?: string | null
+        }
+        Relationships: []
+      }
+      email_config: {
+        Row: {
+          bcc: string | null
+          cc: string | null
+          enabled: boolean
+          from_email: string
+          from_name: string
+          id: string
+          reply_to: string | null
+          subject_template: string
+          to_recipients: string
+          updated_at: string
+        }
+        Insert: {
+          bcc?: string | null
+          cc?: string | null
+          enabled?: boolean
+          from_email?: string
+          from_name?: string
+          id?: string
+          reply_to?: string | null
+          subject_template?: string
+          to_recipients?: string
+          updated_at?: string
+        }
+        Update: {
+          bcc?: string | null
+          cc?: string | null
+          enabled?: boolean
+          from_email?: string
+          from_name?: string
+          id?: string
+          reply_to?: string | null
+          subject_template?: string
+          to_recipients?: string
+          updated_at?: string
         }
         Relationships: []
       }
