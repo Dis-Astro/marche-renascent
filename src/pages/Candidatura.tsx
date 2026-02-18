@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Step1Anagrafica from "@/components/form/Step1Anagrafica";
 import Step2Edificio from "@/components/form/Step2Edificio";
 import Step3Documenti from "@/components/form/Step3Documenti";
+import { ChevronLeft } from "lucide-react";
 
 export type TipoUtente = "privato" | "professionista";
 export type FormData = Record<string, any>;
@@ -38,7 +39,6 @@ const Candidatura = () => {
     setLoading(true);
 
     try {
-      // Upload files
       const fileUrls: string[] = [];
       for (const file of files) {
         const ext = file.name.split(".").pop();
@@ -53,11 +53,7 @@ const Candidatura = () => {
         fileUrls.push(urlData.publicUrl);
       }
 
-      const payload = {
-        ...form,
-        tipo,
-        file_urls: fileUrls,
-      };
+      const payload = { ...form, tipo, file_urls: fileUrls };
 
       const { error: fnErr } = await supabase.functions.invoke("submit-candidatura", {
         body: {
@@ -82,152 +78,157 @@ const Candidatura = () => {
     }
   };
 
+  /* ── INPUT CLASS ── */
+  const inputClass =
+    "w-full border border-border bg-background text-foreground px-4 py-3 text-sm rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder:text-muted-foreground transition-colors";
+
+  /* ── SUCCESS ── */
   if (success) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="text-center max-w-sm">
-          <div className="w-12 h-12 border-2 border-primary rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-primary text-xl">✓</span>
-          </div>
-          <h1 className="text-2xl font-bold text-foreground mb-4">
-            Candidatura inviata
-          </h1>
-          <p className="text-muted-foreground text-sm mb-2">
-            Abbiamo ricevuto la tua richiesta.
-          </p>
-          <p className="text-muted-foreground text-sm">
-            Ti contatteremo dopo una prima valutazione tecnica.
-          </p>
-          <a
-            href="/"
-            className="inline-block mt-8 text-primary text-sm font-semibold underline underline-offset-4"
-          >
-            Torna alla home
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Navbar */}
+        <nav className="border-b border-border px-6 h-14 flex items-center">
+          <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer"
+            className="text-lg font-extrabold tracking-tight text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Cingoli SRL
           </a>
+        </nav>
+        <div className="flex-1 flex items-center justify-center px-6">
+          <div className="text-center max-w-sm">
+            <div className="w-14 h-14 bg-primary/10 border-2 border-primary rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-primary text-2xl font-bold">✓</span>
+            </div>
+            <h1 className="text-2xl font-extrabold text-foreground mb-4" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Candidatura inviata!
+            </h1>
+            <p className="text-muted-foreground text-sm mb-1">Abbiamo ricevuto la tua richiesta.</p>
+            <p className="text-muted-foreground text-sm">Ti contatteremo dopo una prima valutazione tecnica.</p>
+            <a href="/"
+              className="inline-block mt-8 bg-primary text-primary-foreground px-6 py-3 text-sm font-bold rounded tracking-wide hover:opacity-90 transition-opacity">
+              Torna alla home
+            </a>
+          </div>
         </div>
       </div>
     );
   }
 
-  const inputClass =
-    "w-full border border-border bg-background text-foreground px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground";
+  const progress = ((step + 1) / STEPS.length) * 100;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center px-4 py-8">
-      <div className="w-full max-w-lg">
-        {/* Header */}
-        <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer">
-          <h2 className="text-2xl font-bold text-primary tracking-tight text-center mb-1">
-            Cingoli
-          </h2>
-        </a>
-        <p className="text-xs text-muted-foreground tracking-widest uppercase text-center mb-6">
-          Consolidamento – Restauro
-        </p>
-
-        {/* Segment control */}
-        <div className="flex border border-border mb-6">
-          {(["privato", "professionista"] as TipoUtente[]).map((t) => (
-            <button
-              key={t}
-              onClick={() => { setTipo(t); setStep(0); }}
-              className={`flex-1 py-3 text-[13px] font-bold tracking-[0.1em] uppercase transition-colors ${
-                tipo === t
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-background text-foreground hover:bg-muted"
-              }`}
-            >
-              {t === "privato" ? "Privato" : "Professionista"}
-            </button>
-          ))}
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* ── NAVBAR ── */}
+      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
+        <div className="max-w-2xl mx-auto px-6 h-14 flex items-center justify-between">
+          <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer"
+            className="text-lg font-extrabold tracking-tight text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Cingoli SRL
+          </a>
+          <a href="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium tracking-wide">
+            ← Home
+          </a>
         </div>
+      </nav>
 
-        {/* Progress */}
-        <div className="flex items-center gap-2 mb-8">
-          {STEPS.map((s, i) => (
-            <div key={s} className="flex-1 flex flex-col items-center gap-1">
-              <div
-                className={`w-full h-1 ${
-                  i <= step ? "bg-primary" : "bg-border"
-                } transition-colors`}
-              />
-              <span
-                className={`text-[10px] uppercase tracking-widest ${
-                  i <= step ? "text-primary font-semibold" : "text-muted-foreground"
+      {/* ── MAIN ── */}
+      <main className="flex-1 flex flex-col items-center px-4 py-8">
+        <div className="w-full max-w-xl">
+
+          {/* Title */}
+          <div className="text-center mb-6">
+            <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary block mb-1">
+              Modulo di candidatura
+            </span>
+            <h1 className="text-2xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Valutazione gratuita
+            </h1>
+          </div>
+
+          {/* ── SEGMENT CONTROL ── */}
+          <div className="flex border border-border rounded overflow-hidden mb-6 shadow-sm">
+            {(["privato", "professionista"] as TipoUtente[]).map((t) => (
+              <button
+                key={t}
+                onClick={() => { setTipo(t); setStep(0); }}
+                className={`flex-1 py-3 text-sm font-bold tracking-widest uppercase transition-colors ${
+                  tipo === t
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-foreground hover:bg-muted"
                 }`}
               >
-                {s}
-              </span>
+                {t === "privato" ? "Privato" : "Professionista"}
+              </button>
+            ))}
+          </div>
+
+          {/* ── PROGRESS ── */}
+          <div className="mb-6">
+            {/* Bar */}
+            <div className="w-full h-1.5 bg-border rounded-full overflow-hidden mb-3">
+              <div
+                className="h-full bg-primary rounded-full transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              />
             </div>
-          ))}
-        </div>
+            {/* Step labels */}
+            <div className="flex justify-between">
+              {STEPS.map((s, i) => (
+                <span key={s}
+                  className={`text-[10px] uppercase tracking-widest font-semibold ${
+                    i <= step ? "text-primary" : "text-muted-foreground"
+                  }`}>
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
 
-        {/* Steps */}
-        {step === 0 && (
-          <Step1Anagrafica
-            tipo={tipo}
-            form={form}
-            update={update}
-            inputClass={inputClass}
-          />
-        )}
-        {step === 1 && (
-          <Step2Edificio
-            tipo={tipo}
-            form={form}
-            update={update}
-            inputClass={inputClass}
-          />
-        )}
-        {step === 2 && (
-          <Step3Documenti
-            tipo={tipo}
-            form={form}
-            update={update}
-            files={files}
-            setFiles={setFiles}
-            inputClass={inputClass}
-          />
-        )}
+          {/* ── STEP CARD ── */}
+          <div className="bg-muted rounded-xl border border-border p-6 mb-4 shadow-sm">
+            {step === 0 && <Step1Anagrafica tipo={tipo} form={form} update={update} inputClass={inputClass} />}
+            {step === 1 && <Step2Edificio tipo={tipo} form={form} update={update} inputClass={inputClass} />}
+            {step === 2 && (
+              <Step3Documenti tipo={tipo} form={form} update={update} files={files} setFiles={setFiles} inputClass={inputClass} />
+            )}
+          </div>
 
-        {error && <p className="text-destructive text-sm mt-4">{error}</p>}
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-8 gap-4">
-          {step > 0 ? (
-            <button
-              onClick={prev}
-              className="border border-border text-foreground px-6 py-3 text-sm font-semibold hover:bg-muted transition-colors"
-            >
-              Indietro
-            </button>
-          ) : (
-            <div />
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/30 text-destructive text-sm rounded px-4 py-3 mb-4">
+              {error}
+            </div>
           )}
 
-          {step < 2 ? (
-            <button
-              onClick={next}
-              className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide hover:opacity-90 transition-opacity"
-            >
-              Avanti
-            </button>
-          ) : (
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide hover:opacity-90 transition-opacity disabled:opacity-50"
-            >
-              {loading ? "Invio..." : "Invia candidatura"}
-            </button>
-          )}
-        </div>
+          {/* ── NAVIGATION ── */}
+          <div className="flex items-center justify-between gap-4">
+            {step > 0 ? (
+              <button onClick={prev}
+                className="flex items-center gap-2 border border-border text-foreground px-5 py-3 text-sm font-semibold rounded hover:bg-muted transition-colors">
+                <ChevronLeft className="w-4 h-4" />
+                Indietro
+              </button>
+            ) : (
+              <div />
+            )}
 
-        {/* Privacy */}
-        <p className="text-[10px] text-muted-foreground mt-6 text-center leading-relaxed">
-          Inviando questo form acconsenti al trattamento dei tuoi dati personali ai sensi del GDPR (Reg. UE 2016/679).
-        </p>
-      </div>
+            {step < 2 ? (
+              <button onClick={next}
+                className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity">
+                Avanti →
+              </button>
+            ) : (
+              <button onClick={handleSubmit} disabled={loading}
+                className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50">
+                {loading ? "Invio in corso..." : "Invia candidatura"}
+              </button>
+            )}
+          </div>
+
+          {/* Privacy */}
+          <p className="text-[10px] text-muted-foreground mt-6 text-center leading-relaxed">
+            Inviando questo form acconsenti al trattamento dei tuoi dati personali ai sensi del GDPR (Reg. UE 2016/679).
+          </p>
+        </div>
+      </main>
     </div>
   );
 };
