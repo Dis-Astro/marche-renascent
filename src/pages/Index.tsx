@@ -172,8 +172,7 @@ const Index = () => {
 
             {/* Badges */}
             <div className="flex items-center gap-3 mt-6 justify-center md:justify-start">
-              <span className="border border-primary text-primary px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase">Marche</span>
-              <span className="border border-primary text-primary px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase">Post‑Sisma</span>
+              <span className="border border-primary text-primary px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase">Sisma 2016</span>
             </div>
           </div>
 
