@@ -333,8 +333,8 @@ const Index = () => {
             La tua casa è ancora uno scheletro?<br />Ti Capiamo.
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            Imprese fallite, burocrazia USR incagliata, SAL non pagati. Conosciamo l'incubo.<br />
-            Non serve aspettare ancora: serve un intervento tecnico d'urto.
+            Imprese fallite, burocrazia incagliata, lavori fermi. Conosciamo la situazione.<br />
+            Non servono promesse: serve capire dove si è fermati e cosa serve per procedere.
           </p>
           <DualCTA variant="light" />
         </div>
