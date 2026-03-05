@@ -197,16 +197,18 @@ const Index = () => {
       <div className="bg-foreground text-background py-3 overflow-hidden whitespace-nowrap">
         <div className="inline-flex animate-marquee gap-0">
           {[
-          "Sbloccati 3 Cantieri a Visso questo mese",
-          "Pratica USR Camerino: APPROVATA",
-          "Cantiere Sarnano: RIAVVIATO",
-          "Gestione Modello 02 Immediata",
-          "100+ Anni di Esperienza",
-          "Sbloccati 3 Cantieri a Visso questo mese",
-          "Pratica USR Camerino: APPROVATA",
-          "Cantiere Sarnano: RIAVVIATO",
-          "Gestione Modello 02 Immediata",
-          "100+ Anni di Esperienza"].
+          "Presa in carico entro 24 ore",
+          "Valutazione tecnica dell'immobile",
+          "Collaborazione con il progettista (se presente)",
+          "Milestone chiare su ciò che dipende da noi",
+          "Trasparenza sui tempi di enti/USR",
+          "90+ anni di esperienza operativa",
+          "Presa in carico entro 24 ore",
+          "Valutazione tecnica dell'immobile",
+          "Collaborazione con il progettista (se presente)",
+          "Milestone chiare su ciò che dipende da noi",
+          "Trasparenza sui tempi di enti/USR",
+          "90+ anni di esperienza operativa"].
           map((t, i) =>
           <span key={i} className="mx-10 text-sm font-semibold opacity-90">{t} •</span>
           )}
