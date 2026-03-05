@@ -380,10 +380,10 @@ const Index = () => {
               Contattaci Ora
             </span>
             <h2 className="text-2xl md:text-3xl font-extrabold text-background mb-4 relative" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Richiedi Analisi Cantiere Gratuita
+              Richiedi valutazione iniziale gratuita
             </h2>
             <p className="text-background/70 text-base mb-6 relative">
-              Scegli il tuo profilo e compila la scheda. Ti diremo se possiamo sbloccare la tua pratica in 24 ore.
+              Entro 24 ore prendiamo in carico la richiesta e indichiamo i prossimi passi e le informazioni necessarie per valutare correttamente il caso.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
               <button
