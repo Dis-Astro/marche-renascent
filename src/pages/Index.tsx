@@ -13,26 +13,26 @@ const services = [
 {
   num: "01",
   icon: <FileCheck className="w-5 h-5" />,
-  title: "Analisi del Modello 02",
-  text: "Verifica immediata della fattibilità legale del subentro e gestione pratiche USR ferme."
+  title: "Presa in carico (24 ore)",
+  text: "Conferma della presa in carico entro 24 ore e raccolta delle informazioni essenziali. Ti indichiamo cosa serve per una valutazione corretta."
 },
 {
   num: "02",
   icon: <FileText className="w-5 h-5" />,
-  title: "Gestione Burocrazia",
-  text: "Sblocco SAL arretrati, varianti ferme e interazione diretta con i tecnici USR."
+  title: "Documenti e orientamento",
+  text: "Se il caso è in perimetro, richiediamo i documenti utili e ti orientiamo sui passaggi necessari. Nessuna promessa su tempi esterni, massima chiarezza."
 },
 {
   num: "03",
   icon: <HardHat className="w-5 h-5" />,
-  title: "Esecuzione Rapida",
-  text: "Squadre pronte a entrare in cantiere entro 7 giorni dal subentro formale."
+  title: "Piano operativo",
+  text: "Definiamo fasi, priorità e milestone realistiche. Quando ci sono le condizioni, organizziamo squadre e forniture per procedere senza stop & go."
 },
 {
   num: "04",
   icon: <Landmark className="w-5 h-5" />,
-  title: "Solidità Finanziaria",
-  text: "Impresa storica dal 1920. Non chiediamo anticipi per comprare i materiali."
+  title: "Struttura e continuità",
+  text: "Impresa storica: organizzazione reale e capacità operativa. Responsabilità sui lavori eseguiti e aggiornamenti sull'avanzamento."
 }];
 
 
