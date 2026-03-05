@@ -299,7 +299,7 @@ const Index = () => {
               Come Lavoriamo
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Sblocchiamo il Tuo Cantiere<br className="hidden md:block" /> in 4 Step
+              Come lavoriamo: processo chiaro<br className="hidden md:block" /> in 4 fasi
             </h2>
           </div>
 
