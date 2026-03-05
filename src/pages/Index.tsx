@@ -37,10 +37,10 @@ const services = [
 
 
 const processSteps = [
-{ num: "01", icon: <ClipboardCheck className="w-5 h-5" />, title: "Analisi Legale", text: "Verifichiamo contratto e stato SAL per tutelarti nel cambio impresa." },
-{ num: "02", icon: <FileSignature className="w-5 h-5" />, title: "Piano Subentro", text: "Prepariamo il Modello 02 e la documentazione per l'USR in 72h." },
-{ num: "03", icon: <Building2 className="w-5 h-5" />, title: "Sblocco USR", text: "Dialoghiamo con i tecnici per approvare varianti e sbloccare fondi." },
-{ num: "04", icon: <Hammer className="w-5 h-5" />, title: "Riavvio Lavori", text: "Il cantiere riparte con cronoprogramma certo fino alla consegna." }];
+{ num: "01", icon: <ClipboardCheck className="w-5 h-5" />, title: "Valutazione iniziale", text: "Inquadriamo stato dell'immobile e della situazione, per capire rischi e prossimi step." },
+{ num: "02", icon: <FileSignature className="w-5 h-5" />, title: "Documenti e perimetro", text: "Richiediamo la documentazione utile e definiamo il perimetro di intervento. Se c'è un progettista, ci coordiniamo senza sostituirlo." },
+{ num: "03", icon: <Building2 className="w-5 h-5" />, title: "Percorso amministrativo", text: "Ti orientiamo nei passaggi e nelle integrazioni necessarie. Chiari su ciò che dipende da noi e ciò che dipende dagli enti." },
+{ num: "04", icon: <Hammer className="w-5 h-5" />, title: "Esecuzione lavori", text: "Quando ci sono le condizioni, avviamo e gestiamo i lavori con aggiornamenti regolari e milestone verificabili." }];
 
 
 const faqItems = [
