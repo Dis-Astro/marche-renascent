@@ -223,7 +223,7 @@ const Index = () => {
               Cosa Offriamo
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Come ti sblocchiamo il cantiere<br className="hidden md:block" /> in 4 step
+              Come lavoriamo: dalla presa in carico<br className="hidden md:block" /> ai lavori
             </h2>
           </div>
 
