@@ -256,11 +256,10 @@ const Index = () => {
               Il Nostro Impegno
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-background mb-5 leading-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Costruito per Durare —<br />Affidabilità Garantita
+              Costruito per durare —<br />serietà operativa
             </h2>
             <p className="text-background/70 text-base leading-relaxed mb-8 max-w-lg">
-              Troppe imprese sono nate dal nulla per il Superbonus e sono sparite. Noi siamo qui dal 1920.
-              Quando prendiamo un impegno, lo portiamo a termine. Nessuna sorpresa, solo cantieri finiti.
+              Negli ultimi anni molte realtà sono nate e sparite. Qui c'è un'azienda con storia e struttura. Lavoriamo con metodo, responsabilità e aggiornamenti chiari sulle attività che dipendono da noi.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-background/10 pt-6">
               <div className="flex gap-3 items-start">
