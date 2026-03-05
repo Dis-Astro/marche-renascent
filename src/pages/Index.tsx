@@ -156,18 +156,17 @@ const Index = () => {
           {/* Text */}
           <div className="flex-1 text-center md:text-left">
             <span className="inline-block text-[11px] font-bold tracking-[0.25em] uppercase text-primary mb-4">
-              Pronto Intervento Sisma 2016
+              Ricostruzione post‑sisma 2016
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold leading-[1.1] tracking-tight text-foreground mb-6" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Cantiere Sisma 2016 Fermo?{" "}
-              <span className="text-primary">Lo Sblocchiamo in 30 Giorni.</span>
+              Casa danneggiata dal sisma 2016?{" "}
+              <span className="text-primary">La ripariamo noi.</span>
             </h1>
             <p className="text-foreground/60 text-base md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0 mb-2">
-              Specialisti nel subentro immediato per pratiche USR bloccate e lavori abbandonati in Marche e Umbria.
-              Non lasciare che la tua casa resti uno scheletro.
+              Impresa con oltre 90 anni di esperienza. Valutiamo lo stato del tuo immobile e definiamo un percorso operativo chiaro. Entro 24 ore prendiamo in carico la richiesta e indichiamo cosa serve per procedere.
             </p>
             <p className="text-muted-foreground text-sm italic mb-2">
-              Valutazione preliminare gratuita. Compila anche se non hai tutti i documenti.
+              Valutazione iniziale gratuita: si parte da ciò che è disponibile, anche con documentazione incompleta.
             </p>
             <DualCTA variant="light" />
 
