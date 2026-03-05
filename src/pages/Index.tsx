@@ -13,42 +13,42 @@ const services = [
 {
   num: "01",
   icon: <FileCheck className="w-5 h-5" />,
-  title: "Analisi del Modello 02",
-  text: "Verifica immediata della fattibilità legale del subentro e gestione pratiche USR ferme."
+  title: "Presa in carico (24 ore)",
+  text: "Conferma della presa in carico entro 24 ore e raccolta delle informazioni essenziali. Ti indichiamo cosa serve per una valutazione corretta."
 },
 {
   num: "02",
   icon: <FileText className="w-5 h-5" />,
-  title: "Gestione Burocrazia",
-  text: "Sblocco SAL arretrati, varianti ferme e interazione diretta con i tecnici USR."
+  title: "Documenti e orientamento",
+  text: "Se il caso è in perimetro, richiediamo i documenti utili e ti orientiamo sui passaggi necessari. Nessuna promessa su tempi esterni, massima chiarezza."
 },
 {
   num: "03",
   icon: <HardHat className="w-5 h-5" />,
-  title: "Esecuzione Rapida",
-  text: "Squadre pronte a entrare in cantiere entro 7 giorni dal subentro formale."
+  title: "Piano operativo",
+  text: "Definiamo fasi, priorità e milestone realistiche. Quando ci sono le condizioni, organizziamo squadre e forniture per procedere senza stop & go."
 },
 {
   num: "04",
   icon: <Landmark className="w-5 h-5" />,
-  title: "Solidità Finanziaria",
-  text: "Impresa storica dal 1920. Non chiediamo anticipi per comprare i materiali."
+  title: "Struttura e continuità",
+  text: "Impresa storica: organizzazione reale e capacità operativa. Responsabilità sui lavori eseguiti e aggiornamenti sull'avanzamento."
 }];
 
 
 const processSteps = [
-{ num: "01", icon: <ClipboardCheck className="w-5 h-5" />, title: "Analisi Legale", text: "Verifichiamo contratto e stato SAL per tutelarti nel cambio impresa." },
-{ num: "02", icon: <FileSignature className="w-5 h-5" />, title: "Piano Subentro", text: "Prepariamo il Modello 02 e la documentazione per l'USR in 72h." },
-{ num: "03", icon: <Building2 className="w-5 h-5" />, title: "Sblocco USR", text: "Dialoghiamo con i tecnici per approvare varianti e sbloccare fondi." },
-{ num: "04", icon: <Hammer className="w-5 h-5" />, title: "Riavvio Lavori", text: "Il cantiere riparte con cronoprogramma certo fino alla consegna." }];
+{ num: "01", icon: <ClipboardCheck className="w-5 h-5" />, title: "Valutazione iniziale", text: "Inquadriamo stato dell'immobile e della situazione, per capire rischi e prossimi step." },
+{ num: "02", icon: <FileSignature className="w-5 h-5" />, title: "Documenti e perimetro", text: "Richiediamo la documentazione utile e definiamo il perimetro di intervento. Se c'è un progettista, ci coordiniamo senza sostituirlo." },
+{ num: "03", icon: <Building2 className="w-5 h-5" />, title: "Percorso amministrativo", text: "Ti orientiamo nei passaggi e nelle integrazioni necessarie. Chiari su ciò che dipende da noi e ciò che dipende dagli enti." },
+{ num: "04", icon: <Hammer className="w-5 h-5" />, title: "Esecuzione lavori", text: "Quando ci sono le condizioni, avviamo e gestiamo i lavori con aggiornamenti regolari e milestone verificabili." }];
 
 
 const faqItems = [
-{ q: "Se cambio impresa perdo il contributo?", a: "No. Gestiamo noi la procedura di voltura (Modello 02) per garantire la continuità del finanziamento USR senza rischi per te." },
-{ q: "L'altra impresa mi chiede penali, cosa faccio?", a: "Il nostro ufficio legale analizza il tuo contratto gratuitamente per proteggerti da richieste illegittime e sbloccare la situazione." },
-{ q: "Quanto tempo serve per ripartire?", a: "Se la documentazione è disponibile, possiamo formalizzare il subentro ed entrare in cantiere fisicamente in meno di 30 giorni." },
-{ q: "Vi occupate delle pratiche USR ferme?", a: "Sì, è la nostra specialità. Sblocchiamo varianti, SAL non pagati e integrazioni documentali che tengono fermo il cantiere da mesi." },
-{ q: "Non ho tutti i documenti: posso inviare la candidatura?", a: "Sì. Per i Privati molte voci sono facoltative. Compila quello che hai e ti contatteremo per il resto." }];
+{ q: "Se cambio impresa perdo il contributo?", a: "Dipende dalla situazione specifica. Valutiamo lo stato della pratica e dei lavori per indicarti i passaggi necessari. Non possiamo garantire esiti, ma ti diamo un quadro chiaro di cosa serve." },
+{ q: "L'altra impresa mi chiede penali, cosa faccio?", a: "Il primo passo è inquadrare il contratto in essere e lo stato dei lavori. Se emergono aspetti legali, ti indichiamo di rivolgerti a un professionista qualificato per la tutela dei tuoi interessi." },
+{ q: "Quanto tempo serve per ripartire?", a: "I tempi dipendono da molti fattori, incluse le tempistiche degli enti e dell'USR che non sono sotto il nostro controllo. Ti forniamo una roadmap con milestone chiare, distinguendo ciò che possiamo gestire direttamente." },
+{ q: "Vi occupate delle pratiche USR ferme?", a: "Non ci sostituiamo alle figure previste per legge. Orientiamo e ci coordiniamo con il progettista, se presente, per raccogliere e predisporre ciò che serve ai fini della pratica." },
+{ q: "Non ho tutti i documenti: posso inviare la candidatura?", a: "Sì, invia ciò che hai a disposizione. Dopo una prima analisi ti indicheremo cosa manca e come procedere." }];
 
 
 // ─── DUAL CTA ─────────────────────────────────────────────────────────────────
@@ -156,25 +156,23 @@ const Index = () => {
           {/* Text */}
           <div className="flex-1 text-center md:text-left">
             <span className="inline-block text-[11px] font-bold tracking-[0.25em] uppercase text-primary mb-4">
-              Pronto Intervento Sisma 2016
+              Ricostruzione post‑sisma 2016
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold leading-[1.1] tracking-tight text-foreground mb-6" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Cantiere Sisma 2016 Fermo?{" "}
-              <span className="text-primary">Lo Sblocchiamo in 30 Giorni.</span>
+              Casa danneggiata dal sisma 2016?{" "}
+              <span className="text-primary">La ripariamo noi.</span>
             </h1>
             <p className="text-foreground/60 text-base md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0 mb-2">
-              Specialisti nel subentro immediato per pratiche USR bloccate e lavori abbandonati in Marche e Umbria.
-              Non lasciare che la tua casa resti uno scheletro.
+              Impresa con oltre 90 anni di esperienza. Valutiamo lo stato del tuo immobile e definiamo un percorso operativo chiaro. Entro 24 ore prendiamo in carico la richiesta e indichiamo cosa serve per procedere.
             </p>
             <p className="text-muted-foreground text-sm italic mb-2">
-              Valutazione preliminare gratuita. Compila anche se non hai tutti i documenti.
+              Valutazione iniziale gratuita: si parte da ciò che è disponibile, anche con documentazione incompleta.
             </p>
             <DualCTA variant="light" />
 
             {/* Badges */}
             <div className="flex items-center gap-3 mt-6 justify-center md:justify-start">
-              <span className="border border-primary text-primary px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase">Marche</span>
-              <span className="border border-primary text-primary px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase">Post‑Sisma</span>
+              <span className="border border-primary text-primary px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase">Sisma 2016</span>
             </div>
           </div>
 
@@ -199,16 +197,18 @@ const Index = () => {
       <div className="bg-foreground text-background py-3 overflow-hidden whitespace-nowrap">
         <div className="inline-flex animate-marquee gap-0">
           {[
-          "Sbloccati 3 Cantieri a Visso questo mese",
-          "Pratica USR Camerino: APPROVATA",
-          "Cantiere Sarnano: RIAVVIATO",
-          "Gestione Modello 02 Immediata",
-          "100+ Anni di Esperienza",
-          "Sbloccati 3 Cantieri a Visso questo mese",
-          "Pratica USR Camerino: APPROVATA",
-          "Cantiere Sarnano: RIAVVIATO",
-          "Gestione Modello 02 Immediata",
-          "100+ Anni di Esperienza"].
+          "Presa in carico entro 24 ore",
+          "Valutazione tecnica dell'immobile",
+          "Collaborazione con il progettista (se presente)",
+          "Milestone chiare su ciò che dipende da noi",
+          "Trasparenza sui tempi di enti/USR",
+          "90+ anni di esperienza operativa",
+          "Presa in carico entro 24 ore",
+          "Valutazione tecnica dell'immobile",
+          "Collaborazione con il progettista (se presente)",
+          "Milestone chiare su ciò che dipende da noi",
+          "Trasparenza sui tempi di enti/USR",
+          "90+ anni di esperienza operativa"].
           map((t, i) =>
           <span key={i} className="mx-10 text-sm font-semibold opacity-90">{t} •</span>
           )}
@@ -223,7 +223,7 @@ const Index = () => {
               Cosa Offriamo
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Come ti sblocchiamo il cantiere<br className="hidden md:block" /> in 4 step
+              Come lavoriamo: dalla presa in carico<br className="hidden md:block" /> ai lavori
             </h2>
           </div>
 
@@ -256,11 +256,10 @@ const Index = () => {
               Il Nostro Impegno
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-background mb-5 leading-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Costruito per Durare —<br />Affidabilità Garantita
+              Costruito per durare —<br />serietà operativa
             </h2>
             <p className="text-background/70 text-base leading-relaxed mb-8 max-w-lg">
-              Troppe imprese sono nate dal nulla per il Superbonus e sono sparite. Noi siamo qui dal 1920.
-              Quando prendiamo un impegno, lo portiamo a termine. Nessuna sorpresa, solo cantieri finiti.
+              Negli ultimi anni molte realtà sono nate e sparite. Qui c'è un'azienda con storia e struttura. Lavoriamo con metodo, responsabilità e aggiornamenti chiari sulle attività che dipendono da noi.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-background/10 pt-6">
               <div className="flex gap-3 items-start">
@@ -300,7 +299,7 @@ const Index = () => {
               Come Lavoriamo
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Sblocchiamo il Tuo Cantiere<br className="hidden md:block" /> in 4 Step
+              Come lavoriamo: processo chiaro<br className="hidden md:block" /> in 4 fasi
             </h2>
           </div>
 
@@ -334,8 +333,8 @@ const Index = () => {
             La tua casa è ancora uno scheletro?<br />Ti Capiamo.
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            Imprese fallite, burocrazia USR incagliata, SAL non pagati. Conosciamo l'incubo.<br />
-            Non serve aspettare ancora: serve un intervento tecnico d'urto.
+            Imprese fallite, burocrazia incagliata, lavori fermi. Conosciamo la situazione.<br />
+            Non servono promesse: serve capire dove si è fermati e cosa serve per procedere.
           </p>
           <DualCTA variant="light" />
         </div>
@@ -381,10 +380,10 @@ const Index = () => {
               Contattaci Ora
             </span>
             <h2 className="text-2xl md:text-3xl font-extrabold text-background mb-4 relative" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Richiedi Analisi Cantiere Gratuita
+              Richiedi valutazione iniziale gratuita
             </h2>
             <p className="text-background/70 text-base mb-6 relative">
-              Scegli il tuo profilo e compila la scheda. Ti diremo se possiamo sbloccare la tua pratica in 24 ore.
+              Entro 24 ore prendiamo in carico la richiesta e indichiamo i prossimi passi e le informazioni necessarie per valutare correttamente il caso.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
               <button
