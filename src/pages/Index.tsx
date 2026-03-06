@@ -220,14 +220,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* ── NAVBAR ─────────────────────────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
+      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-transparent">
+        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-20">
           <a
             href="https://impresacingoli.it"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center">
-            <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10" />
+            className="flex items-center -my-2">
+            <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-16" />
           </a>
 
           {/* Desktop nav */}
