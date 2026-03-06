@@ -6,7 +6,7 @@ import Step2Edificio from "@/components/form/Step2Edificio";
 import Step3Documenti from "@/components/form/Step3Documenti";
 import { ChevronLeft } from "lucide-react";
 
-export type TipoUtente = "privato" | "professionista";
+export type TipoUtente = "proprietario" | "progettista";
 export type FormData = Record<string, any>;
 
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];
