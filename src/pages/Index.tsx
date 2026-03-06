@@ -197,6 +197,61 @@ const DualCTA = ({ variant = "light" }: {variant?: "light" | "dark";}) => {
     </div>);
 
 };
+// ─── ROADMAP CARD ─────────────────────────────────────────────────────────────
+
+const RoadmapCard = () => {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  return (
+    <>
+      <div
+        onClick={() => setOpen(true)}
+        className="rounded-xl overflow-hidden shadow-lg h-64 md:h-80 cursor-pointer group relative"
+      >
+        <img
+          src={roadmapImg}
+          alt="Roadmap – Cronologia di una Commessa Sisma 2016"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/10 transition-colors flex items-center justify-center">
+          <span className="bg-primary text-primary-foreground px-4 py-2 rounded text-sm font-bold shadow-lg">
+            Clicca per ingrandire
+          </span>
+        </div>
+      </div>
+
+      {/* Fullscreen overlay */}
+      {open && (
+        <div
+          className="fixed inset-0 z-[100] bg-foreground/90 flex items-center justify-center p-4 cursor-pointer"
+          onClick={() => setOpen(false)}
+        >
+          <button
+            className="absolute top-4 right-4 text-background hover:text-primary transition-colors z-10"
+            onClick={() => setOpen(false)}
+          >
+            <X className="w-8 h-8" />
+          </button>
+          <img
+            src={roadmapImg}
+            alt="Roadmap – Cronologia di una Commessa Sisma 2016"
+            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </>
+  );
+};
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 
