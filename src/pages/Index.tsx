@@ -728,7 +728,7 @@ const Index = () => {
               Sono un Proprietario
             </button>
             <button
-              onClick={() => navigate("/candidatura?tipo=Progettista")}
+              onClick={() => navigate("/candidatura?tipo=progettista")}
               className="w-full border-2 border-primary text-primary py-3 text-sm font-bold tracking-widest uppercase rounded"
             >
               Sono un Progettista

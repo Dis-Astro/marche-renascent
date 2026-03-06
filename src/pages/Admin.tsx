@@ -262,7 +262,7 @@ const Admin = () => {
                   >
                     <td className="py-3 pr-4 text-muted-foreground">{new Date(c.created_at).toLocaleDateString("it")}</td>
                     <td className="py-3 pr-4">
-                      <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 ${c.tipo === "professionista" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                      <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 ${c.tipo === "progettista" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
                         {c.tipo || "–"}
                       </span>
                     </td>
