@@ -414,7 +414,7 @@ const Index = () => {
               serietà operativa
             </h2>
             <p className="text-background/70 text-base leading-relaxed mb-8 max-w-lg">
-              In un contesto in continua evoluzione. Qui c'è un'azienda con storia e struttura che abbina tradizione ed
+              In un contesto in continua evoluzione, qui c'è un'azienda con storia e struttura che abbina tradizione ed
               innovazione. Lavoriamo con metodo, responsabilità e aggiornamenti chiari sulle attività in corso.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-background/10 pt-6">
