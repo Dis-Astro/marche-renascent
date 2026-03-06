@@ -698,7 +698,7 @@ const Index = () => {
           className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 text-[15vw] font-extrabold text-background/[0.03] pointer-events-none select-none whitespace-nowrap"
           style={{ fontFamily: "Outfit, sans-serif" }}>
           
-          CINGOLI SRL
+          CINGOLI
         </div>
       </footer>
 
