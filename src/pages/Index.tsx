@@ -296,7 +296,8 @@ const Index = () => {
               className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold leading-[1.1] tracking-tight text-foreground mb-6"
               style={{ fontFamily: "Outfit, sans-serif" }}>
               
-              Casa danneggiata dal sisma 2016? <span className="text-primary">La ripariamo noi.</span>
+              Casa danneggiata dal sisma 2016? <span className="text-primary">
+La ripariamo noi.</span>
             </h1>
             <p className="text-foreground/60 text-base md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0 mb-2">
               Impresa con oltre 90 anni di esperienza. Valutiamo lo stato del tuo immobile e definiamo un percorso
@@ -334,8 +335,7 @@ const Index = () => {
       {/* ── SOCIAL PROOF MARQUEE ───────────────────────────────────────────── */}
       <div className="bg-foreground text-background py-3 overflow-hidden whitespace-nowrap">
         <div className="inline-flex animate-marquee gap-0">
-          {[
-          "Presa in carico entro 24 ore",
+          {["Presa in carico entro 24 ore",
           "Valutazione della situazione del tuo immobile",
           "Disponibilità a supportare i tecnici incaricati",
           "Indicazione chiare sugli adempimenti necessari",
