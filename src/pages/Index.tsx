@@ -648,9 +648,7 @@ const Index = () => {
                 <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10 brightness-0 invert mb-3" />
               </a>
               <p className="text-background/60 text-sm">
-                Ricostruzione e Riqualificazione.
-                <br />
-                Dal 1920.
+              Dal 1933.
               </p>
             </div>
             <div>
