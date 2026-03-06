@@ -23,6 +23,7 @@ import sisma002 from "@/assets/sisma-002.jpg";
 import sisma003 from "@/assets/sisma-003.jpg";
 import sisma004 from "@/assets/sisma-004.jpg";
 import sismaBefore from "@/assets/sisma-before.jpg";
+import sisma005 from "@/assets/sisma-005.jpg";
 import sismaAfter from "@/assets/sisma-after.jpg";
 
 // ─── BEFORE/AFTER SLIDER ──────────────────────────────────────────────────────
@@ -517,27 +518,27 @@ const Index = () => {
           </div>
 
           {/* Photo grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
               <img
-
                 alt="Torre civica post-sisma"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" src="/lovable-uploads/0265aa35-915a-46b9-a659-3a9dd6d717ce.jpg" />
-              
             </div>
             <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
               <img
-
                 alt="Edificio storico in fase di messa in sicurezza"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" src="/lovable-uploads/951e1249-02c2-4c63-a8f5-b224882692a4.jpg" />
-              
             </div>
             <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
               <img
-
                 alt="Macerie post-sisma 2016"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" src="/lovable-uploads/26095a14-729f-4065-abf2-be01e0b935c5.jpg" />
-              
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
+              <img
+                src={sisma005}
+                alt="Palazzo storico restaurato post-sisma"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
             </div>
           </div>
 
