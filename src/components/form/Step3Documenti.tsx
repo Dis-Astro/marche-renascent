@@ -29,8 +29,8 @@ const InputField = ({ label, value, onChange, inputClass, required, type = "text
 );
 
 const Step3Documenti = ({ tipo, form, update, files, setFiles, inputClass }: Props) => {
-  const isPro = tipo === "professionista";
-  const isPrivato = tipo === "privato";
+  const isPro = tipo === "progettista";
+  const isPrivato = tipo === "proprietario";
 
   return (
     <div className="space-y-4">

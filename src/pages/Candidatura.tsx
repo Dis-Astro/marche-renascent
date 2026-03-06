@@ -5,15 +5,16 @@ import Step1Anagrafica from "@/components/form/Step1Anagrafica";
 import Step2Edificio from "@/components/form/Step2Edificio";
 import Step3Documenti from "@/components/form/Step3Documenti";
 import { ChevronLeft } from "lucide-react";
+import logoCingoli from "@/assets/logo-cingoli.png";
 
-export type TipoUtente = "privato" | "professionista";
+export type TipoUtente = "proprietario" | "progettista";
 export type FormData = Record<string, any>;
 
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];
 
 const Candidatura = () => {
   const [searchParams] = useSearchParams();
-  const initialTipo = (searchParams.get("tipo") as TipoUtente) || "privato";
+  const initialTipo = (searchParams.get("tipo") as TipoUtente) || "proprietario";
 
   const [tipo, setTipo] = useState<TipoUtente>(initialTipo);
   const [step, setStep] = useState(0);
@@ -25,7 +26,7 @@ const Candidatura = () => {
 
   useEffect(() => {
     const t = searchParams.get("tipo") as TipoUtente;
-    if (t === "privato" || t === "professionista") setTipo(t);
+    if (t === "proprietario" || t === "progettista") setTipo(t);
   }, [searchParams]);
 
   const update = (field: string, value: any) =>
@@ -88,9 +89,8 @@ const Candidatura = () => {
       <div className="min-h-screen bg-background flex flex-col">
         {/* Navbar */}
         <nav className="border-b border-border px-6 h-14 flex items-center">
-          <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer"
-            className="text-lg font-extrabold tracking-tight text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-            Cingoli SRL
+          <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer" className="-my-1">
+            <img src={logoCingoli} alt="Impresa Cingoli" className="h-10" />
           </a>
         </nav>
         <div className="flex-1 flex items-center justify-center px-6">
@@ -120,9 +120,8 @@ const Candidatura = () => {
       {/* ── NAVBAR ── */}
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="max-w-2xl mx-auto px-6 h-14 flex items-center justify-between">
-          <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer"
-            className="text-lg font-extrabold tracking-tight text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-            Cingoli SRL
+          <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer" className="-my-1">
+            <img src={logoCingoli} alt="Impresa Cingoli" className="h-10" />
           </a>
           <a href="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium tracking-wide">
             ← Home
@@ -146,7 +145,7 @@ const Candidatura = () => {
 
           {/* ── SEGMENT CONTROL ── */}
           <div className="flex border border-border rounded overflow-hidden mb-6 shadow-sm">
-            {(["privato", "professionista"] as TipoUtente[]).map((t) => (
+            {(["proprietario", "progettista"] as TipoUtente[]).map((t) => (
               <button
                 key={t}
                 onClick={() => { setTipo(t); setStep(0); }}
@@ -156,7 +155,7 @@ const Candidatura = () => {
                     : "bg-background text-foreground hover:bg-muted"
                 }`}
               >
-                {t === "privato" ? "Privato" : "Professionista"}
+                {t === "proprietario" ? "Proprietario" : "Progettista"}
               </button>
             ))}
           </div>

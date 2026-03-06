@@ -229,8 +229,8 @@ const Admin = () => {
             />
             <select value={filterTipo} onChange={(e) => setFilterTipo(e.target.value)} className="border border-border bg-background text-foreground px-3 py-2 text-sm">
               <option value="">Tutti i tipi</option>
-              <option value="privato">Privato</option>
-              <option value="professionista">Professionista</option>
+              <option value="proprietario">Proprietario</option>
+              <option value="progettista">Progettista</option>
             </select>
             <select value={filterStato} onChange={(e) => setFilterStato(e.target.value)} className="border border-border bg-background text-foreground px-3 py-2 text-sm">
               <option value="">Tutti gli stati</option>
@@ -262,7 +262,7 @@ const Admin = () => {
                   >
                     <td className="py-3 pr-4 text-muted-foreground">{new Date(c.created_at).toLocaleDateString("it")}</td>
                     <td className="py-3 pr-4">
-                      <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 ${c.tipo === "professionista" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                      <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 ${c.tipo === "progettista" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
                         {c.tipo || "–"}
                       </span>
                     </td>

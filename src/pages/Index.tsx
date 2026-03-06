@@ -178,13 +178,13 @@ const DualCTA = ({ variant = "light" }: { variant?: "light" | "dark" }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-3 mt-6">
       <button
-        onClick={() => navigate("/candidatura?tipo=Proprietario")}
+        onClick={() => navigate("/candidatura?tipo=proprietario")}
         className="flex-1 sm:flex-none bg-primary text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded"
       >
         Sono un Proprietario
       </button>
       <button
-        onClick={() => navigate("/candidatura?tipo=Progettista")}
+        onClick={() => navigate("/candidatura?tipo=progettista")}
         className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 transition-colors ${
           isLight
             ? "border-foreground text-foreground hover:bg-foreground hover:text-background"
@@ -245,7 +245,7 @@ const Index = () => {
             ))}
             <li>
               <button
-                onClick={() => navigate("/candidatura?tipo=Proprietario")}
+                onClick={() => navigate("/candidatura?tipo=proprietario")}
                 className="bg-primary text-primary-foreground px-5 py-2 text-sm font-bold rounded hover:opacity-90 transition-opacity"
               >
                 Candidati
@@ -273,7 +273,7 @@ const Index = () => {
             ))}
             <button
               onClick={() => {
-                navigate("/candidatura?tipo=Proprietario");
+                navigate("/candidatura?tipo=proprietario");
                 setMobileOpen(false);
               }}
               className="bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold rounded"
@@ -636,13 +636,13 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
               <button
-                onClick={() => navigate("/candidatura?tipo=Proprietario")}
+                onClick={() => navigate("/candidatura?tipo=proprietario")}
                 className="bg-primary text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity"
               >
                 Sono un Proprietario
               </button>
               <button
-                onClick={() => navigate("/candidatura?tipo=Progettista")}
+                onClick={() => navigate("/candidatura?tipo=progettista")}
                 className="border-2 border-background/30 text-background px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:bg-background hover:text-foreground transition-colors"
               >
                 Sono un Progettista
@@ -722,13 +722,13 @@ const Index = () => {
         {showMobileChoice ? (
           <div className="bg-background border-t border-border p-4 space-y-2">
             <button
-              onClick={() => navigate("/candidatura?tipo=Proprietario")}
+              onClick={() => navigate("/candidatura?tipo=proprietario")}
               className="w-full bg-primary text-primary-foreground py-3 text-sm font-bold tracking-widest uppercase rounded"
             >
               Sono un Proprietario
             </button>
             <button
-              onClick={() => navigate("/candidatura?tipo=Progettista")}
+              onClick={() => navigate("/candidatura?tipo=progettista")}
               className="w-full border-2 border-primary text-primary py-3 text-sm font-bold tracking-widest uppercase rounded"
             >
               Sono un Progettista
