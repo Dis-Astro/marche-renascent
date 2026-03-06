@@ -222,8 +222,8 @@ const RoadmapCard = () => {
           alt="Roadmap – Cronologia di una Commessa Sisma 2016"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/10 transition-colors flex items-center justify-center">
-          <span className="bg-primary text-primary-foreground px-4 py-2 rounded text-sm font-bold shadow-lg">
+        <div className="absolute inset-0 bg-transparent group-hover:bg-foreground/5 transition-colors flex items-center justify-center">
+          <span className="bg-background/60 backdrop-blur-sm text-foreground px-4 py-2 rounded text-sm font-bold">
             Clicca per ingrandire
           </span>
         </div>
@@ -523,13 +523,10 @@ La ripariamo noi.</span>
       <section className="bg-background py-20" id="process">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
-            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">
-              I Nostri Servizi
-            </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
               style={{ fontFamily: "Outfit, sans-serif" }}>
-              Cosa Offriamo
+              Ti sintetizziamo
             </h2>
           </div>
 
