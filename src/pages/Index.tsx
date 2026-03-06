@@ -23,9 +23,7 @@ import sisma002 from "@/assets/sisma-002.jpg";
 import sisma003 from "@/assets/sisma-003.jpg";
 import sisma004 from "@/assets/sisma-004.jpg";
 import sismaBefore from "@/assets/sisma-before.jpg";
-import sisma005 from "@/assets/sisma-005.jpg";
 import sismaAfter from "@/assets/sisma-after.jpg";
-import logoCingoli from "@/assets/logo-cingoli.png";
 
 // ─── BEFORE/AFTER SLIDER ──────────────────────────────────────────────────────
 const BeforeAfterSlider = ({ before, after }: {before: string;after: string;}) => {
@@ -226,8 +224,10 @@ const Index = () => {
             href="https://impresacingoli.it"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center">
-            <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10" />
+            className="text-xl font-extrabold tracking-tight text-foreground"
+            style={{ fontFamily: "Outfit, sans-serif" }}>
+            
+            Cingoli SRL
           </a>
 
           {/* Desktop nav */}
@@ -413,7 +413,7 @@ const Index = () => {
               serietà operativa
             </h2>
             <p className="text-background/70 text-base leading-relaxed mb-8 max-w-lg">
-              In un contesto in continua evoluzione, qui c'è un'azienda con storia e struttura che abbina tradizione ed
+              In un contesto in continua evoluzione. Qui c'è un'azienda con storia e struttura che abbina tradizione ed
               innovazione. Lavoriamo con metodo, responsabilità e aggiornamenti chiari sulle attività in corso.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-background/10 pt-6">
@@ -517,27 +517,27 @@ const Index = () => {
           </div>
 
           {/* Photo grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
               <img
+
                 alt="Torre civica post-sisma"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" src="/lovable-uploads/0265aa35-915a-46b9-a659-3a9dd6d717ce.jpg" />
+              
             </div>
             <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
               <img
+
                 alt="Edificio storico in fase di messa in sicurezza"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" src="/lovable-uploads/951e1249-02c2-4c63-a8f5-b224882692a4.jpg" />
+              
             </div>
             <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
               <img
+
                 alt="Macerie post-sisma 2016"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" src="/lovable-uploads/26095a14-729f-4065-abf2-be01e0b935c5.jpg" />
-            </div>
-            <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
-              <img
-                src={sisma005}
-                alt="Palazzo storico restaurato post-sisma"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+              
             </div>
           </div>
 
@@ -644,11 +644,11 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             <div>
-              <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer">
-                <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10 brightness-0 invert mb-3" />
-              </a>
-              <p className="text-background/60 text-sm">
-                Ricostruzione e Riqualificazione.
+              <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
+                Cingoli SRL
+              </h4>
+              <p className="text-background/60 text-sm">Dal 1933.
+
                 <br />
                 Dal 1920.
               </p>
