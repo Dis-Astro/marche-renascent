@@ -463,51 +463,38 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── PROCESS STEPS ──────────────────────────────────────────────────── */}
-      <section className="bg-background py-20" id="process">
+      {/* ── MEDIA (Cosa Offriamo) ─────────────────────────────────────── */}
+      <section className="bg-background py-20" id="servizi">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-14">
+          <div className="text-center mb-12">
             <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">
-              Come Lavoriamo
+              Cosa Offriamo
             </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
               style={{ fontFamily: "Outfit, sans-serif" }}
             >
-              Come lavoriamo: processo chiaro
-              <br className="hidden md:block" /> in 4 fasi
+              I nostri interventi in evidenza
             </h2>
           </div>
 
-          <div className="flex flex-col md:flex-row items-start justify-between gap-4">
-            {processSteps.map((s, i) => (
-              <>
-                <div
-                  key={s.num}
-                  className="flex flex-col items-center text-center max-w-[200px] mx-auto md:mx-0 bg-muted p-6 rounded-xl flex-1 shadow-sm"
-                >
-                  <div
-                    className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-extrabold text-sm mb-4"
-                    style={{ fontFamily: "Outfit, sans-serif" }}
-                  >
-                    {s.num}
-                  </div>
-                  <h3 className="font-bold text-foreground text-sm mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-                    {s.title}
-                  </h3>
-                  <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-3">
-                    {s.icon}
-                  </div>
-                  <p className="text-muted-foreground text-xs leading-relaxed">{s.text}</p>
-                </div>
-                {i < processSteps.length - 1 && (
-                  <div
-                    key={`line-${i}`}
-                    className="hidden md:block flex-none w-8 h-0.5 bg-border self-center mt-0 relative top-[-20px]"
-                  />
-                )}
-              </>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Placeholder 1 – Immagine */}
+            <div className="bg-muted rounded-xl border-2 border-dashed border-border flex items-center justify-center h-72 md:h-96">
+              <div className="text-center text-muted-foreground">
+                <Landmark className="w-10 h-10 mx-auto mb-3 opacity-40" />
+                <p className="text-sm font-semibold">Immagine</p>
+                <p className="text-xs opacity-60">In arrivo</p>
+              </div>
+            </div>
+            {/* Placeholder 2 – Video */}
+            <div className="bg-muted rounded-xl border-2 border-dashed border-border flex items-center justify-center h-72 md:h-96">
+              <div className="text-center text-muted-foreground">
+                <HardHat className="w-10 h-10 mx-auto mb-3 opacity-40" />
+                <p className="text-sm font-semibold">Video</p>
+                <p className="text-xs opacity-60">In arrivo</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
