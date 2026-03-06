@@ -98,25 +98,25 @@ const services = [
   num: "01",
   icon: <FileCheck className="w-5 h-5" />,
   title: "Presa in carico (24 ore)",
-  text: "Conferma della presa in carico entro 24 ore e raccolta delle informazioni essenziali. Ti indichiamo cosa serve per una valutazione corretta."
+  text: "Esaminiamo lo stato e il contesto dell'immobile."
 },
 {
   num: "02",
   icon: <FileText className="w-5 h-5" />,
   title: "Documenti e orientamento",
-  text: "Se il caso è in perimetro, richiediamo i documenti utili e ti orientiamo sui passaggi necessari. Nessuna promessa su tempi esterni, massima chiarezza."
+  text: "Raccogliamo e analizziamo la documentazione necessaria per definire con precisione lo stato della pratica al fine di individuare criticità, rischi e opportunità."
 },
 {
   num: "03",
   icon: <HardHat className="w-5 h-5" />,
   title: "Piano operativo",
-  text: "Definiamo fasi, priorità e milestone realistiche. Quando ci sono le condizioni, organizziamo squadre e forniture per procedere senza stop & go."
+  text: "Definiamo il percorso operativo per arrivare all'avvio dei lavori, anche attraverso un confronto diretto con il tecnico incaricato."
 },
 {
   num: "04",
   icon: <Landmark className="w-5 h-5" />,
   title: "Struttura e continuità",
-  text: "Impresa storica: organizzazione reale e capacità operativa. Responsabilità sui lavori eseguiti e aggiornamenti sull'avanzamento."
+  text: "Realizziamo gli interventi programmati nel rispetto dei tempi garantendo aggiornamenti periodici per monitorare l'avanzamento."
 }];
 
 
