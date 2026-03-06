@@ -178,7 +178,7 @@ const DualCTA = ({ variant = "light" }: { variant?: "light" | "dark" }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-3 mt-6">
       <button
-        onClick={() => navigate("/candidatura?tipo=Proprietario")}
+        onClick={() => navigate("/candidatura?tipo=proprietario")}
         className="flex-1 sm:flex-none bg-primary text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded"
       >
         Sono un Proprietario
