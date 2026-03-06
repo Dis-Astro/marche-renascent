@@ -1,5 +1,6 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import roadmapImg from "@/assets/roadmap.jpg";
 import {
   FileCheck,
   FileText,
