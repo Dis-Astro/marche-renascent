@@ -225,10 +225,8 @@ const Index = () => {
             href="https://impresacingoli.it"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xl font-extrabold tracking-tight text-foreground"
-            style={{ fontFamily: "Outfit, sans-serif" }}>
-            
-            Cingoli SRL
+            className="flex items-center">
+            <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10" />
           </a>
 
           {/* Desktop nav */}
