@@ -26,7 +26,7 @@ const InputField = ({ label, value, onChange, inputClass, required, type = "text
 );
 
 const Step2Edificio = ({ tipo, form, update, inputClass }: Props) => {
-  const isPro = tipo === "professionista";
+  const isPro = tipo === "progettista";
 
   return (
     <div className="space-y-4">

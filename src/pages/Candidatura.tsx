@@ -145,7 +145,7 @@ const Candidatura = () => {
 
           {/* ── SEGMENT CONTROL ── */}
           <div className="flex border border-border rounded overflow-hidden mb-6 shadow-sm">
-            {(["privato", "professionista"] as TipoUtente[]).map((t) => (
+            {(["proprietario", "progettista"] as TipoUtente[]).map((t) => (
               <button
                 key={t}
                 onClick={() => { setTipo(t); setStep(0); }}
@@ -155,7 +155,7 @@ const Candidatura = () => {
                     : "bg-background text-foreground hover:bg-muted"
                 }`}
               >
-                {t === "privato" ? "Privato" : "Professionista"}
+                {t === "proprietario" ? "Proprietario" : "Progettista"}
               </button>
             ))}
           </div>
