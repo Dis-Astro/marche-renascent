@@ -273,7 +273,7 @@ const Index = () => {
             ))}
             <button
               onClick={() => {
-                navigate("/candidatura?tipo=Proprietario");
+                navigate("/candidatura?tipo=proprietario");
                 setMobileOpen(false);
               }}
               className="bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold rounded"
