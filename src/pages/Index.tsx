@@ -722,7 +722,7 @@ const Index = () => {
         {showMobileChoice ? (
           <div className="bg-background border-t border-border p-4 space-y-2">
             <button
-              onClick={() => navigate("/candidatura?tipo=Proprietario")}
+              onClick={() => navigate("/candidatura?tipo=proprietario")}
               className="w-full bg-primary text-primary-foreground py-3 text-sm font-bold tracking-widest uppercase rounded"
             >
               Sono un Proprietario
