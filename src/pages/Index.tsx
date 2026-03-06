@@ -25,6 +25,7 @@ import sisma004 from "@/assets/sisma-004.jpg";
 import sismaBefore from "@/assets/sisma-before.jpg";
 import sisma005 from "@/assets/sisma-005.jpg";
 import sismaAfter from "@/assets/sisma-after.jpg";
+import logoCingoli from "@/assets/logo-cingoli.png";
 
 // ─── BEFORE/AFTER SLIDER ──────────────────────────────────────────────────────
 const BeforeAfterSlider = ({ before, after }: {before: string;after: string;}) => {
@@ -225,10 +226,8 @@ const Index = () => {
             href="https://impresacingoli.it"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xl font-extrabold tracking-tight text-foreground"
-            style={{ fontFamily: "Outfit, sans-serif" }}>
-            
-            Cingoli SRL
+            className="flex items-center">
+            <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10" />
           </a>
 
           {/* Desktop nav */}
@@ -645,9 +644,9 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             <div>
-              <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
-                Cingoli SRL
-              </h4>
+              <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer">
+                <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10 brightness-0 invert mb-3" />
+              </a>
               <p className="text-background/60 text-sm">
                 Ricostruzione e Riqualificazione.
                 <br />
