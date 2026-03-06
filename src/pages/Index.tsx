@@ -479,18 +479,19 @@ La ripariamo noi.</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {/* Video placeholder */}
-            <div className="rounded-xl border-2 border-dashed border-border bg-muted flex flex-col items-center justify-center h-64 md:h-80">
-              <Landmark className="w-10 h-10 text-primary/40 mb-3" />
-              <p className="text-muted-foreground text-sm font-semibold">Video</p>
-              <p className="text-muted-foreground/60 text-xs mt-1">In arrivo</p>
+            {/* Video */}
+            <div className="rounded-xl overflow-hidden shadow-lg h-64 md:h-80">
+              <video
+                className="w-full h-full object-cover"
+                controls
+                preload="metadata"
+                poster=""
+              >
+                <source src="/videos/Tornare_a_Casa_Post-Sisma_720.mp4" type="video/mp4" />
+              </video>
             </div>
-            {/* Roadmap placeholder */}
-            <div className="rounded-xl border-2 border-dashed border-border bg-muted flex flex-col items-center justify-center h-64 md:h-80">
-              <HardHat className="w-10 h-10 text-primary/40 mb-3" />
-              <p className="text-muted-foreground text-sm font-semibold">Roadmap</p>
-              <p className="text-muted-foreground/60 text-xs mt-1">In arrivo</p>
-            </div>
+            {/* Roadmap - click to open full */}
+            <RoadmapCard />
           </div>
         </div>
       </section>
