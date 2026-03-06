@@ -229,8 +229,8 @@ const Admin = () => {
             />
             <select value={filterTipo} onChange={(e) => setFilterTipo(e.target.value)} className="border border-border bg-background text-foreground px-3 py-2 text-sm">
               <option value="">Tutti i tipi</option>
-              <option value="privato">Privato</option>
-              <option value="professionista">Professionista</option>
+              <option value="proprietario">Proprietario</option>
+              <option value="progettista">Progettista</option>
             </select>
             <select value={filterStato} onChange={(e) => setFilterStato(e.target.value)} className="border border-border bg-background text-foreground px-3 py-2 text-sm">
               <option value="">Tutti gli stati</option>
