@@ -14,7 +14,7 @@ const STEPS = ["Anagrafica", "Edificio", "Documenti"];
 
 const Candidatura = () => {
   const [searchParams] = useSearchParams();
-  const initialTipo = (searchParams.get("tipo") as TipoUtente) || "privato";
+  const initialTipo = (searchParams.get("tipo") as TipoUtente) || "proprietario";
 
   const [tipo, setTipo] = useState<TipoUtente>(initialTipo);
   const [step, setStep] = useState(0);
