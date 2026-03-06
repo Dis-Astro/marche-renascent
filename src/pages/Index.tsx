@@ -233,11 +233,10 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Hero image placeholder */}
+          {/* Hero image */}
           <div className="flex-1 w-full md:w-auto">
-            <div className="w-full h-72 md:h-96 rounded-xl bg-muted flex items-center justify-center shadow-lg overflow-hidden relative">
-              <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,hsl(var(--muted))_0px,hsl(var(--muted))_10px,hsl(var(--muted-foreground)/0.05)_10px,hsl(var(--muted-foreground)/0.05)_20px)]" />
-              <span className="relative text-muted-foreground text-xs uppercase tracking-widest">Foto edificio</span>
+            <div className="w-full h-72 md:h-96 rounded-xl shadow-lg overflow-hidden relative">
+              <img src={sisma001} alt="Danni del sisma 2016" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
