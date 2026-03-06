@@ -523,13 +523,10 @@ La ripariamo noi.</span>
       <section className="bg-background py-20" id="process">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
-            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">
-              I Nostri Servizi
-            </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
               style={{ fontFamily: "Outfit, sans-serif" }}>
-              Cosa Offriamo
+              Ti sintetizziamo
             </h2>
           </div>
 
