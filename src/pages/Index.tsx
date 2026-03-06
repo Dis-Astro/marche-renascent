@@ -337,7 +337,8 @@ const Index = () => {
           </div>
 
           <div className="flex-1 w-full relative">
-            <div className="w-full h-72 rounded-xl bg-background/5 border border-background/10 relative overflow-hidden">
+            <div className="w-full h-72 rounded-xl relative overflow-hidden shadow-lg">
+              <img src={sisma003} alt="Edificio storico restaurato" className="w-full h-full object-cover" />
               <div className="absolute bottom-6 left-[-1rem] bg-primary text-primary-foreground p-4 rounded-lg shadow-xl">
                 <span className="block text-3xl font-extrabold leading-none" style={{ fontFamily: "Outfit, sans-serif" }}>90+</span>
                 <span className="text-xs opacity-90">Anni di Storia</span>
