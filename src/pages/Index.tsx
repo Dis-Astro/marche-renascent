@@ -463,8 +463,36 @@ La ripariamo noi.</span>
         </div>
       </section>
 
-      {/* ── PROCESS STEPS ──────────────────────────────────────────────────── */}
-      <section className="bg-background py-20" id="process"></section>
+      {/* ── SERVIZI: VIDEO + ROADMAP ─────────────────────────────────────── */}
+      <section className="bg-background py-20" id="process">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">
+              I Nostri Servizi
+            </span>
+            <h2
+              className="text-3xl md:text-4xl font-extrabold text-foreground"
+              style={{ fontFamily: "Outfit, sans-serif" }}>
+              Cosa Offriamo
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {/* Video placeholder */}
+            <div className="rounded-xl border-2 border-dashed border-border bg-muted flex flex-col items-center justify-center h-64 md:h-80">
+              <Landmark className="w-10 h-10 text-primary/40 mb-3" />
+              <p className="text-muted-foreground text-sm font-semibold">Video</p>
+              <p className="text-muted-foreground/60 text-xs mt-1">In arrivo</p>
+            </div>
+            {/* Roadmap placeholder */}
+            <div className="rounded-xl border-2 border-dashed border-border bg-muted flex flex-col items-center justify-center h-64 md:h-80">
+              <HardHat className="w-10 h-10 text-primary/40 mb-3" />
+              <p className="text-muted-foreground text-sm font-semibold">Roadmap</p>
+              <p className="text-muted-foreground/60 text-xs mt-1">In arrivo</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ── GALLERY + BEFORE/AFTER ─────────────────────────────────────── */}
       <section className="bg-muted py-20">
