@@ -26,7 +26,7 @@ const Candidatura = () => {
 
   useEffect(() => {
     const t = searchParams.get("tipo") as TipoUtente;
-    if (t === "privato" || t === "professionista") setTipo(t);
+    if (t === "proprietario" || t === "progettista") setTipo(t);
   }, [searchParams]);
 
   const update = (field: string, value: any) =>
