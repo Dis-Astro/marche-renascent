@@ -1,5 +1,6 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import roadmapImg from "@/assets/roadmap.jpg";
 import {
   FileCheck,
   FileText,
@@ -195,6 +196,61 @@ const DualCTA = ({ variant = "light" }: {variant?: "light" | "dark";}) => {
       </button>
     </div>);
 
+};
+// ─── ROADMAP CARD ─────────────────────────────────────────────────────────────
+
+const RoadmapCard = () => {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  return (
+    <>
+      <div
+        onClick={() => setOpen(true)}
+        className="rounded-xl overflow-hidden shadow-lg h-64 md:h-80 cursor-pointer group relative"
+      >
+        <img
+          src={roadmapImg}
+          alt="Roadmap – Cronologia di una Commessa Sisma 2016"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/10 transition-colors flex items-center justify-center">
+          <span className="bg-primary text-primary-foreground px-4 py-2 rounded text-sm font-bold shadow-lg">
+            Clicca per ingrandire
+          </span>
+        </div>
+      </div>
+
+      {/* Fullscreen overlay */}
+      {open && (
+        <div
+          className="fixed inset-0 z-[100] bg-foreground/90 flex items-center justify-center p-4 cursor-pointer"
+          onClick={() => setOpen(false)}
+        >
+          <button
+            className="absolute top-4 right-4 text-background hover:text-primary transition-colors z-10"
+            onClick={() => setOpen(false)}
+          >
+            <X className="w-8 h-8" />
+          </button>
+          <img
+            src={roadmapImg}
+            alt="Roadmap – Cronologia di una Commessa Sisma 2016"
+            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </>
+  );
 };
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
@@ -478,18 +534,19 @@ La ripariamo noi.</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {/* Video placeholder */}
-            <div className="rounded-xl border-2 border-dashed border-border bg-muted flex flex-col items-center justify-center h-64 md:h-80">
-              <Landmark className="w-10 h-10 text-primary/40 mb-3" />
-              <p className="text-muted-foreground text-sm font-semibold">Video</p>
-              <p className="text-muted-foreground/60 text-xs mt-1">In arrivo</p>
+            {/* Video */}
+            <div className="rounded-xl overflow-hidden shadow-lg h-64 md:h-80">
+              <video
+                className="w-full h-full object-cover"
+                controls
+                preload="metadata"
+                poster=""
+              >
+                <source src="/videos/Tornare_a_Casa_Post-Sisma_720.mp4" type="video/mp4" />
+              </video>
             </div>
-            {/* Roadmap placeholder */}
-            <div className="rounded-xl border-2 border-dashed border-border bg-muted flex flex-col items-center justify-center h-64 md:h-80">
-              <HardHat className="w-10 h-10 text-primary/40 mb-3" />
-              <p className="text-muted-foreground text-sm font-semibold">Roadmap</p>
-              <p className="text-muted-foreground/60 text-xs mt-1">In arrivo</p>
-            </div>
+            {/* Roadmap - click to open full */}
+            <RoadmapCard />
           </div>
         </div>
       </section>
