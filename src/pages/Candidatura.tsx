@@ -120,9 +120,8 @@ const Candidatura = () => {
       {/* ── NAVBAR ── */}
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="max-w-2xl mx-auto px-6 h-14 flex items-center justify-between">
-          <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer"
-            className="text-lg font-extrabold tracking-tight text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-            Cingoli SRL
+          <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer" className="-my-1">
+            <img src={logoCingoli} alt="Impresa Cingoli" className="h-10" />
           </a>
           <a href="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium tracking-wide">
             ← Home
