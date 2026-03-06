@@ -104,7 +104,7 @@ const services = [
   num: "02",
   icon: <FileText className="w-5 h-5" />,
   title: "Documenti e orientamento",
-  text: "Se il caso è in perimetro, richiediamo i documenti utili e ti orientiamo sui passaggi necessari. Nessuna promessa su tempi esterni, massima chiarezza."
+  text: "Raccogliamo e analizziamo la documentazione necessaria per definire con precisione lo stato della pratica al fine di individuare criticità, rischi e opportunità."
 },
 {
   num: "03",
