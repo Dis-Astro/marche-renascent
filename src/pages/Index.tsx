@@ -110,7 +110,7 @@ const services = [
   num: "03",
   icon: <HardHat className="w-5 h-5" />,
   title: "Piano operativo",
-  text: "Definiamo fasi, priorità e milestone realistiche. Quando ci sono le condizioni, organizziamo squadre e forniture per procedere senza stop & go."
+  text: "Definiamo il percorso operativo per arrivare all'avvio dei lavori, anche attraverso un confronto diretto con il tecnico incaricato."
 },
 {
   num: "04",
