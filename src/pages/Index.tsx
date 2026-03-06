@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FileCheck, FileText, HardHat, Landmark,
@@ -6,6 +6,63 @@ import {
   FileSignature, Building2, Hammer,
   ChevronDown, Menu, X, ArrowUpRight } from
 "lucide-react";
+
+import sisma001 from "@/assets/sisma-001.jpg";
+import sisma002 from "@/assets/sisma-002.jpg";
+import sisma003 from "@/assets/sisma-003.jpg";
+import sisma004 from "@/assets/sisma-004.jpg";
+import sismaBefore from "@/assets/sisma-before.jpg";
+import sismaAfter from "@/assets/sisma-after.jpg";
+
+// ─── BEFORE/AFTER SLIDER ──────────────────────────────────────────────────────
+const BeforeAfterSlider = ({ before, after }: { before: string; after: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState(50);
+  const dragging = useRef(false);
+
+  const updatePosition = useCallback((clientX: number) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    setPosition((x / rect.width) * 100);
+  }, []);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragging.current = true;
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    updatePosition(e.clientX);
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (dragging.current) updatePosition(e.clientX);
+  };
+  const onPointerUp = () => { dragging.current = false; };
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full h-72 md:h-96 rounded-xl overflow-hidden cursor-col-resize select-none touch-none shadow-lg"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+    >
+      {/* After (full) */}
+      <img src={after} alt="Dopo i lavori" className="absolute inset-0 w-full h-full object-cover" />
+      {/* Before (clipped) */}
+      <div className="absolute inset-0 overflow-hidden" style={{ width: `${position}%` }}>
+        <img src={before} alt="Prima dei lavori" className="absolute inset-0 w-full h-full object-cover" style={{ width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100vw', maxWidth: 'none' }} />
+      </div>
+      {/* Divider line */}
+      <div className="absolute top-0 bottom-0 w-0.5 bg-primary-foreground shadow-lg" style={{ left: `${position}%`, transform: 'translateX(-50%)' }}>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg">
+          <span className="text-primary-foreground text-xs font-bold">⇔</span>
+        </div>
+      </div>
+      {/* Labels */}
+      <span className="absolute top-3 left-3 bg-foreground/70 text-background text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded">Prima</span>
+      <span className="absolute top-3 right-3 bg-primary/90 text-primary-foreground text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded">Dopo</span>
+    </div>
+  );
+};
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
