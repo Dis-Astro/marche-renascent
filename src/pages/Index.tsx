@@ -339,13 +339,13 @@ const Index = () => {
             "Disponibilità a supportare i tecnici incaricati",
             "Indicazione chiare sugli adempimenti necessari",
             "Trasparenza sui tempi di realizzazione",
-            "Oltre 90 anni di esperienza operativa, messa a disposizione dei nostri clienti",
+            "Oltre 90 anni di esperienza a disposizione dei clienti",
             "Presa in carico entro 24 ore",
             "Valutazione della situazione del tuo immobile",
             "Disponibilità a supportare i tecnici incaricati",
             "Indicazione chiare sugli adempimenti necessari",
             "Trasparenza sui tempi di realizzazione",
-            "Oltre 90 anni di esperienza operativa, messa a disposizione dei nostri clienti",
+            "Oltre 90 anni di esperienza a disposizione dei clienti",
           ].map((t, i) => (
             <span key={i} className="mx-10 text-sm font-semibold opacity-90">
               {t} •
