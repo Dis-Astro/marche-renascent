@@ -184,7 +184,7 @@ const DualCTA = ({ variant = "light" }: { variant?: "light" | "dark" }) => {
         Sono un Proprietario
       </button>
       <button
-        onClick={() => navigate("/candidatura?tipo=Progettista")}
+        onClick={() => navigate("/candidatura?tipo=progettista")}
         className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 transition-colors ${
           isLight
             ? "border-foreground text-foreground hover:bg-foreground hover:text-background"
