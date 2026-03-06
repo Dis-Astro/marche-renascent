@@ -355,45 +355,50 @@ const Index = () => {
         </div>
       </div>
 
-      {/* ── SERVICES GRID ──────────────────────────────────────────────────── */}
-      <section className="bg-muted py-20" id="servizi">
+      {/* ── PROCESS STEPS (Come Lavoriamo) ──────────────────────────────── */}
+      <section className="bg-muted py-20" id="process">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="mb-12 text-center">
+          <div className="text-center mb-14">
             <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">
-              Cosa Offriamo
+              Come Lavoriamo
             </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
               style={{ fontFamily: "Outfit, sans-serif" }}
             >
-              Come lavoriamo: dalla presa in carico
-              <br className="hidden md:block" /> ai lavori
+              Come lavoriamo: processo chiaro
+              <br className="hidden md:block" /> in 4 fasi
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((s) => (
-              <div
-                key={s.num}
-                className="bg-background rounded-lg p-6 border border-border relative flex flex-col hover:-translate-y-1 hover:border-primary transition-all duration-300"
-              >
-                <span
-                  className="absolute top-4 right-4 text-2xl font-extrabold text-foreground/[0.07]"
-                  style={{ fontFamily: "Outfit, sans-serif" }}
+          <div className="flex flex-col md:flex-row items-start justify-between gap-4">
+            {processSteps.map((s, i) => (
+              <>
+                <div
+                  key={s.num}
+                  className="flex flex-col items-center text-center max-w-[200px] mx-auto md:mx-0 bg-background p-6 rounded-xl flex-1 shadow-sm"
                 >
-                  {s.num}
-                </span>
-                <h3 className="text-base font-bold text-foreground mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
-                  {s.title}
-                </h3>
-                <div className="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-4">
-                  {s.icon}
+                  <div
+                    className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-extrabold text-sm mb-4"
+                    style={{ fontFamily: "Outfit, sans-serif" }}
+                  >
+                    {s.num}
+                  </div>
+                  <h3 className="font-bold text-foreground text-sm mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>
+                    {s.title}
+                  </h3>
+                  <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-3">
+                    {s.icon}
+                  </div>
+                  <p className="text-muted-foreground text-xs leading-relaxed">{s.text}</p>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed flex-1">{s.text}</p>
-                <div className="mt-4 text-primary hover:translate-x-1 hover:-translate-y-1 transition-transform w-fit">
-                  <ArrowUpRight className="w-4 h-4" />
-                </div>
-              </div>
+                {i < processSteps.length - 1 && (
+                  <div
+                    key={`line-${i}`}
+                    className="hidden md:block flex-none w-8 h-0.5 bg-border self-center mt-0 relative top-[-20px]"
+                  />
+                )}
+              </>
             ))}
           </div>
         </div>
