@@ -636,7 +636,7 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
               <button
-                onClick={() => navigate("/candidatura?tipo=Proprietario")}
+                onClick={() => navigate("/candidatura?tipo=proprietario")}
                 className="bg-primary text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity"
               >
                 Sono un Proprietario
