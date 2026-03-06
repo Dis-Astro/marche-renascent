@@ -116,7 +116,7 @@ const services = [
   num: "04",
   icon: <Landmark className="w-5 h-5" />,
   title: "Struttura e continuità",
-  text: "Impresa storica: organizzazione reale e capacità operativa. Responsabilità sui lavori eseguiti e aggiornamenti sull'avanzamento."
+  text: "Realizziamo gli interventi programmati nel rispetto dei tempi garantendo aggiornamenti periodici per monitorare l'avanzamento."
 }];
 
 
