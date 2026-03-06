@@ -23,6 +23,7 @@ import sisma002 from "@/assets/sisma-002.jpg";
 import sisma003 from "@/assets/sisma-003.jpg";
 import sisma004 from "@/assets/sisma-004.jpg";
 import sismaBefore from "@/assets/sisma-before.jpg";
+import sisma005 from "@/assets/sisma-005.jpg";
 import sismaAfter from "@/assets/sisma-after.jpg";
 
 // ─── BEFORE/AFTER SLIDER ──────────────────────────────────────────────────────
