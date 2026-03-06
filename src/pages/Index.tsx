@@ -98,7 +98,7 @@ const services = [
   num: "01",
   icon: <FileCheck className="w-5 h-5" />,
   title: "Presa in carico (24 ore)",
-  text: "Conferma della presa in carico entro 24 ore e raccolta delle informazioni essenziali. Ti indichiamo cosa serve per una valutazione corretta."
+  text: "Esaminiamo lo stato e il contesto dell'immobile."
 },
 {
   num: "02",
