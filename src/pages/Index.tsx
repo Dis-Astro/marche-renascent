@@ -677,8 +677,8 @@ const Index = () => {
               <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
                 Contatti
               </h4>
-              <p className="text-background/60 text-sm">Via Roma 123, Macerata</p>
-              <p className="text-background/60 text-sm">info@impresacingoli.it</p>
+              <p className="text-background/60 text-sm">Via Acquaviva 11, 64100 Teramo (TE)</p>
+              <p className="text-background/60 text-sm">cingoli@impresacingoli.it</p>
               <a
                 href="https://impresacingoli.it"
                 target="_blank"
