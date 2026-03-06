@@ -24,6 +24,7 @@ import sisma003 from "@/assets/sisma-003.jpg";
 import sisma004 from "@/assets/sisma-004.jpg";
 import sismaBefore from "@/assets/sisma-before.jpg";
 import sisma005 from "@/assets/sisma-005.jpg";
+import sismaAfter from "@/assets/sisma-after.jpg";
 import logoCingoli from "@/assets/logo-cingoli.png";
 
 // ─── BEFORE/AFTER SLIDER ──────────────────────────────────────────────────────
