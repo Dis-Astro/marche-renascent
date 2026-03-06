@@ -380,20 +380,45 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── PROBLEM / EMPATHY ──────────────────────────────────────────────── */}
+      {/* ── GALLERY + BEFORE/AFTER ─────────────────────────────────────── */}
       <section className="bg-muted py-20">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-4">
-            Il Problema
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-6" style={{ fontFamily: "Outfit, sans-serif" }}>
-            La tua casa è ancora uno scheletro?<br />Ti Capiamo.
-          </h2>
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            Imprese fallite, burocrazia incagliata, lavori fermi. Conosciamo la situazione.<br />
-            Non servono promesse: serve capire dove si è fermati e cosa serve per procedere.
-          </p>
-          <DualCTA variant="light" />
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">
+              I Nostri Interventi
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Dal danno alla ricostruzione
+            </h2>
+          </div>
+
+          {/* Photo grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
+              <img src={sisma002} alt="Torre civica post-sisma" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
+              <img src={sisma004} alt="Edificio storico in fase di messa in sicurezza" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
+              <img src={sisma001} alt="Macerie post-sisma 2016" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            </div>
+          </div>
+
+          {/* Before / After slider */}
+          <div className="max-w-2xl mx-auto">
+            <p className="text-center text-sm font-bold text-foreground mb-3 uppercase tracking-widest" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Prima e dopo il nostro intervento
+            </p>
+            <BeforeAfterSlider before={sismaBefore} after={sismaAfter} />
+          </div>
+
+          <div className="text-center mt-10">
+            <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
+              Non servono promesse: serve capire dove si è fermati e cosa serve per procedere.
+            </p>
+            <DualCTA variant="light" />
+          </div>
         </div>
       </section>
 
