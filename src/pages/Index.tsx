@@ -643,9 +643,9 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             <div>
-              <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
-                Cingoli SRL
-              </h4>
+              <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer">
+                <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10 brightness-0 invert mb-3" />
+              </a>
               <p className="text-background/60 text-sm">
                 Ricostruzione e Riqualificazione.
                 <br />
