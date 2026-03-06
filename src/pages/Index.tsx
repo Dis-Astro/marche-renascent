@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FileCheck, FileText, HardHat, Landmark,
@@ -6,6 +6,63 @@ import {
   FileSignature, Building2, Hammer,
   ChevronDown, Menu, X, ArrowUpRight } from
 "lucide-react";
+
+import sisma001 from "@/assets/sisma-001.jpg";
+import sisma002 from "@/assets/sisma-002.jpg";
+import sisma003 from "@/assets/sisma-003.jpg";
+import sisma004 from "@/assets/sisma-004.jpg";
+import sismaBefore from "@/assets/sisma-before.jpg";
+import sismaAfter from "@/assets/sisma-after.jpg";
+
+// ─── BEFORE/AFTER SLIDER ──────────────────────────────────────────────────────
+const BeforeAfterSlider = ({ before, after }: { before: string; after: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState(50);
+  const dragging = useRef(false);
+
+  const updatePosition = useCallback((clientX: number) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    setPosition((x / rect.width) * 100);
+  }, []);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragging.current = true;
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    updatePosition(e.clientX);
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (dragging.current) updatePosition(e.clientX);
+  };
+  const onPointerUp = () => { dragging.current = false; };
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full h-72 md:h-96 rounded-xl overflow-hidden cursor-col-resize select-none touch-none shadow-lg"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+    >
+      {/* After (full) */}
+      <img src={after} alt="Dopo i lavori" className="absolute inset-0 w-full h-full object-cover" />
+      {/* Before (clipped) */}
+      <div className="absolute inset-0 overflow-hidden" style={{ width: `${position}%` }}>
+        <img src={before} alt="Prima dei lavori" className="absolute inset-0 w-full h-full object-cover" style={{ width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100vw', maxWidth: 'none' }} />
+      </div>
+      {/* Divider line */}
+      <div className="absolute top-0 bottom-0 w-0.5 bg-primary-foreground shadow-lg" style={{ left: `${position}%`, transform: 'translateX(-50%)' }}>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg">
+          <span className="text-primary-foreground text-xs font-bold">⇔</span>
+        </div>
+      </div>
+      {/* Labels */}
+      <span className="absolute top-3 left-3 bg-foreground/70 text-background text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded">Prima</span>
+      <span className="absolute top-3 right-3 bg-primary/90 text-primary-foreground text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded">Dopo</span>
+    </div>
+  );
+};
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -176,11 +233,10 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Hero image placeholder */}
+          {/* Hero image */}
           <div className="flex-1 w-full md:w-auto">
-            <div className="w-full h-72 md:h-96 rounded-xl bg-muted flex items-center justify-center shadow-lg overflow-hidden relative">
-              <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,hsl(var(--muted))_0px,hsl(var(--muted))_10px,hsl(var(--muted-foreground)/0.05)_10px,hsl(var(--muted-foreground)/0.05)_20px)]" />
-              <span className="relative text-muted-foreground text-xs uppercase tracking-widest">Foto edificio</span>
+            <div className="w-full h-72 md:h-96 rounded-xl shadow-lg overflow-hidden relative">
+              <img src={sisma001} alt="Danni del sisma 2016" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -281,7 +337,8 @@ const Index = () => {
           </div>
 
           <div className="flex-1 w-full relative">
-            <div className="w-full h-72 rounded-xl bg-background/5 border border-background/10 relative overflow-hidden">
+            <div className="w-full h-72 rounded-xl relative overflow-hidden shadow-lg">
+              <img src={sisma003} alt="Edificio storico restaurato" className="w-full h-full object-cover" />
               <div className="absolute bottom-6 left-[-1rem] bg-primary text-primary-foreground p-4 rounded-lg shadow-xl">
                 <span className="block text-3xl font-extrabold leading-none" style={{ fontFamily: "Outfit, sans-serif" }}>90+</span>
                 <span className="text-xs opacity-90">Anni di Storia</span>
@@ -323,20 +380,45 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── PROBLEM / EMPATHY ──────────────────────────────────────────────── */}
+      {/* ── GALLERY + BEFORE/AFTER ─────────────────────────────────────── */}
       <section className="bg-muted py-20">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-4">
-            Il Problema
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-6" style={{ fontFamily: "Outfit, sans-serif" }}>
-            La tua casa è ancora uno scheletro?<br />Ti Capiamo.
-          </h2>
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            Imprese fallite, burocrazia incagliata, lavori fermi. Conosciamo la situazione.<br />
-            Non servono promesse: serve capire dove si è fermati e cosa serve per procedere.
-          </p>
-          <DualCTA variant="light" />
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">
+              I Nostri Interventi
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Dal danno alla ricostruzione
+            </h2>
+          </div>
+
+          {/* Photo grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
+              <img src={sisma002} alt="Torre civica post-sisma" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
+              <img src={sisma004} alt="Edificio storico in fase di messa in sicurezza" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
+              <img src={sisma001} alt="Macerie post-sisma 2016" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            </div>
+          </div>
+
+          {/* Before / After slider */}
+          <div className="max-w-2xl mx-auto">
+            <p className="text-center text-sm font-bold text-foreground mb-3 uppercase tracking-widest" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Prima e dopo il nostro intervento
+            </p>
+            <BeforeAfterSlider before={sismaBefore} after={sismaAfter} />
+          </div>
+
+          <div className="text-center mt-10">
+            <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
+              Non servono promesse: serve capire dove si è fermati e cosa serve per procedere.
+            </p>
+            <DualCTA variant="light" />
+          </div>
         </div>
       </section>
 
