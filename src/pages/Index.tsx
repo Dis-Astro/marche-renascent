@@ -645,7 +645,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             <div>
               <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer">
-                <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10 brightness-0 invert mb-3" />
+                <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-14 brightness-0 invert mb-3" />
               </a>
               <p className="text-background/60 text-sm">
               Dal 1933.
