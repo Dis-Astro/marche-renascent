@@ -456,7 +456,7 @@ La ripariamo noi.</span>
                   {" "}
                   90+
                 </span>
-                <span className="text-xs opacity-90"> Anni di Storia</span>
+                <span className="text-xs opacity-90"> Anni di Storia</span>
               </div>
             </div>
           </div>
