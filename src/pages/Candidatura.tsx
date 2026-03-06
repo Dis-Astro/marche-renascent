@@ -5,6 +5,7 @@ import Step1Anagrafica from "@/components/form/Step1Anagrafica";
 import Step2Edificio from "@/components/form/Step2Edificio";
 import Step3Documenti from "@/components/form/Step3Documenti";
 import { ChevronLeft } from "lucide-react";
+import logoCingoli from "@/assets/logo-cingoli.png";
 
 export type TipoUtente = "proprietario" | "progettista";
 export type FormData = Record<string, any>;
