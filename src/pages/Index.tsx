@@ -299,13 +299,13 @@ const Index = () => {
               Casa danneggiata dal sisma 2016? <span className="text-primary">
 La ripariamo noi.</span>
             </h1>
-            <p className="text-foreground/60 text-base md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0 mb-2">
-              Impresa con oltre 90 anni di esperienza. Valutiamo lo stato del tuo immobile e definiamo un percorso
-              operativo chiaro. Entro 24 ore prendiamo in carico la richiesta e indichiamo cosa serve per procedere.
+            <p className="text-foreground/60 text-base md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0 mb-2">La nostra impresa ha oltre 90 anni di esperienza. Valutiamo lo stato del tuo immobile e definiamo un percorso operativo chiaro. Entro 24 ore prendiamo in carico la richiesta e indichiamo cosa serve per procedere.
+
+
             </p>
-            <p className="text-muted-foreground text-sm italic mb-2">
-              Valutazione iniziale gratuita: si parte da ciò che è disponibile, anche con documentazione incompleta.
-            </p>
+            
+
+            
             <DualCTA variant="light" />
 
             {/* Badges */}
