@@ -645,12 +645,10 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             <div>
               <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer">
-                <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-10 brightness-0 invert mb-3" />
+                <img src={logoCingoli} alt="Cingoli – Consolidamento Restauro" className="h-14 brightness-0 invert mb-3" />
               </a>
               <p className="text-background/60 text-sm">
-                Ricostruzione e Riqualificazione.
-                <br />
-                Dal 1920.
+              Dal 1933.
               </p>
             </div>
             <div>
@@ -679,8 +677,8 @@ const Index = () => {
               <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
                 Contatti
               </h4>
-              <p className="text-background/60 text-sm">Via Roma 123, Macerata</p>
-              <p className="text-background/60 text-sm">info@impresacingoli.it</p>
+              <p className="text-background/60 text-sm">Via Acquaviva 11, 64100 Teramo (TE)</p>
+              <p className="text-background/60 text-sm">cingoli@impresacingoli.it</p>
               <a
                 href="https://impresacingoli.it"
                 target="_blank"
@@ -700,7 +698,7 @@ const Index = () => {
           className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 text-[15vw] font-extrabold text-background/[0.03] pointer-events-none select-none whitespace-nowrap"
           style={{ fontFamily: "Outfit, sans-serif" }}>
           
-          CINGOLI SRL
+          CINGOLI
         </div>
       </footer>
 
