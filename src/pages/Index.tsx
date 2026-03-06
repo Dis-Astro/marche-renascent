@@ -206,8 +206,8 @@ const Index = () => {
   const [showMobileChoice, setShowMobileChoice] = useState(false);
 
   const navLinks = [
-    { label: "Servizi", href: "#servizi" },
     { label: "Come Lavoriamo", href: "#process" },
+    { label: "Servizi", href: "#servizi" },
     { label: "Chi Siamo", href: "#chi-siamo" },
     { label: "FAQ", href: "#faq" },
   ];
