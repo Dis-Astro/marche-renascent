@@ -517,7 +517,7 @@ const Index = () => {
           </div>
 
           {/* Photo grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64">
               <img
                 src={sisma002}
@@ -538,6 +538,9 @@ const Index = () => {
                 alt="Macerie post-sisma 2016"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
               />
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-md h-56 md:h-64 bg-muted flex items-center justify-center border-2 border-dashed border-border">
+              <span className="text-muted-foreground text-sm">Nuova foto</span>
             </div>
           </div>
 
