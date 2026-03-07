@@ -43,6 +43,11 @@ const Admin = () => {
   const [emailSaving, setEmailSaving] = useState(false);
   const [emailMsg, setEmailMsg] = useState("");
 
+  // GTM config
+  const [gtmConfig, setGtmConfig] = useState<any>({ enabled: false, gtm_id: "" });
+  const [gtmSaving, setGtmSaving] = useState(false);
+  const [gtmMsg, setGtmMsg] = useState("");
+
   const handleLogin = async () => {
     setAuthError("");
     try {
