@@ -42,10 +42,16 @@ serve(async (req) => {
         .select("*")
         .limit(1);
 
+      const { data: gtmConfigs } = await supabase
+        .from("gtm_config")
+        .select("*")
+        .limit(1);
+
       return new Response(
         JSON.stringify({
           candidature: candidature || [],
           emailConfig: emailConfigs?.[0] || {},
+          gtmConfig: gtmConfigs?.[0] || {},
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
