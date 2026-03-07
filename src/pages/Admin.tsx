@@ -86,6 +86,7 @@ const Admin = () => {
       });
       if (data?.candidature) setCandidature(data.candidature);
       if (data?.emailConfig) setEmailConfig(data.emailConfig);
+      if (data?.gtmConfig) setGtmConfig(data.gtmConfig);
     } catch (e) {
       console.error(e);
     }
