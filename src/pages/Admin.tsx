@@ -375,6 +375,40 @@ const Admin = () => {
         </div>
       )}
 
+      {tab === "gtm" && (
+        <div className="p-6 max-w-lg space-y-4">
+          <h2 className="text-lg font-bold text-foreground">Google Tag Manager</h2>
+          <p className="text-sm text-muted-foreground">Configura l'ID contenitore GTM e attiva/disattiva il tracciamento sul sito.</p>
+
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={gtmConfig.enabled ?? false}
+              onChange={(e) => setGtmConfig({ ...gtmConfig, enabled: e.target.checked })}
+              className="accent-primary"
+            />
+            <span className="text-sm font-semibold text-foreground">GTM attivo</span>
+          </label>
+
+          <div>
+            <label className="text-xs font-semibold text-foreground block mb-1">ID Contenitore</label>
+            <input
+              value={gtmConfig.gtm_id || ""}
+              onChange={(e) => setGtmConfig({ ...gtmConfig, gtm_id: e.target.value })}
+              className={inputClass}
+              placeholder="GTM-XXXXXXX"
+            />
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button onClick={saveGtmConfig} disabled={gtmSaving} className="bg-primary text-primary-foreground px-6 py-2 text-sm font-bold hover:opacity-90 disabled:opacity-50">
+              Salva
+            </button>
+          </div>
+          {gtmMsg && <p className="text-sm text-muted-foreground">{gtmMsg}</p>}
+        </div>
+      )}
+
       {/* Detail modal */}
       {selected && (
         <div className="fixed inset-0 bg-foreground/50 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
