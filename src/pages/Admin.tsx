@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronDown, Download, X, Mail, Settings } from "lucide-react";
+import { ChevronDown, Download, X, Mail, Settings, Code } from "lucide-react";
 
 type Candidatura = {
   id: string;
