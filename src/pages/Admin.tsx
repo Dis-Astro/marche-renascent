@@ -28,7 +28,7 @@ const Admin = () => {
 
   const [candidature, setCandidature] = useState<Candidatura[]>([]);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState<"candidature" | "email">("candidature");
+  const [tab, setTab] = useState<"candidature" | "email" | "gtm">("candidature");
 
   // Filters
   const [filterTipo, setFilterTipo] = useState("");
