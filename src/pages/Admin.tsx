@@ -235,6 +235,14 @@ const Admin = () => {
         >
           <Settings className="w-4 h-4 inline mr-1" /> Email
         </button>
+        <button
+          onClick={() => setTab("gtm")}
+          className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${
+            tab === "gtm" ? "border-primary text-primary" : "border-transparent text-muted-foreground"
+          }`}
+        >
+          <Code className="w-4 h-4 inline mr-1" /> GTM
+        </button>
       </div>
 
       {tab === "candidature" && (
