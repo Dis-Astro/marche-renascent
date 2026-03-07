@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Candidatura from "./pages/Candidatura";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import GtmInjector from "./components/GtmInjector";
 
 const queryClient = new QueryClient();
 
@@ -15,6 +16,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <GtmInjector />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />

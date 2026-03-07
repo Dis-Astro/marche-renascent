@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronDown, Download, X, Mail, Settings } from "lucide-react";
+import { ChevronDown, Download, X, Mail, Settings, Code } from "lucide-react";
 
 type Candidatura = {
   id: string;
@@ -28,7 +28,7 @@ const Admin = () => {
 
   const [candidature, setCandidature] = useState<Candidatura[]>([]);
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState<"candidature" | "email">("candidature");
+  const [tab, setTab] = useState<"candidature" | "email" | "gtm">("candidature");
 
   // Filters
   const [filterTipo, setFilterTipo] = useState("");
@@ -42,6 +42,11 @@ const Admin = () => {
   const [emailConfig, setEmailConfig] = useState<any>({});
   const [emailSaving, setEmailSaving] = useState(false);
   const [emailMsg, setEmailMsg] = useState("");
+
+  // GTM config
+  const [gtmConfig, setGtmConfig] = useState<any>({ enabled: false, gtm_id: "" });
+  const [gtmSaving, setGtmSaving] = useState(false);
+  const [gtmMsg, setGtmMsg] = useState("");
 
   const handleLogin = async () => {
     setAuthError("");
@@ -81,6 +86,7 @@ const Admin = () => {
       });
       if (data?.candidature) setCandidature(data.candidature);
       if (data?.emailConfig) setEmailConfig(data.emailConfig);
+      if (data?.gtmConfig) setGtmConfig(data.gtmConfig);
     } catch (e) {
       console.error(e);
     }
@@ -119,6 +125,20 @@ const Admin = () => {
     } catch {
       setEmailMsg("Errore invio test");
     }
+  };
+
+  const saveGtmConfig = async () => {
+    setGtmSaving(true);
+    setGtmMsg("");
+    try {
+      await supabase.functions.invoke("admin-data", {
+        body: { password: sessionStorage.getItem("admin_token"), action: "save-gtm", config: gtmConfig },
+      });
+      setGtmMsg("Salvato!");
+    } catch {
+      setGtmMsg("Errore");
+    }
+    setGtmSaving(false);
   };
 
   const exportXlsx = async () => {
@@ -214,6 +234,14 @@ const Admin = () => {
           }`}
         >
           <Settings className="w-4 h-4 inline mr-1" /> Email
+        </button>
+        <button
+          onClick={() => setTab("gtm")}
+          className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${
+            tab === "gtm" ? "border-primary text-primary" : "border-transparent text-muted-foreground"
+          }`}
+        >
+          <Code className="w-4 h-4 inline mr-1" /> GTM
         </button>
       </div>
 
@@ -344,6 +372,40 @@ const Admin = () => {
             </button>
           </div>
           {emailMsg && <p className="text-sm text-muted-foreground">{emailMsg}</p>}
+        </div>
+      )}
+
+      {tab === "gtm" && (
+        <div className="p-6 max-w-lg space-y-4">
+          <h2 className="text-lg font-bold text-foreground">Google Tag Manager</h2>
+          <p className="text-sm text-muted-foreground">Configura l'ID contenitore GTM e attiva/disattiva il tracciamento sul sito.</p>
+
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={gtmConfig.enabled ?? false}
+              onChange={(e) => setGtmConfig({ ...gtmConfig, enabled: e.target.checked })}
+              className="accent-primary"
+            />
+            <span className="text-sm font-semibold text-foreground">GTM attivo</span>
+          </label>
+
+          <div>
+            <label className="text-xs font-semibold text-foreground block mb-1">ID Contenitore</label>
+            <input
+              value={gtmConfig.gtm_id || ""}
+              onChange={(e) => setGtmConfig({ ...gtmConfig, gtm_id: e.target.value })}
+              className={inputClass}
+              placeholder="GTM-XXXXXXX"
+            />
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button onClick={saveGtmConfig} disabled={gtmSaving} className="bg-primary text-primary-foreground px-6 py-2 text-sm font-bold hover:opacity-90 disabled:opacity-50">
+              Salva
+            </button>
+          </div>
+          {gtmMsg && <p className="text-sm text-muted-foreground">{gtmMsg}</p>}
         </div>
       )}
 

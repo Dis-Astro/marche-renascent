@@ -42,10 +42,16 @@ serve(async (req) => {
         .select("*")
         .limit(1);
 
+      const { data: gtmConfigs } = await supabase
+        .from("gtm_config")
+        .select("*")
+        .limit(1);
+
       return new Response(
         JSON.stringify({
           candidature: candidature || [],
           emailConfig: emailConfigs?.[0] || {},
+          gtmConfig: gtmConfigs?.[0] || {},
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -130,6 +136,43 @@ serve(async (req) => {
 
       return new Response(
         JSON.stringify({ success: true }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (action === "save-gtm") {
+      const { config } = body;
+      const { data: existing } = await supabase
+        .from("gtm_config")
+        .select("id")
+        .limit(1);
+
+      if (existing && existing.length > 0) {
+        const { error } = await supabase
+          .from("gtm_config")
+          .update({
+            enabled: config.enabled,
+            gtm_id: config.gtm_id || '',
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", existing[0].id);
+        if (error) throw error;
+      }
+
+      return new Response(
+        JSON.stringify({ success: true }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (action === "get-gtm-public") {
+      const { data: gtmConfigs } = await supabase
+        .from("gtm_config")
+        .select("enabled, gtm_id")
+        .limit(1);
+
+      return new Response(
+        JSON.stringify({ gtmConfig: gtmConfigs?.[0] || {} }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
