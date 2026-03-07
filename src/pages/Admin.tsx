@@ -127,6 +127,20 @@ const Admin = () => {
     }
   };
 
+  const saveGtmConfig = async () => {
+    setGtmSaving(true);
+    setGtmMsg("");
+    try {
+      await supabase.functions.invoke("admin-data", {
+        body: { password: sessionStorage.getItem("admin_token"), action: "save-gtm", config: gtmConfig },
+      });
+      setGtmMsg("Salvato!");
+    } catch {
+      setGtmMsg("Errore");
+    }
+    setGtmSaving(false);
+  };
+
   const exportXlsx = async () => {
     try {
       const token = sessionStorage.getItem("admin_token");
