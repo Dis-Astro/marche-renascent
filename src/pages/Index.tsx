@@ -536,10 +536,8 @@ const Index = () => {
             <BeforeAfterSlider before={sismaBefore} after={sismaAfter} />
           </div>
 
-          <div className="text-center mt-10">
-            <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">​</p>
-            <DualCTA variant="light" />
-          </div>
+
+
         </div>
       </section>
 
