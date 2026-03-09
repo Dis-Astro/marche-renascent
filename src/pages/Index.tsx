@@ -420,9 +420,9 @@ LA RIPARIAMO NOI.</span>
             </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
-              style={{ fontFamily: "Outfit, sans-serif" }}>
-              
-              Come lavoriamo: processo chiaro
+              style={{ fontFamily: "Outfit, sans-serif" }}>Processo chiaro
+in 4 fasi
+
               <br className="hidden md:block" /> in 4 fasi
             </h2>
           </div>
@@ -465,7 +465,7 @@ LA RIPARIAMO NOI.</span>
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-12 items-center">
           <div className="flex-1">
             <span className="font-bold tracking-[0.25em] uppercase block mb-4 bg-transparent text-[sidebar-primary-foreground] text-stone-950">
-              Il Nostro Impegno
+              ​
             </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-background mb-5 leading-tight"
@@ -475,8 +475,8 @@ LA RIPARIAMO NOI.</span>
               serietà operativa
             </h2>
             <p className="text-background/70 text-base leading-relaxed mb-8 max-w-lg">
-              In un contesto in continua evoluzione, qui c'è un'azienda con storia e struttura che abbina tradizione ed
-              innovazione. Lavoriamo con metodo, responsabilità e aggiornamenti chiari sulle attività in corso.
+              Lavoriamo con metodo, responsabilità, proattività coadiuvando le attività di cantiere e le pratiche burocratiche affinché tutto vada avanti a gonfie vele per raggiungere prima possibile il tuo e il nostro obiettivo.
+            
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-background/10 pt-6">
               <div className="flex gap-3 items-start">
@@ -489,8 +489,8 @@ LA RIPARIAMO NOI.</span>
               <div className="flex gap-3 items-start">
                 <Users className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                 <div>
-                  <p className="font-bold text-background text-sm">Team Esperto</p>
-                  <p className="text-background/60 text-sm">Solo maestranze qualificate</p>
+                  <p className="font-bold text-background text-sm">Team d’eccellenza</p>
+                  <p className="text-background/60 text-sm">Maestranze specializzate guidate da professionisti di consolidata esperienza</p>
                 </div>
               </div>
             </div>
@@ -526,7 +526,7 @@ LA RIPARIAMO NOI.</span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
               style={{ fontFamily: "Outfit, sans-serif" }}>
-              Ti sintetizziamo
+              In Breve: 
             </h2>
           </div>
 
@@ -559,7 +559,7 @@ LA RIPARIAMO NOI.</span>
               className="text-3xl md:text-4xl font-extrabold text-foreground"
               style={{ fontFamily: "Outfit, sans-serif" }}>
               
-              Dal danno alla ricostruzione
+              Prima e dopo il nostro intervento
             </h2>
           </div>
 
@@ -601,14 +601,14 @@ LA RIPARIAMO NOI.</span>
               className="text-center text-sm font-bold text-foreground mb-3 uppercase tracking-widest"
               style={{ fontFamily: "Outfit, sans-serif" }}>
               
-              Prima e dopo il nostro intervento
+              ​
             </p>
             <BeforeAfterSlider before={sismaBefore} after={sismaAfter} />
           </div>
 
           <div className="text-center mt-10">
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
-              Non servono promesse: serve capire dove si è fermati e cosa serve per procedere.
+              ​
             </p>
             <DualCTA variant="light" />
           </div>
