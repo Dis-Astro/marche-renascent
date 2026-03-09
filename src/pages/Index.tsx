@@ -427,7 +427,7 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            <DualCTA variant="dark" />
+            
           </div>
 
           <div className="flex-1 w-full relative">
