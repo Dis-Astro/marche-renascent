@@ -265,10 +265,8 @@ const Index = () => {
   const [showMobileChoice, setShowMobileChoice] = useState(false);
 
   const navLinks = [
-  { label: "Servizi", href: "#servizi" },
-  { label: "Come Lavoriamo", href: "#process" },
-  { label: "Chi Siamo", href: "#chi-siamo" },
-  { label: "FAQ", href: "#faq" }];
+  { label: "Come Operiamo", href: "#servizi" },
+  { label: "Chi Siamo", href: "#chi-siamo" }];
 
 
   const scrollTo = (id: string) => {
