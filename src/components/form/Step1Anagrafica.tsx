@@ -60,7 +60,7 @@ const Step1Anagrafica = ({ tipo, form, update, inputClass }: Props) => {
 
         <InputField label="In che Regione si trova il tuo immobile?" value={form.regione || "Marche"} onChange={(v) => update("regione", v)} inputClass={inputClass} required />
 
-        <CheckboxGroup label="In che Provincia si trova il tuo immobile?" value={form.provincia} options={PROVINCE_MARCHE} onChange={(v) => update("provincia", v)} required />
+        <InputField label="In che Provincia si trova il tuo immobile?" value={form.provincia} onChange={(v) => update("provincia", v)} inputClass={inputClass} required />
 
         <InputField label="In che Città si trova il tuo immobile?" value={form.citta} onChange={(v) => update("citta", v)} inputClass={inputClass} required />
 
