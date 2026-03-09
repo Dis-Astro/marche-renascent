@@ -1,4 +1,10 @@
-// Form field definitions for Privato and Professionista paths
+// Form field definitions for Proprietario and Progettista paths
+
+export const TIPOLOGIA_IMMOBILE = [
+  "Casa singola",
+  "Condominio",
+  "Aggregato edilizio",
+];
 
 export const FORME_GIURIDICHE = [
   "Persona fisica",
@@ -10,15 +16,21 @@ export const FORME_GIURIDICHE = [
 
 export const REFERENTE_OPTIONS = [
   "Proprietario",
-  "Amministratore",
-  "Delegato",
-  "Altro",
+  "Amministratore di condominio",
+  "Presidente di consorzio",
+  "Progettista incaricato",
 ];
 
 export const VINCOLI_OPTIONS = [
-  "Nessuno",
-  "Da verificare",
-  "Presenti",
+  "Si",
+  "No",
+  "Non so",
+];
+
+export const SI_NO_NONSO = [
+  "SI",
+  "NO",
+  "Non so",
 ];
 
 export const CONTESTO_NORMATIVO = [
@@ -33,11 +45,29 @@ export const TIPO_INTERVENTO = [
   "Altro",
 ];
 
+export const CLASSIFICAZIONE_UBICATIVA_PROP = [
+  "Edificio Isolato",
+  "Edificio aderente ad altri edifici su un lato",
+  "Edificio aderente ad altri edifici su due lati",
+  "Edificio aderente ad altri edifici su tre lati",
+  "Altro",
+];
+
 export const CLASSIFICAZIONE_UBICATIVA = [
   "Isolato",
   "In schiera",
   "Testata",
   "Angolo",
+  "Altro",
+];
+
+export const TIPOLOGIA_STRUTTURA_PROP = [
+  "Muratura",
+  "Cemento armato",
+  "Acciaio",
+  "Legno",
+  "Mista (cemento armato/acciaio)",
+  "Mista (cemento armato/legno)",
   "Altro",
 ];
 
