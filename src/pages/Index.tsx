@@ -130,7 +130,7 @@ const DualCTA = ({ variant = "light" }: {variant?: "light" | "dark";}) => {
     <div className="flex flex-col sm:flex-row gap-3 mt-6">
       <button
         onClick={() => navigate("/candidatura?tipo=proprietario")}
-        className="flex-1 sm:flex-none bg-[hsl(30,20%,40%)] text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded">
+        className="flex-1 sm:flex-none bg-primary text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded">
         
         Sono un Proprietario
       </button>
@@ -138,8 +138,8 @@ const DualCTA = ({ variant = "light" }: {variant?: "light" | "dark";}) => {
         onClick={() => navigate("/candidatura?tipo=progettista")}
         className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 transition-colors ${
         isLight ?
-        "border-[hsl(30,20%,40%)] text-[hsl(30,20%,40%)] hover:bg-[hsl(30,20%,40%)] hover:text-background" :
-        "border-background/30 text-background hover:bg-background hover:text-foreground"}`
+        "border-primary text-primary hover:bg-primary hover:text-primary-foreground" :
+        "border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-foreground"}`
         }>
         
         Sono un Progettista
