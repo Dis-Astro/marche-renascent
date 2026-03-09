@@ -90,7 +90,7 @@ const Step1Anagrafica = ({ tipo, form, update, inputClass }: Props) => {
       <InputField label="Denominazione edificio" value={form.denominazione} onChange={(v) => update("denominazione", v)} inputClass={inputClass} required />
 
       <InputField label="Regione" value={form.regione || "Marche"} onChange={(v) => update("regione", v)} inputClass={inputClass} required />
-      <CheckboxGroup label="Provincia" value={form.provincia} options={PROVINCE_MARCHE} onChange={(v) => update("provincia", v)} required />
+      <InputField label="Provincia" value={form.provincia} onChange={(v) => update("provincia", v)} inputClass={inputClass} required />
 
       <div className="grid grid-cols-2 gap-3">
         <InputField label="Città" value={form.citta} onChange={(v) => update("citta", v)} inputClass={inputClass} required />

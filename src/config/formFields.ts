@@ -54,10 +54,10 @@ export const CLASSIFICAZIONE_UBICATIVA_PROP = [
 ];
 
 export const CLASSIFICAZIONE_UBICATIVA = [
-  "Isolato",
-  "In schiera",
-  "Testata",
-  "Angolo",
+  "Edificio Isolato",
+  "Edificio aderente ad altri edifici su un lato",
+  "Edificio aderente ad altri edifici su due lati",
+  "Edificio aderente ad altri edifici su tre lati",
   "Altro",
 ];
 
