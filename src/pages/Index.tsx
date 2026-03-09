@@ -616,42 +616,8 @@ LA RIPARIAMO NOI.
         </div>
       </section>
 
-      {/* ── FAQ ────────────────────────────────────────────────────────────── */}
-      <section className="bg-background py-20" id="faq">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="text-center mb-10">
-            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">Dubbi?</span>
-            <h2 className="text-3xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Risposte alle Tue Domande
-            </h2>
-          </div>
 
-          <div className="flex flex-col gap-3">
-            {faqItems.map((faq, i) =>
-            <div key={i} className="border border-border rounded-lg overflow-hidden bg-muted">
-                <button
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left bg-muted hover:bg-accent transition-colors">
-                
-                  <span className="text-sm font-bold text-foreground pr-4" style={{ fontFamily: "Outfit, sans-serif" }}>
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                  className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${openFaq === i ? "rotate-180" : ""}`} />
-                
-                </button>
-                <div
-                className={`transition-all duration-300 overflow-hidden ${openFaq === i ? "max-h-40" : "max-h-0"}`}>
-                
-                  <p className="px-5 py-4 text-sm text-muted-foreground border-t border-border bg-background">
-                    {faq.a}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+
 
       {/* ── CTA BOX / CONTATTI ─────────────────────────────────────────────── */}
       <section className="bg-muted py-20" id="contatti">
