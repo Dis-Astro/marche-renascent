@@ -175,22 +175,17 @@ const faqItems = [
 
 const DualCTA = ({ variant = "light" }: {variant?: "light" | "dark";}) => {
   const navigate = useNavigate();
-  const isLight = variant === "light";
   return (
     <div className="flex flex-col sm:flex-row gap-3 mt-6">
       <button
         onClick={() => navigate("/candidatura?tipo=proprietario")}
-        className="flex-1 sm:flex-none bg-primary text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded">
+        className="flex-1 sm:flex-none bg-background text-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded border-2 border-foreground">
         
         Sono un Proprietario
       </button>
       <button
         onClick={() => navigate("/candidatura?tipo=progettista")}
-        className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 transition-colors ${
-        isLight ?
-        "border-foreground text-foreground hover:bg-foreground hover:text-background" :
-        "border-white text-white hover:bg-white hover:text-foreground"}`
-        }>
+        className="flex-1 sm:flex-none bg-foreground text-background px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 border-foreground hover:opacity-90 transition-opacity">
         
         Sono un Progettista
       </button>
