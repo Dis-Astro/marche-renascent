@@ -418,11 +418,11 @@ LA RIPARIAMO NOI.
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
             <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">
-              Come Lavoriamo
+              ​
             </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
-              style={{ fontFamily: "Outfit, sans-serif" }}>Processo chiaro in 4 fasi
+              style={{ fontFamily: "Outfit, sans-serif" }}>Come operiamo:
 
 
               <br className="hidden md:block" /> in 4 fasi
