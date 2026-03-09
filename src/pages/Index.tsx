@@ -653,13 +653,13 @@ const Index = () => {
         <div className="bg-background border-t border-border p-4 space-y-2">
             <button
             onClick={() => navigate("/candidatura?tipo=proprietario")}
-            className="w-full bg-[hsl(30,20%,40%)] text-primary-foreground py-3 text-sm font-bold tracking-widest uppercase rounded">
+            className="w-full bg-primary text-primary-foreground py-3 text-sm font-bold tracking-widest uppercase rounded">
             
               Sono un Proprietario
             </button>
             <button
             onClick={() => navigate("/candidatura?tipo=progettista")}
-            className="w-full border-2 border-[hsl(30,20%,40%)] text-[hsl(30,20%,40%)] py-3 text-sm font-bold tracking-widest uppercase rounded">
+            className="w-full border-2 border-primary text-primary py-3 text-sm font-bold tracking-widest uppercase rounded">
             
               Sono un Progettista
             </button>
