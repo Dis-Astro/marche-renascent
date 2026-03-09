@@ -566,18 +566,12 @@ const Index = () => {
               Entro 24 ore prendiamo in carico la richiesta e indichiamo i prossimi passi e le informazioni necessarie
               per valutare correttamente il caso.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
+            <div className="flex justify-center relative">
               <button
                 onClick={() => navigate("/candidatura?tipo=proprietario")}
                 className="bg-primary text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity">
                 
-                Sono un Proprietario
-              </button>
-              <button
-                onClick={() => navigate("/candidatura?tipo=progettista")}
-                className="border-2 border-primary-foreground/30 text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:bg-primary-foreground hover:text-foreground transition-colors">
-                
-                Sono un Progettista
+                Contattaci Ora
               </button>
             </div>
           </div>
