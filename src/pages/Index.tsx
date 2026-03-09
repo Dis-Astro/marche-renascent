@@ -670,7 +670,7 @@ LA RIPARIAMO NOI.
               className="text-2xl md:text-3xl font-extrabold text-background mb-4 relative"
               style={{ fontFamily: "Outfit, sans-serif" }}>
               
-              Richiedi valutazione iniziale gratuita
+              Richiedi un contatto gratuito
             </h2>
             <p className="text-background/70 text-base mb-6 relative">
               Entro 24 ore prendiamo in carico la richiesta e indichiamo i prossimi passi e le informazioni necessarie
