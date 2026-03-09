@@ -461,7 +461,7 @@ LA RIPARIAMO NOI.
       <section className="bg-foreground text-background py-20" id="chi-siamo">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-12 items-center">
           <div className="flex-1">
-            <span className="font-bold tracking-[0.25em] uppercase block mb-4 bg-transparent text-[sidebar-primary-foreground] text-stone-950">
+            <span className="font-bold tracking-[0.25em] uppercase block mb-4 text-primary">
               ​
             </span>
             <h2
