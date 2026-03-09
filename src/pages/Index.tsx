@@ -208,20 +208,20 @@ const RoadmapCard = () => {
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {document.body.style.overflow = "";};
   }, [open]);
 
   return (
     <>
       <div
         onClick={() => setOpen(true)}
-        className="rounded-xl overflow-hidden shadow-lg h-64 md:h-80 cursor-pointer group relative"
-      >
+        className="rounded-xl overflow-hidden shadow-lg h-64 md:h-80 cursor-pointer group relative">
+        
         <img
           src={roadmapImg}
           alt="Roadmap – Cronologia di una Commessa Sisma 2016"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        
         <div className="absolute inset-0 bg-transparent group-hover:bg-foreground/5 transition-colors flex items-center justify-center">
           <span className="bg-background/60 backdrop-blur-sm text-foreground px-4 py-2 rounded text-sm font-bold">
             Clicca per ingrandire
@@ -230,27 +230,27 @@ const RoadmapCard = () => {
       </div>
 
       {/* Fullscreen overlay */}
-      {open && (
-        <div
-          className="fixed inset-0 z-[100] bg-foreground/90 flex items-center justify-center p-4 cursor-pointer"
-          onClick={() => setOpen(false)}
-        >
+      {open &&
+      <div
+        className="fixed inset-0 z-[100] bg-foreground/90 flex items-center justify-center p-4 cursor-pointer"
+        onClick={() => setOpen(false)}>
+        
           <button
-            className="absolute top-4 right-4 text-background hover:text-primary transition-colors z-10"
-            onClick={() => setOpen(false)}
-          >
+          className="absolute top-4 right-4 text-background hover:text-primary transition-colors z-10"
+          onClick={() => setOpen(false)}>
+          
             <X className="w-8 h-8" />
           </button>
           <img
-            src={roadmapImg}
-            alt="Roadmap – Cronologia di una Commessa Sisma 2016"
-            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          />
+          src={roadmapImg}
+          alt="Roadmap – Cronologia di una Commessa Sisma 2016"
+          className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+          onClick={(e) => e.stopPropagation()} />
+        
         </div>
-      )}
-    </>
-  );
+      }
+    </>);
+
 };
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
@@ -353,7 +353,7 @@ const Index = () => {
               style={{ fontFamily: "Outfit, sans-serif" }}>
               
               Casa danneggiata dal sisma 2016? <span className="text-primary">
-La ripariamo noi.</span>
+LA RIPARIAMO NOI.</span>
             </h1>
             <p className="text-foreground/60 text-base md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0 mb-2">La nostra impresa ha oltre 90 anni di esperienza. Valutiamo lo stato del tuo immobile e definiamo un percorso operativo chiaro. Entro 24 ore prendiamo in carico la richiesta e indichiamo cosa serve per procedere.
 
@@ -537,8 +537,8 @@ La ripariamo noi.</span>
                 className="w-full h-full object-cover"
                 controls
                 preload="metadata"
-                poster=""
-              >
+                poster="">
+                
                 <source src="/videos/Tornare_a_Casa_Post-Sisma_720.mp4" type="video/mp4" />
               </video>
             </div>
