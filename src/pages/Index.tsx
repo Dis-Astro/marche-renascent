@@ -632,10 +632,8 @@ LA RIPARIAMO NOI.
               </h4>
               <ul className="space-y-2">
                 {[
-                ["Servizi", "#servizi"],
-                ["Come Lavoriamo", "#process"],
-                ["Chi Siamo", "#chi-siamo"],
-                ["FAQ", "#faq"]].
+                ["Come Operiamo", "#servizi"],
+                ["Chi Siamo", "#chi-siamo"]].
                 map(([l, h]) =>
                 <li key={h}>
                     <button
