@@ -569,13 +569,13 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
               <button
                 onClick={() => navigate("/candidatura?tipo=proprietario")}
-                className="bg-[hsl(30,20%,40%)] text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity">
+                className="bg-primary text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity">
                 
                 Sono un Proprietario
               </button>
               <button
                 onClick={() => navigate("/candidatura?tipo=progettista")}
-                className="border-2 border-background/30 text-background px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:bg-background hover:text-foreground transition-colors">
+                className="border-2 border-primary-foreground/30 text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:bg-primary-foreground hover:text-foreground transition-colors">
                 
                 Sono un Progettista
               </button>
