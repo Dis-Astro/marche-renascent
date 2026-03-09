@@ -138,7 +138,7 @@ const processSteps = [
   num: "03",
   icon: <Building2 className="w-5 h-5" />,
   title: "Percorso amministrativo",
-  text: "Ti orientiamo nei passaggi e nelle integrazioni necessarie. Chiari su ciò che dipende da noi e ciò che dipende dagli enti."
+  text: "Definiamo il percorso operativo per arrivare all'avvio dei lavori supportando il tecnico incaricato."
 },
 {
   num: "04",
