@@ -609,46 +609,8 @@ LA RIPARIAMO NOI.
 
 
 
-      {/* ── CTA BOX / CONTATTI ─────────────────────────────────────────────── */}
-      <section className="bg-muted py-20" id="contatti">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="bg-foreground rounded-2xl p-10 text-center relative overflow-hidden">
-            <span
-              className="absolute inset-0 pointer-events-none select-none flex items-center justify-center text-[15vw] font-extrabold opacity-[0.03] text-background leading-none"
-              style={{ fontFamily: "Outfit, sans-serif" }}>
-              
-              CINGOLI
-            </span>
-            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-3 relative">
-              Contattaci Ora
-            </span>
-            <h2
-              className="text-2xl md:text-3xl font-extrabold text-background mb-4 relative"
-              style={{ fontFamily: "Outfit, sans-serif" }}>
-              
-              Richiedi un contatto gratuito
-            </h2>
-            <p className="text-background/70 text-base mb-6 relative">
-              Entro 24 ore prendiamo in carico la richiesta e indichiamo i prossimi passi e le informazioni necessarie
-              per valutare correttamente il caso.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
-              <button
-                onClick={() => navigate("/candidatura?tipo=proprietario")}
-                className="bg-primary text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity">
-                
-                Sono un Proprietario
-              </button>
-              <button
-                onClick={() => navigate("/candidatura?tipo=progettista")}
-                className="border-2 border-background/30 text-background px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:bg-background hover:text-foreground transition-colors">
-                
-                Sono un Progettista
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+
+
 
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
       <footer className="bg-foreground text-background py-14 relative overflow-hidden">
