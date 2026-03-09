@@ -132,7 +132,7 @@ const processSteps = [
   num: "02",
   icon: <FileSignature className="w-5 h-5" />,
   title: "Documenti e perimetro",
-  text: "Richiediamo la documentazione utile e definiamo il perimetro di intervento. Se c'è un progettista, ci coordiniamo senza sostituirlo."
+  text: "Raccogliamo e analizziamo la documentazione necessaria per definire con precisione lo stato della pratica al fine di individuare criticità, rischi e opportunità."
 },
 {
   num: "03",
