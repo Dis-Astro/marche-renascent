@@ -422,9 +422,9 @@ const Index = () => {
             </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
-              style={{ fontFamily: "Outfit, sans-serif" }}>
-              
-              Processo chiaro in 4 fasi
+              style={{ fontFamily: "Outfit, sans-serif" }}>Processo chiaro in 4 fasi
+
+
               <br className="hidden md:block" /> in 4 fasi
             </h2>
           </div>
