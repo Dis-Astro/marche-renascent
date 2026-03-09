@@ -144,7 +144,7 @@ const processSteps = [
   num: "04",
   icon: <Hammer className="w-5 h-5" />,
   title: "Esecuzione lavori",
-  text: "Quando ci sono le condizioni, avviamo e gestiamo i lavori con aggiornamenti regolari e milestone verificabili."
+  text: "Realizziamo gli interventi programmati nel rispetto dei tempi garantendo aggiornamenti periodici per monitorare l'avanzamento."
 }];
 
 
