@@ -94,33 +94,6 @@ const BeforeAfterSlider = ({ before, after }: {before: string;after: string;}) =
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
-const services = [
-{
-  num: "01",
-  icon: <FileCheck className="w-5 h-5" />,
-  title: "Presa in carico (24 ore)",
-  text: "Esaminiamo lo stato e il contesto dell'immobile."
-},
-{
-  num: "02",
-  icon: <FileText className="w-5 h-5" />,
-  title: "Documenti e orientamento",
-  text: "Raccogliamo e analizziamo la documentazione necessaria per definire con precisione lo stato della pratica al fine di individuare criticità, rischi e opportunità."
-},
-{
-  num: "03",
-  icon: <HardHat className="w-5 h-5" />,
-  title: "Piano operativo",
-  text: "Definiamo il percorso operativo per arrivare all'avvio dei lavori, anche attraverso un confronto diretto con il tecnico incaricato."
-},
-{
-  num: "04",
-  icon: <Landmark className="w-5 h-5" />,
-  title: "Struttura e continuità",
-  text: "Realizziamo gli interventi programmati nel rispetto dei tempi garantendo aggiornamenti periodici per monitorare l'avanzamento."
-}];
-
-
 const processSteps = [
 {
   num: "01",
@@ -148,29 +121,6 @@ const processSteps = [
 }];
 
 
-const faqItems = [
-{
-  q: "Se cambio impresa perdo il contributo?",
-  a: "Dipende dalla situazione specifica. Valutiamo lo stato della pratica e dei lavori per indicarti i passaggi necessari. Non possiamo garantire esiti, ma ti diamo un quadro chiaro di cosa serve."
-},
-{
-  q: "L'altra impresa mi chiede penali, cosa faccio?",
-  a: "Il primo passo è inquadrare il contratto in essere e lo stato dei lavori. Se emergono aspetti legali, ti indichiamo di rivolgerti a un Progettista qualificato per la tutela dei tuoi interessi."
-},
-{
-  q: "Quanto tempo serve per ripartire?",
-  a: "I tempi dipendono da molti fattori, incluse le tempistiche degli enti e dell'USR che non sono sotto il nostro controllo. Ti forniamo una roadmap con milestone chiare, distinguendo ciò che possiamo gestire direttamente."
-},
-{
-  q: "Vi occupate delle pratiche USR ferme?",
-  a: "Non ci sostituiamo alle figure previste per legge. Orientiamo e ci coordiniamo con il progettista, se presente, per raccogliere e predisporre ciò che serve ai fini della pratica."
-},
-{
-  q: "Non ho tutti i documenti: posso inviare la candidatura?",
-  a: "Sì, invia ciò che hai a disposizione. Dopo una prima analisi ti indicheremo cosa manca e come procedere."
-}];
-
-
 // ─── DUAL CTA ─────────────────────────────────────────────────────────────────
 
 const DualCTA = ({ variant = "light" }: {variant?: "light" | "dark";}) => {
@@ -180,7 +130,7 @@ const DualCTA = ({ variant = "light" }: {variant?: "light" | "dark";}) => {
     <div className="flex flex-col sm:flex-row gap-3 mt-6">
       <button
         onClick={() => navigate("/candidatura?tipo=proprietario")}
-        className="flex-1 sm:flex-none bg-primary text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded">
+        className="flex-1 sm:flex-none bg-[hsl(30,20%,40%)] text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded">
         
         Sono un Proprietario
       </button>
@@ -188,8 +138,8 @@ const DualCTA = ({ variant = "light" }: {variant?: "light" | "dark";}) => {
         onClick={() => navigate("/candidatura?tipo=progettista")}
         className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 transition-colors ${
         isLight ?
-        "border-foreground text-foreground hover:bg-foreground hover:text-background" :
-        "border-white text-white hover:bg-white hover:text-foreground"}`
+        "border-[hsl(30,20%,40%)] text-[hsl(30,20%,40%)] hover:bg-[hsl(30,20%,40%)] hover:text-background" :
+        "border-background/30 text-background hover:bg-background hover:text-foreground"}`
         }>
         
         Sono un Progettista
@@ -261,14 +211,11 @@ const RoadmapCard = () => {
 const Index = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showMobileChoice, setShowMobileChoice] = useState(false);
 
   const navLinks = [
-  { label: "Servizi", href: "#servizi" },
-  { label: "Come Lavoriamo", href: "#process" },
-  { label: "Chi Siamo", href: "#chi-siamo" },
-  { label: "FAQ", href: "#faq" }];
+  { label: "Come Operiamo", href: "#servizi" },
+  { label: "Chi Siamo", href: "#chi-siamo" }];
 
 
   const scrollTo = (id: string) => {
@@ -302,14 +249,6 @@ const Index = () => {
                 </button>
               </li>
             )}
-            <li>
-              <button
-                onClick={() => navigate("/candidatura?tipo=proprietario")}
-                className="bg-primary text-primary-foreground px-5 py-2 text-sm font-bold rounded hover:opacity-90 transition-opacity">
-                
-                Candidati
-              </button>
-            </li>
           </ul>
 
           {/* Mobile hamburger */}
@@ -330,15 +269,6 @@ const Index = () => {
                 {l.label}
               </button>
           )}
-            <button
-            onClick={() => {
-              navigate("/candidatura?tipo=proprietario");
-              setMobileOpen(false);
-            }}
-            className="bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold rounded">
-            
-              Candidati ora
-            </button>
           </div>
         }
       </nav>
@@ -355,9 +285,9 @@ const Index = () => {
               className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold leading-[1.1] tracking-tight text-foreground mb-6"
               style={{ fontFamily: "Outfit, sans-serif" }}>
               
-              Casa danneggiata dal sisma 2016? <span className="text-primary">
-LA RIPARIAMO NOI.
-              </span>
+              Casa danneggiata dal sisma 2016?
+              <br />
+              <span className="text-primary">LA RIPARIAMO NOI.</span>
             </h1>
             <p className="text-foreground/60 text-base md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0 mb-2">
               La nostra impresa ha oltre 90 anni di esperienza. Valutiamo lo stato del tuo immobile e definiamo un
@@ -413,7 +343,7 @@ LA RIPARIAMO NOI.
         </div>
       </div>
 
-      {/* ── SERVICES GRID ──────────────────────────────────────────────────── */}
+      {/* ── COME OPERIAMO ──────────────────────────────────────────────────── */}
       <section className="bg-muted py-20" id="servizi">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
@@ -422,10 +352,7 @@ LA RIPARIAMO NOI.
             </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
-              style={{ fontFamily: "Outfit, sans-serif" }}>Come operiamo:
-
-
-              <br className="hidden md:block" /> in 4 fasi
+              style={{ fontFamily: "Outfit, sans-serif" }}>Come Operiamo
             </h2>
           </div>
 
@@ -434,21 +361,21 @@ LA RIPARIAMO NOI.
             <>
                 <div
                 key={s.num}
-                className="flex flex-col items-center text-center max-w-[200px] mx-auto md:mx-0 bg-muted p-6 rounded-xl flex-1 shadow-sm">
+                className="flex flex-col items-center text-center max-w-[200px] mx-auto md:mx-0 bg-primary text-primary-foreground p-6 rounded-xl flex-1 shadow-sm">
                 
                   <div
-                  className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-extrabold text-sm mb-4"
+                  className="w-10 h-10 rounded-full bg-primary-foreground text-primary flex items-center justify-center font-extrabold text-sm mb-4"
                   style={{ fontFamily: "Outfit, sans-serif" }}>
                   
                     {s.num}
                   </div>
-                  <h3 className="font-bold text-foreground text-sm mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>
+                  <h3 className="font-bold text-primary-foreground text-sm mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>
                     {s.title}
                   </h3>
-                  <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-3">
+                  <div className="w-8 h-8 bg-primary-foreground/20 text-primary-foreground rounded-lg flex items-center justify-center mb-3">
                     {s.icon}
                   </div>
-                  <p className="text-muted-foreground text-xs leading-relaxed">{s.text}</p>
+                  <p className="text-primary-foreground/80 text-xs leading-relaxed">{s.text}</p>
                 </div>
                 {i < processSteps.length - 1 &&
               <div
@@ -466,7 +393,7 @@ LA RIPARIAMO NOI.
       <section className="bg-foreground text-background py-20" id="chi-siamo">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-12 items-center">
           <div className="flex-1">
-            <span className="font-bold tracking-[0.25em] uppercase block mb-4 bg-transparent text-[sidebar-primary-foreground] text-stone-950">
+            <span className="font-bold tracking-[0.25em] uppercase block mb-4 bg-transparent text-transparent">
               ​
             </span>
             <h2
@@ -484,16 +411,16 @@ LA RIPARIAMO NOI.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-background/10 pt-6">
               <div className="flex gap-3 items-start">
-                <Award className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                <Award className="w-5 h-5 text-background mt-0.5 shrink-0" />
                 <div>
                   <p className="font-bold text-background text-sm">Responsabilità</p>
                   <p className="text-background/60 text-sm">Garanzia diretta sui lavori</p>
                 </div>
               </div>
               <div className="flex gap-3 items-start">
-                <Users className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                <Users className="w-5 h-5 text-background mt-0.5 shrink-0" />
                 <div>
-                  <p className="font-bold text-background text-sm">Team d’eccellenza</p>
+                  <p className="font-bold text-background text-sm">Team d'eccellenza</p>
                   <p className="text-background/60 text-sm">
                     Maestranze specializzate guidate da professionisti di consolidata esperienza
                   </p>
@@ -519,7 +446,7 @@ LA RIPARIAMO NOI.
                   {" "}
                   90+
                 </span>
-                <span className="text-xs opacity-90"> Anni di Storia</span>
+                <span className="text-xs opacity-90"> Anni di Storia</span>
               </div>
             </div>
           </div>
@@ -616,43 +543,6 @@ LA RIPARIAMO NOI.
         </div>
       </section>
 
-      {/* ── FAQ ────────────────────────────────────────────────────────────── */}
-      <section className="bg-background py-20" id="faq">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="text-center mb-10">
-            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">Dubbi?</span>
-            <h2 className="text-3xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Risposte alle Tue Domande
-            </h2>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {faqItems.map((faq, i) =>
-            <div key={i} className="border border-border rounded-lg overflow-hidden bg-muted">
-                <button
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left bg-muted hover:bg-accent transition-colors">
-                
-                  <span className="text-sm font-bold text-foreground pr-4" style={{ fontFamily: "Outfit, sans-serif" }}>
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                  className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${openFaq === i ? "rotate-180" : ""}`} />
-                
-                </button>
-                <div
-                className={`transition-all duration-300 overflow-hidden ${openFaq === i ? "max-h-40" : "max-h-0"}`}>
-                
-                  <p className="px-5 py-4 text-sm text-muted-foreground border-t border-border bg-background">
-                    {faq.a}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
       {/* ── CTA BOX / CONTATTI ─────────────────────────────────────────────── */}
       <section className="bg-muted py-20" id="contatti">
         <div className="max-w-3xl mx-auto px-6">
@@ -679,7 +569,7 @@ LA RIPARIAMO NOI.
             <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
               <button
                 onClick={() => navigate("/candidatura?tipo=proprietario")}
-                className="bg-primary text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity">
+                className="bg-[hsl(30,20%,40%)] text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity">
                 
                 Sono un Proprietario
               </button>
@@ -714,10 +604,8 @@ LA RIPARIAMO NOI.
               </h4>
               <ul className="space-y-2">
                 {[
-                ["Servizi", "#servizi"],
-                ["Come Lavoriamo", "#process"],
-                ["Chi Siamo", "#chi-siamo"],
-                ["FAQ", "#faq"]].
+                ["Come Operiamo", "#servizi"],
+                ["Chi Siamo", "#chi-siamo"]].
                 map(([l, h]) =>
                 <li key={h}>
                     <button
@@ -765,13 +653,13 @@ LA RIPARIAMO NOI.
         <div className="bg-background border-t border-border p-4 space-y-2">
             <button
             onClick={() => navigate("/candidatura?tipo=proprietario")}
-            className="w-full bg-primary text-primary-foreground py-3 text-sm font-bold tracking-widest uppercase rounded">
+            className="w-full bg-[hsl(30,20%,40%)] text-primary-foreground py-3 text-sm font-bold tracking-widest uppercase rounded">
             
               Sono un Proprietario
             </button>
             <button
             onClick={() => navigate("/candidatura?tipo=progettista")}
-            className="w-full border-2 border-primary text-primary py-3 text-sm font-bold tracking-widest uppercase rounded">
+            className="w-full border-2 border-[hsl(30,20%,40%)] text-[hsl(30,20%,40%)] py-3 text-sm font-bold tracking-widest uppercase rounded">
             
               Sono un Progettista
             </button>

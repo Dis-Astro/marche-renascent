@@ -14,20 +14,14 @@ const STEPS = ["Anagrafica", "Edificio", "Documenti"];
 
 const Candidatura = () => {
   const [searchParams] = useSearchParams();
-  const initialTipo = (searchParams.get("tipo") as TipoUtente) || "proprietario";
+  const tipo: TipoUtente = (searchParams.get("tipo") as TipoUtente) || "proprietario";
 
-  const [tipo, setTipo] = useState<TipoUtente>(initialTipo);
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>({});
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    const t = searchParams.get("tipo") as TipoUtente;
-    if (t === "proprietario" || t === "progettista") setTipo(t);
-  }, [searchParams]);
 
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
@@ -59,7 +53,7 @@ const Candidatura = () => {
       const { error: fnErr } = await supabase.functions.invoke("submit-candidatura", {
         body: {
           tipo,
-          nome: form.nome_cognome || form.referente_nome || "",
+          nome: form.nome_referente || "",
           email: form.email || "",
           telefono: form.telefono || "",
           comune: form.citta || "",
@@ -139,25 +133,8 @@ const Candidatura = () => {
               Modulo di candidatura
             </span>
             <h1 className="text-2xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Valutazione gratuita
+              {tipo === "proprietario" ? "Proprietario" : "Progettista"}
             </h1>
-          </div>
-
-          {/* ── SEGMENT CONTROL ── */}
-          <div className="flex border border-border rounded overflow-hidden mb-6 shadow-sm">
-            {(["proprietario", "progettista"] as TipoUtente[]).map((t) => (
-              <button
-                key={t}
-                onClick={() => { setTipo(t); setStep(0); }}
-                className={`flex-1 py-3 text-sm font-bold tracking-widest uppercase transition-colors ${
-                  tipo === t
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-background text-foreground hover:bg-muted"
-                }`}
-              >
-                {t === "proprietario" ? "Proprietario" : "Progettista"}
-              </button>
-            ))}
           </div>
 
           {/* ── PROGRESS ── */}
