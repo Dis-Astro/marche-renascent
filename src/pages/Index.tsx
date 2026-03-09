@@ -126,7 +126,7 @@ const processSteps = [
   num: "01",
   icon: <ClipboardCheck className="w-5 h-5" />,
   title: "Valutazione iniziale",
-  text: "Inquadriamo stato dell'immobile e della situazione, per capire rischi e prossimi step."
+  text: "Esaminiamo lo stato e il contesto dell'immobile. "
 },
 {
   num: "02",
