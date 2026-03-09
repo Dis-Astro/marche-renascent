@@ -175,22 +175,17 @@ const faqItems = [
 
 const DualCTA = ({ variant = "light" }: {variant?: "light" | "dark";}) => {
   const navigate = useNavigate();
-  const isLight = variant === "light";
   return (
     <div className="flex flex-col sm:flex-row gap-3 mt-6">
       <button
         onClick={() => navigate("/candidatura?tipo=proprietario")}
-        className="flex-1 sm:flex-none bg-primary text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded">
+        className="flex-1 sm:flex-none bg-background text-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded border-2 border-foreground">
         
         Sono un Proprietario
       </button>
       <button
         onClick={() => navigate("/candidatura?tipo=progettista")}
-        className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 transition-colors ${
-        isLight ?
-        "border-foreground text-foreground hover:bg-foreground hover:text-background" :
-        "border-white text-white hover:bg-white hover:text-foreground"}`
-        }>
+        className="flex-1 sm:flex-none bg-foreground text-background px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 border-foreground hover:opacity-90 transition-opacity">
         
         Sono un Progettista
       </button>
@@ -265,10 +260,8 @@ const Index = () => {
   const [showMobileChoice, setShowMobileChoice] = useState(false);
 
   const navLinks = [
-  { label: "Servizi", href: "#servizi" },
-  { label: "Come Lavoriamo", href: "#process" },
-  { label: "Chi Siamo", href: "#chi-siamo" },
-  { label: "FAQ", href: "#faq" }];
+  { label: "Come Operiamo", href: "#servizi" },
+  { label: "Chi Siamo", href: "#chi-siamo" }];
 
 
   const scrollTo = (id: string) => {
@@ -302,14 +295,6 @@ const Index = () => {
                 </button>
               </li>
             )}
-            <li>
-              <button
-                onClick={() => navigate("/candidatura?tipo=proprietario")}
-                className="bg-primary text-primary-foreground px-5 py-2 text-sm font-bold rounded hover:opacity-90 transition-opacity">
-                
-                Candidati
-              </button>
-            </li>
           </ul>
 
           {/* Mobile hamburger */}
@@ -422,10 +407,7 @@ LA RIPARIAMO NOI.
             </span>
             <h2
               className="text-3xl md:text-4xl font-extrabold text-foreground"
-              style={{ fontFamily: "Outfit, sans-serif" }}>Come operiamo:
-
-
-              <br className="hidden md:block" /> in 4 fasi
+              style={{ fontFamily: "Outfit, sans-serif" }}>Come operiamo
             </h2>
           </div>
 
@@ -466,7 +448,7 @@ LA RIPARIAMO NOI.
       <section className="bg-foreground text-background py-20" id="chi-siamo">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-12 items-center">
           <div className="flex-1">
-            <span className="font-bold tracking-[0.25em] uppercase block mb-4 bg-transparent text-[sidebar-primary-foreground] text-stone-950">
+            <span className="font-bold tracking-[0.25em] uppercase block mb-4 text-primary">
               ​
             </span>
             <h2
@@ -619,46 +601,8 @@ LA RIPARIAMO NOI.
 
 
 
-      {/* ── CTA BOX / CONTATTI ─────────────────────────────────────────────── */}
-      <section className="bg-muted py-20" id="contatti">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="bg-foreground rounded-2xl p-10 text-center relative overflow-hidden">
-            <span
-              className="absolute inset-0 pointer-events-none select-none flex items-center justify-center text-[15vw] font-extrabold opacity-[0.03] text-background leading-none"
-              style={{ fontFamily: "Outfit, sans-serif" }}>
-              
-              CINGOLI
-            </span>
-            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-3 relative">
-              Contattaci Ora
-            </span>
-            <h2
-              className="text-2xl md:text-3xl font-extrabold text-background mb-4 relative"
-              style={{ fontFamily: "Outfit, sans-serif" }}>
-              
-              Richiedi un contatto gratuito
-            </h2>
-            <p className="text-background/70 text-base mb-6 relative">
-              Entro 24 ore prendiamo in carico la richiesta e indichiamo i prossimi passi e le informazioni necessarie
-              per valutare correttamente il caso.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
-              <button
-                onClick={() => navigate("/candidatura?tipo=proprietario")}
-                className="bg-primary text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity">
-                
-                Sono un Proprietario
-              </button>
-              <button
-                onClick={() => navigate("/candidatura?tipo=progettista")}
-                className="border-2 border-background/30 text-background px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:bg-background hover:text-foreground transition-colors">
-                
-                Sono un Progettista
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+
+
 
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
       <footer className="bg-foreground text-background py-14 relative overflow-hidden">
@@ -680,10 +624,8 @@ LA RIPARIAMO NOI.
               </h4>
               <ul className="space-y-2">
                 {[
-                ["Servizi", "#servizi"],
-                ["Come Lavoriamo", "#process"],
-                ["Chi Siamo", "#chi-siamo"],
-                ["FAQ", "#faq"]].
+                ["Come Operiamo", "#servizi"],
+                ["Chi Siamo", "#chi-siamo"]].
                 map(([l, h]) =>
                 <li key={h}>
                     <button
