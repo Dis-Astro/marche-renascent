@@ -126,25 +126,25 @@ const processSteps = [
   num: "01",
   icon: <ClipboardCheck className="w-5 h-5" />,
   title: "Valutazione iniziale",
-  text: "Inquadriamo stato dell'immobile e della situazione, per capire rischi e prossimi step."
+  text: "Esaminiamo lo stato e il contesto dell'immobile. "
 },
 {
   num: "02",
   icon: <FileSignature className="w-5 h-5" />,
   title: "Documenti e perimetro",
-  text: "Richiediamo la documentazione utile e definiamo il perimetro di intervento. Se c'è un progettista, ci coordiniamo senza sostituirlo."
+  text: "Raccogliamo e analizziamo la documentazione necessaria per definire con precisione lo stato della pratica al fine di individuare criticità, rischi e opportunità."
 },
 {
   num: "03",
   icon: <Building2 className="w-5 h-5" />,
   title: "Percorso amministrativo",
-  text: "Ti orientiamo nei passaggi e nelle integrazioni necessarie. Chiari su ciò che dipende da noi e ciò che dipende dagli enti."
+  text: "Definiamo il percorso operativo per arrivare all'avvio dei lavori supportando il tecnico incaricato."
 },
 {
   num: "04",
   icon: <Hammer className="w-5 h-5" />,
   title: "Esecuzione lavori",
-  text: "Quando ci sono le condizioni, avviamo e gestiamo i lavori con aggiornamenti regolari e milestone verificabili."
+  text: "Realizziamo gli interventi programmati nel rispetto dei tempi garantendo aggiornamenti periodici per monitorare l'avanzamento."
 }];
 
 
@@ -471,8 +471,8 @@ in 4 fasi
               className="text-3xl md:text-4xl font-extrabold text-background mb-5 leading-tight"
               style={{ fontFamily: "Outfit, sans-serif" }}>
               
-              Costruito per durare —<br />
-              serietà operativa
+               Il nostro impegno,<br />
+               la tua tranquillità.
             </h2>
             <p className="text-background/70 text-base leading-relaxed mb-8 max-w-lg">
               Lavoriamo con metodo, responsabilità, proattività coadiuvando le attività di cantiere e le pratiche burocratiche affinché tutto vada avanti a gonfie vele per raggiungere prima possibile il tuo e il nostro obiettivo.
