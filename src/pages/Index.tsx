@@ -523,7 +523,7 @@ const Index = () => {
               </video>
             </div>
             {/* Roadmap - click to open full */}
-            <RoadmapCard className="text-primary" />
+            <RoadmapCard />
           </div>
         </div>
       </section>
