@@ -598,7 +598,7 @@ const Index = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
+              <h4 className="text-primary-foreground font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
                 Contatti
               </h4>
               <p className="text-background/60 text-sm">Via Acquaviva 11, 64100 Teramo (TE)</p>
