@@ -242,7 +242,7 @@ const RoadmapCard = () => {
 const Index = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showMobileChoice, setShowMobileChoice] = useState(false);
   const [showMobileChoice, setShowMobileChoice] = useState(false);
 
   const navLinks = [
