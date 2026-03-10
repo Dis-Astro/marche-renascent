@@ -216,7 +216,7 @@ const RoadmapCard = () => {
       {/* Fullscreen overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-[100] bg-foreground/90 flex items-center justify-center p-4 cursor-pointer"
+          className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 cursor-pointer"
           onClick={() => setOpen(false)}
         >
           <button
@@ -356,7 +356,7 @@ const Index = () => {
       </header>
 
       {/* ── SOCIAL PROOF MARQUEE ───────────────────────────────────────────── */}
-      <div className="bg-foreground text-background py-3 overflow-hidden whitespace-nowrap">
+      <div className="bg-primary text-primary-foreground py-3 overflow-hidden whitespace-nowrap">
         <div className="inline-flex animate-marquee gap-0">
           {[
             "Presa in carico entro 24 ore",
@@ -426,21 +426,21 @@ const Index = () => {
       </section>
 
       {/* ── COMMITMENT (DARK) ──────────────────────────────────────────────── */}
-      <section className="bg-foreground text-background py-20" id="chi-siamo">
+      <section className="bg-primary text-primary-foreground py-20" id="chi-siamo">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-12 items-center">
           <div className="flex-1">
-            <span className="font-bold tracking-[0.25em] uppercase block mb-4 text-primary">
+            <span className="font-bold tracking-[0.25em] uppercase block mb-4 text-primary-foreground/70">
               ​
             </span>
             <h2
-              className="text-3xl md:text-4xl font-extrabold text-background mb-5 leading-tight"
+              className="text-3xl md:text-4xl font-extrabold text-primary-foreground mb-5 leading-tight"
               style={{ fontFamily: "Outfit, sans-serif" }}
             >
               Il nostro impegno,
               <br />
               la tua tranquillità.
             </h2>
-            <p className="text-background/70 text-base leading-relaxed mb-8 max-w-lg">
+            <p className="text-primary-foreground/70 text-base leading-relaxed mb-8 max-w-lg">
               Lavoriamo con metodo, responsabilità, proattività coadiuvando le attività di cantiere e le pratiche
               burocratiche affinché tutto vada avanti a gonfie vele per raggiungere prima possibile il tuo e il nostro
               obiettivo.
@@ -564,7 +564,7 @@ const Index = () => {
 
 
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
-      <footer className="bg-foreground text-background py-14 relative overflow-hidden">
+      <footer className="bg-[hsl(0,0%,18%)] text-primary-foreground py-14 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             <div>
@@ -575,10 +575,10 @@ const Index = () => {
                   className="h-14 brightness-0 invert mb-3"
                 />
               </a>
-              <p className="text-background/60 text-sm">Dal 1933.</p>
+              <p className="text-primary-foreground/60 text-sm">Dal 1933.</p>
             </div>
             <div>
-              <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
+              <h4 className="text-primary-foreground font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
                 Link Rapidi
               </h4>
               <ul className="space-y-2">
@@ -589,7 +589,7 @@ const Index = () => {
                   <li key={h}>
                     <button
                       onClick={() => document.querySelector(h)?.scrollIntoView({ behavior: "smooth" })}
-                      className="text-sm text-background/60 hover:text-primary transition-colors"
+                      className="text-sm text-primary-foreground/60 hover:text-primary transition-colors"
                     >
                       {l}
                     </button>
@@ -598,11 +598,11 @@ const Index = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
+              <h4 className="text-primary-foreground font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
                 Contatti
               </h4>
-              <p className="text-background/60 text-sm">Via Acquaviva 11, 64100 Teramo (TE)</p>
-              <p className="text-background/60 text-sm">cingoli@impresacingoli.it</p>
+              <p className="text-primary-foreground/60 text-sm">Via Acquaviva 11, 64100 Teramo (TE)</p>
+              <p className="text-primary-foreground/60 text-sm">cingoli@impresacingoli.it</p>
               <a
                 href="https://impresacingoli.it"
                 target="_blank"
@@ -613,13 +613,13 @@ const Index = () => {
               </a>
             </div>
           </div>
-          <div className="border-t border-background/10 pt-6 text-center">
-            <p className="text-background/40 text-sm">© 2026 Cingoli SRL. Tutti i diritti riservati.</p>
+          <div className="border-t border-primary-foreground/10 pt-6 text-center">
+            <p className="text-primary-foreground/40 text-sm">© 2026 Cingoli SRL. Tutti i diritti riservati.</p>
           </div>
         </div>
         {/* Watermark */}
         <div
-          className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 text-[15vw] font-extrabold text-background/[0.03] pointer-events-none select-none whitespace-nowrap"
+          className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 text-[15vw] font-extrabold text-primary-foreground/[0.03] pointer-events-none select-none whitespace-nowrap"
           style={{ fontFamily: "Outfit, sans-serif" }}
         >
           CINGOLI
