@@ -619,7 +619,7 @@ const Index = () => {
         </div>
         {/* Watermark */}
         <div
-          className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 text-[15vw] font-extrabold text-background/[0.03] pointer-events-none select-none whitespace-nowrap"
+          className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 text-[15vw] font-extrabold text-primary-foreground/[0.03] pointer-events-none select-none whitespace-nowrap"
           style={{ fontFamily: "Outfit, sans-serif" }}
         >
           CINGOLI
