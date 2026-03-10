@@ -578,7 +578,7 @@ const Index = () => {
               <p className="text-primary-foreground/60 text-sm">Dal 1933.</p>
             </div>
             <div>
-              <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
+              <h4 className="text-primary-foreground font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
                 Link Rapidi
               </h4>
               <ul className="space-y-2">
