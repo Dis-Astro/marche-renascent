@@ -449,30 +449,28 @@ const Index = () => {
             <DualCTA variant="dark" />
           </div>
 
-          <div className="flex-1 w-full relative">
-            <div className="w-full h-72 rounded-xl relative overflow-hidden shadow-lg">
+          <div className="flex-1 w-full relative pb-6">
+            <div className="w-full h-72 rounded-xl relative overflow-visible shadow-lg">
               <img
                 alt="Edificio storico restaurato"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-xl"
                 src="/lovable-uploads/966fc589-225e-48bb-979b-cba765517e76.jpg"
               />
-
-              <div className="absolute bottom-6 left-[-1rem] bg-primary text-primary-foreground p-4 rounded-lg shadow-xl">
+              <div className="absolute -bottom-5 left-4 bg-[hsl(0,0%,30%)] text-white p-4 rounded-lg shadow-xl">
                 <span
                   className="block text-3xl font-extrabold leading-none"
                   style={{ fontFamily: "Outfit, sans-serif" }}
                 >
-                  {" "}
                   90+
                 </span>
-                <span className="text-xs opacity-90"> Anni di Storia</span>
+                <span className="text-xs opacity-90">Anni di Storia</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── SERVIZI: VIDEO + ROADMAP ─────────────────────────────────────── */}
+      {/* ── SERVIZI: ROADMAP ─────────────────────────────────────────────── */}
       <section className="bg-background py-20" id="process">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
@@ -484,14 +482,7 @@ const Index = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {/* Video */}
-            <div className="rounded-xl overflow-hidden shadow-lg h-64 md:h-80">
-              <video className="w-full h-full object-cover" controls preload="metadata" poster="">
-                <source src="/videos/Tornare_a_Casa_Post-Sisma_720.mp4" type="video/mp4" />
-              </video>
-            </div>
-            {/* Roadmap - click to open full */}
+          <div className="max-w-2xl mx-auto">
             <RoadmapCard />
           </div>
         </div>
