@@ -575,7 +575,7 @@ const Index = () => {
                   className="h-14 brightness-0 invert mb-3"
                 />
               </a>
-              <p className="text-background/60 text-sm">Dal 1933.</p>
+              <p className="text-primary-foreground/60 text-sm">Dal 1933.</p>
             </div>
             <div>
               <h4 className="text-background font-bold text-lg mb-3" style={{ fontFamily: "Outfit, sans-serif" }}>
