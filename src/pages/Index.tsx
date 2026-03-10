@@ -180,16 +180,20 @@ const DualCTA = ({ variant = "light" }: { variant?: "light" | "dark" }) => {
     <div className="flex flex-col sm:flex-row gap-3 mt-6">
       <button
         onClick={() => navigate("/candidatura?tipo=proprietario")}
-        className="flex-1 sm:flex-none bg-primary text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded"
+        className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded transition-colors ${
+          isLight
+            ? "bg-background text-foreground border-2 border-foreground hover:bg-foreground hover:text-background"
+            : "bg-background text-foreground hover:opacity-90"
+        }`}
       >
         Sono un Proprietario
       </button>
       <button
         onClick={() => navigate("/candidatura?tipo=progettista")}
-        className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 transition-colors ${
+        className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded transition-colors ${
           isLight
-            ? "border-foreground text-foreground hover:bg-foreground hover:text-background"
-            : "border-white text-white hover:bg-white hover:text-foreground"
+            ? "bg-foreground text-background hover:opacity-90"
+            : "bg-foreground text-background border-2 border-background hover:bg-background hover:text-foreground"
         }`}
       >
         Sono un Progettista
