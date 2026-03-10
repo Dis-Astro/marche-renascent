@@ -433,7 +433,7 @@ const Index = () => {
               ​
             </span>
             <h2
-              className="text-3xl md:text-4xl font-extrabold text-background mb-5 leading-tight"
+              className="text-3xl md:text-4xl font-extrabold text-primary-foreground mb-5 leading-tight"
               style={{ fontFamily: "Outfit, sans-serif" }}
             >
               Il nostro impegno,
