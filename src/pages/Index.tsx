@@ -13,7 +13,7 @@ import {
   FileSignature,
   Building2,
   Hammer,
-  ChevronDown,
+  
   Menu,
   X,
   ArrowUpRight,
@@ -148,29 +148,6 @@ const processSteps = [
   },
 ];
 
-const faqItems = [
-  {
-    q: "Se cambio impresa perdo il contributo?",
-    a: "Dipende dalla situazione specifica. Valutiamo lo stato della pratica e dei lavori per indicarti i passaggi necessari. Non possiamo garantire esiti, ma ti diamo un quadro chiaro di cosa serve.",
-  },
-  {
-    q: "L'altra impresa mi chiede penali, cosa faccio?",
-    a: "Il primo passo è inquadrare il contratto in essere e lo stato dei lavori. Se emergono aspetti legali, ti indichiamo di rivolgerti a un Progettista qualificato per la tutela dei tuoi interessi.",
-  },
-  {
-    q: "Quanto tempo serve per ripartire?",
-    a: "I tempi dipendono da molti fattori, incluse le tempistiche degli enti e dell'USR che non sono sotto il nostro controllo. Ti forniamo una roadmap con milestone chiare, distinguendo ciò che possiamo gestire direttamente.",
-  },
-  {
-    q: "Vi occupate delle pratiche USR ferme?",
-    a: "Non ci sostituiamo alle figure previste per legge. Orientiamo e ci coordiniamo con il progettista, se presente, per raccogliere e predisporre ciò che serve ai fini della pratica.",
-  },
-  {
-    q: "Non ho tutti i documenti: posso inviare la candidatura?",
-    a: "Sì, invia ciò che hai a disposizione. Dopo una prima analisi ti indicheremo cosa manca e come procedere.",
-  },
-];
-
 // ─── DUAL CTA ─────────────────────────────────────────────────────────────────
 
 const DualCTA = ({ variant = "light" }: { variant?: "light" | "dark" }) => {
@@ -180,16 +157,20 @@ const DualCTA = ({ variant = "light" }: { variant?: "light" | "dark" }) => {
     <div className="flex flex-col sm:flex-row gap-3 mt-6">
       <button
         onClick={() => navigate("/candidatura?tipo=proprietario")}
-        className="flex-1 sm:flex-none bg-primary text-primary-foreground px-7 py-3.5 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity rounded"
+        className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded transition-colors ${
+          isLight
+            ? "bg-background text-foreground border-2 border-foreground hover:bg-foreground hover:text-background"
+            : "bg-background text-foreground hover:opacity-90"
+        }`}
       >
         Sono un Proprietario
       </button>
       <button
         onClick={() => navigate("/candidatura?tipo=progettista")}
-        className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded border-2 transition-colors ${
+        className={`flex-1 sm:flex-none px-7 py-3.5 text-sm font-bold tracking-widest uppercase rounded transition-colors ${
           isLight
-            ? "border-foreground text-foreground hover:bg-foreground hover:text-background"
-            : "border-white text-white hover:bg-white hover:text-foreground"
+            ? "bg-foreground text-background hover:opacity-90"
+            : "bg-foreground text-background border-2 border-background hover:bg-background hover:text-foreground"
         }`}
       >
         Sono un Progettista
@@ -261,14 +242,11 @@ const RoadmapCard = () => {
 const Index = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showMobileChoice, setShowMobileChoice] = useState(false);
 
   const navLinks = [
-    { label: "Servizi", href: "#servizi" },
-    { label: "Come Lavoriamo", href: "#process" },
+    { label: "Come Operiamo", href: "#servizi" },
     { label: "Chi Siamo", href: "#chi-siamo" },
-    { label: "FAQ", href: "#faq" },
   ];
 
   const scrollTo = (id: string) => {
@@ -302,14 +280,6 @@ const Index = () => {
                 </button>
               </li>
             ))}
-            <li>
-              <button
-                onClick={() => navigate("/candidatura?tipo=proprietario")}
-                className="bg-primary text-primary-foreground px-5 py-2 text-sm font-bold rounded hover:opacity-90 transition-opacity"
-              >
-                Candidati
-              </button>
-            </li>
           </ul>
 
           {/* Mobile hamburger */}
@@ -355,7 +325,7 @@ const Index = () => {
               className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold leading-[1.1] tracking-tight text-foreground mb-6"
               style={{ fontFamily: "Outfit, sans-serif" }}
             >
-              Casa danneggiata dal sisma 2016? <span className="text-primary">LA RIPARIAMO NOI.</span>
+              Casa danneggiata dal sisma 2016?<br /><span className="text-primary">LA RIPARIAMO NOI.</span>
             </h1>
             <p className="text-foreground/60 text-base md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0 mb-2">
               La nostra impresa ha oltre 90 anni di esperienza. Valutiamo lo stato del tuo immobile e definiamo un
@@ -418,8 +388,7 @@ const Index = () => {
               className="text-3xl md:text-4xl font-extrabold text-foreground"
               style={{ fontFamily: "Outfit, sans-serif" }}
             >
-              Come operiamo:
-              <br className="hidden md:block" /> in 4 fasi
+              Come operiamo
             </h2>
           </div>
 
@@ -460,7 +429,7 @@ const Index = () => {
       <section className="bg-foreground text-background py-20" id="chi-siamo">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-12 items-center">
           <div className="flex-1">
-            <span className="font-bold tracking-[0.25em] uppercase block mb-4 bg-transparent text-[sidebar-primary-foreground] text-stone-950">
+            <span className="font-bold tracking-[0.25em] uppercase block mb-4 text-primary">
               ​
             </span>
             <h2
@@ -593,83 +562,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── FAQ ────────────────────────────────────────────────────────────── */}
-      <section className="bg-background py-20" id="faq">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="text-center mb-10">
-            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-2">Dubbi?</span>
-            <h2 className="text-3xl font-extrabold text-foreground" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Risposte alle Tue Domande
-            </h2>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {faqItems.map((faq, i) => (
-              <div key={i} className="border border-border rounded-lg overflow-hidden bg-muted">
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-left bg-muted hover:bg-accent transition-colors"
-                >
-                  <span className="text-sm font-bold text-foreground pr-4" style={{ fontFamily: "Outfit, sans-serif" }}>
-                    {faq.q}
-                  </span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${openFaq === i ? "rotate-180" : ""}`}
-                  />
-                </button>
-                <div
-                  className={`transition-all duration-300 overflow-hidden ${openFaq === i ? "max-h-40" : "max-h-0"}`}
-                >
-                  <p className="px-5 py-4 text-sm text-muted-foreground border-t border-border bg-background">
-                    {faq.a}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA BOX / CONTATTI ─────────────────────────────────────────────── */}
-      <section className="bg-muted py-20" id="contatti">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="bg-foreground rounded-2xl p-10 text-center relative overflow-hidden">
-            <span
-              className="absolute inset-0 pointer-events-none select-none flex items-center justify-center text-[15vw] font-extrabold opacity-[0.03] text-background leading-none"
-              style={{ fontFamily: "Outfit, sans-serif" }}
-            >
-              CINGOLI
-            </span>
-            <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-primary block mb-3 relative">
-              Contattaci Ora
-            </span>
-            <h2
-              className="text-2xl md:text-3xl font-extrabold text-background mb-4 relative"
-              style={{ fontFamily: "Outfit, sans-serif" }}
-            >
-              Richiedi valutazione iniziale gratuita
-            </h2>
-            <p className="text-background/70 text-base mb-6 relative">
-              Entro 24 ore prendiamo in carico la richiesta e indichiamo i prossimi passi e le informazioni necessarie
-              per valutare correttamente il caso.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
-              <button
-                onClick={() => navigate("/candidatura?tipo=proprietario")}
-                className="bg-primary text-primary-foreground px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:opacity-90 transition-opacity"
-              >
-                Sono un Proprietario
-              </button>
-              <button
-                onClick={() => navigate("/candidatura?tipo=progettista")}
-                className="border-2 border-background/30 text-background px-8 py-3.5 text-sm font-bold tracking-widest uppercase rounded hover:bg-background hover:text-foreground transition-colors"
-              >
-                Sono un Progettista
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
       <footer className="bg-foreground text-background py-14 relative overflow-hidden">
@@ -690,11 +582,9 @@ const Index = () => {
                 Link Rapidi
               </h4>
               <ul className="space-y-2">
-                {[
-                  ["Servizi", "#servizi"],
-                  ["Come Lavoriamo", "#process"],
+              {[
+                  ["Come Operiamo", "#servizi"],
                   ["Chi Siamo", "#chi-siamo"],
-                  ["FAQ", "#faq"],
                 ].map(([l, h]) => (
                   <li key={h}>
                     <button
