@@ -148,29 +148,6 @@ const processSteps = [
   },
 ];
 
-const faqItems = [
-  {
-    q: "Se cambio impresa perdo il contributo?",
-    a: "Dipende dalla situazione specifica. Valutiamo lo stato della pratica e dei lavori per indicarti i passaggi necessari. Non possiamo garantire esiti, ma ti diamo un quadro chiaro di cosa serve.",
-  },
-  {
-    q: "L'altra impresa mi chiede penali, cosa faccio?",
-    a: "Il primo passo è inquadrare il contratto in essere e lo stato dei lavori. Se emergono aspetti legali, ti indichiamo di rivolgerti a un Progettista qualificato per la tutela dei tuoi interessi.",
-  },
-  {
-    q: "Quanto tempo serve per ripartire?",
-    a: "I tempi dipendono da molti fattori, incluse le tempistiche degli enti e dell'USR che non sono sotto il nostro controllo. Ti forniamo una roadmap con milestone chiare, distinguendo ciò che possiamo gestire direttamente.",
-  },
-  {
-    q: "Vi occupate delle pratiche USR ferme?",
-    a: "Non ci sostituiamo alle figure previste per legge. Orientiamo e ci coordiniamo con il progettista, se presente, per raccogliere e predisporre ciò che serve ai fini della pratica.",
-  },
-  {
-    q: "Non ho tutti i documenti: posso inviare la candidatura?",
-    a: "Sì, invia ciò che hai a disposizione. Dopo una prima analisi ti indicheremo cosa manca e come procedere.",
-  },
-];
-
 // ─── DUAL CTA ─────────────────────────────────────────────────────────────────
 
 const DualCTA = ({ variant = "light" }: { variant?: "light" | "dark" }) => {
