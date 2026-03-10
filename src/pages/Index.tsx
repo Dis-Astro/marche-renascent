@@ -300,14 +300,6 @@ const Index = () => {
                 </button>
               </li>
             ))}
-            <li>
-              <button
-                onClick={() => navigate("/candidatura?tipo=proprietario")}
-                className="bg-primary text-primary-foreground px-5 py-2 text-sm font-bold rounded hover:opacity-90 transition-opacity"
-              >
-                Candidati
-              </button>
-            </li>
           </ul>
 
           {/* Mobile hamburger */}
