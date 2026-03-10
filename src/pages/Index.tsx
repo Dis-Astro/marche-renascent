@@ -589,7 +589,7 @@ const Index = () => {
                   <li key={h}>
                     <button
                       onClick={() => document.querySelector(h)?.scrollIntoView({ behavior: "smooth" })}
-                      className="text-sm text-background/60 hover:text-primary transition-colors"
+                      className="text-sm text-primary-foreground/60 hover:text-primary transition-colors"
                     >
                       {l}
                     </button>
