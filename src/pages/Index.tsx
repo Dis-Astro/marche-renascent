@@ -408,8 +408,7 @@ const Index = () => {
               className="text-3xl md:text-4xl font-extrabold text-foreground"
               style={{ fontFamily: "Outfit, sans-serif" }}
             >
-              Come operiamo:
-              <br className="hidden md:block" /> in 4 fasi
+              Come operiamo
             </h2>
           </div>
 
