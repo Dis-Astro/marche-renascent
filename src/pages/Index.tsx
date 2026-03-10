@@ -345,7 +345,7 @@ const Index = () => {
               className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold leading-[1.1] tracking-tight text-foreground mb-6"
               style={{ fontFamily: "Outfit, sans-serif" }}
             >
-              Casa danneggiata dal sisma 2016? <span className="text-primary">LA RIPARIAMO NOI.</span>
+              Casa danneggiata dal sisma 2016?<br /><span className="text-primary">LA RIPARIAMO NOI.</span>
             </h1>
             <p className="text-foreground/60 text-base md:text-lg leading-relaxed max-w-lg mx-auto md:mx-0 mb-2">
               La nostra impresa ha oltre 90 anni di esperienza. Valutiamo lo stato del tuo immobile e definiamo un
