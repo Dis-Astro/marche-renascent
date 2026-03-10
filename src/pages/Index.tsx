@@ -243,7 +243,6 @@ const Index = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showMobileChoice, setShowMobileChoice] = useState(false);
-  const [showMobileChoice, setShowMobileChoice] = useState(false);
 
   const navLinks = [
     { label: "Come Operiamo", href: "#servizi" },
