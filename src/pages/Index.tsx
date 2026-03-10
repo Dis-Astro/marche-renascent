@@ -356,7 +356,7 @@ const Index = () => {
       </header>
 
       {/* ── SOCIAL PROOF MARQUEE ───────────────────────────────────────────── */}
-      <div className="bg-foreground text-background py-3 overflow-hidden whitespace-nowrap">
+      <div className="bg-primary text-primary-foreground py-3 overflow-hidden whitespace-nowrap">
         <div className="inline-flex animate-marquee gap-0">
           {[
             "Presa in carico entro 24 ore",
