@@ -440,7 +440,7 @@ const Index = () => {
               <br />
               la tua tranquillità.
             </h2>
-            <p className="text-background/70 text-base leading-relaxed mb-8 max-w-lg">
+            <p className="text-primary-foreground/70 text-base leading-relaxed mb-8 max-w-lg">
               Lavoriamo con metodo, responsabilità, proattività coadiuvando le attività di cantiere e le pratiche
               burocratiche affinché tutto vada avanti a gonfie vele per raggiungere prima possibile il tuo e il nostro
               obiettivo.
