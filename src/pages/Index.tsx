@@ -216,7 +216,7 @@ const RoadmapCard = () => {
       {/* Fullscreen overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-[100] bg-foreground/90 flex items-center justify-center p-4 cursor-pointer"
+          className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 cursor-pointer"
           onClick={() => setOpen(false)}
         >
           <button
