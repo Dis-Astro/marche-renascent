@@ -429,7 +429,7 @@ const Index = () => {
       <section className="bg-primary text-primary-foreground py-20" id="chi-siamo">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-12 items-center">
           <div className="flex-1">
-            <span className="font-bold tracking-[0.25em] uppercase block mb-4 text-primary">
+            <span className="font-bold tracking-[0.25em] uppercase block mb-4 text-primary-foreground/70">
               ​
             </span>
             <h2
