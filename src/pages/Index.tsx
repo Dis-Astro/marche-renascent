@@ -613,8 +613,8 @@ const Index = () => {
               </a>
             </div>
           </div>
-          <div className="border-t border-background/10 pt-6 text-center">
-            <p className="text-background/40 text-sm">© 2026 Cingoli SRL. Tutti i diritti riservati.</p>
+          <div className="border-t border-primary-foreground/10 pt-6 text-center">
+            <p className="text-primary-foreground/40 text-sm">© 2026 Cingoli SRL. Tutti i diritti riservati.</p>
           </div>
         </div>
         {/* Watermark */}
