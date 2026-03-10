@@ -564,7 +564,7 @@ const Index = () => {
 
 
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
-      <footer className="bg-foreground text-background py-14 relative overflow-hidden">
+      <footer className="bg-[hsl(0,0%,18%)] text-primary-foreground py-14 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             <div>
