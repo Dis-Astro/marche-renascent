@@ -683,11 +683,9 @@ const Index = () => {
                 Link Rapidi
               </h4>
               <ul className="space-y-2">
-                {[
-                  ["Servizi", "#servizi"],
-                  ["Come Lavoriamo", "#process"],
+              {[
+                  ["Come Operiamo", "#servizi"],
                   ["Chi Siamo", "#chi-siamo"],
-                  ["FAQ", "#faq"],
                 ].map(([l, h]) => (
                   <li key={h}>
                     <button
