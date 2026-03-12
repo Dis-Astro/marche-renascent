@@ -91,6 +91,10 @@ serve(async (req) => {
             cc: config.cc || null,
             bcc: config.bcc || null,
             subject_template: config.subject_template,
+            smtp_host: config.smtp_host || '',
+            smtp_port: config.smtp_port || 587,
+            smtp_user: config.smtp_user || '',
+            smtp_pass: config.smtp_pass || '',
             updated_at: new Date().toISOString(),
           })
           .eq("id", existing[0].id);
