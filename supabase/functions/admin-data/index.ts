@@ -115,34 +115,28 @@ serve(async (req) => {
 
       const cfg = configs?.[0];
       if (!cfg) throw new Error("Nessuna configurazione email trovata");
-
-      const resendKey = Deno.env.get("RESEND_API_KEY");
-      if (!resendKey) throw new Error("RESEND_API_KEY non configurata. Aggiungi il secret nelle impostazioni.");
+      if (!cfg.smtp_host || !cfg.smtp_user || !cfg.smtp_pass) {
+        throw new Error("Configurazione SMTP incompleta: compila host, utente e password");
+      }
 
       const recipients = cfg.to_recipients.split(",").map((e: string) => e.trim()).filter(Boolean);
       if (recipients.length === 0) throw new Error("Nessun destinatario configurato");
 
-      const resendRes = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: `${cfg.from_name} <${cfg.from_email}>`,
-          to: recipients,
-          reply_to: cfg.reply_to || undefined,
-          cc: cfg.cc ? cfg.cc.split(",").map((e: string) => e.trim()) : undefined,
-          bcc: cfg.bcc ? cfg.bcc.split(",").map((e: string) => e.trim()) : undefined,
-          subject: "Email di test – Cingoli Post-Sisma",
-          html: "<h2>Test email</h2><p>Questa è un'email di test dalla piattaforma Cingoli.</p>",
-        }),
+      const result = await sendSmtpEmail({
+        host: cfg.smtp_host,
+        port: cfg.smtp_port || 587,
+        user: cfg.smtp_user,
+        pass: cfg.smtp_pass,
+        from: `${cfg.from_name} <${cfg.from_email}>`,
+        to: recipients,
+        replyTo: cfg.reply_to || undefined,
+        cc: cfg.cc ? cfg.cc.split(",").map((e: string) => e.trim()) : undefined,
+        bcc: cfg.bcc ? cfg.bcc.split(",").map((e: string) => e.trim()) : undefined,
+        subject: "Email di test – Cingoli Post-Sisma",
+        html: "<h2>Test email</h2><p>Questa è un'email di test dalla piattaforma Cingoli.</p>",
       });
 
-      const resendBody = await resendRes.json();
-      if (!resendRes.ok) {
-        throw new Error(`Errore Resend: ${resendBody?.message || resendBody?.error || JSON.stringify(resendBody)}`);
-      }
+      if (!result.ok) throw new Error(result.error);
 
       return new Response(
         JSON.stringify({ success: true }),
