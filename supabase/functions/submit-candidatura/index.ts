@@ -1,10 +1,58 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+interface SmtpEmailOptions {
+  host: string;
+  port: number;
+  user: string;
+  pass: string;
+  from: string;
+  to: string[];
+  replyTo?: string;
+  cc?: string[];
+  bcc?: string[];
+  subject: string;
+  html: string;
+}
+
+async function sendSmtpEmail(opts: SmtpEmailOptions): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const client = new SmtpClient();
+    const connectConfig = {
+      hostname: opts.host,
+      port: opts.port,
+      username: opts.user,
+      password: opts.pass,
+    };
+
+    if (opts.port === 465) {
+      await client.connectTLS(connectConfig);
+    } else {
+      await client.connect(connectConfig);
+    }
+
+    await client.send({
+      from: opts.from,
+      to: opts.to.join(","),
+      cc: opts.cc?.join(","),
+      bcc: opts.bcc?.join(","),
+      subject: opts.subject,
+      content: "",
+      html: opts.html,
+    });
+
+    await client.close();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -50,9 +98,8 @@ serve(async (req) => {
       .limit(1);
 
     const cfg = configs?.[0];
-    const resendKey = Deno.env.get("RESEND_API_KEY");
 
-    if (resendKey && cfg?.enabled) {
+    if (cfg?.enabled && cfg?.smtp_host && cfg?.smtp_user && cfg?.smtp_pass) {
       const recipients = cfg.to_recipients.split(",").map((e: string) => e.trim()).filter(Boolean);
       
       // Build subject from template
@@ -62,31 +109,28 @@ serve(async (req) => {
         .replace("{comune}", comune || "")
         .replace("{referente}", referente || nome || "");
 
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: `${cfg.from_name} <${cfg.from_email}>`,
-          to: recipients,
-          reply_to: cfg.reply_to || undefined,
-          cc: cfg.cc ? cfg.cc.split(",").map((e: string) => e.trim()) : undefined,
-          bcc: cfg.bcc ? cfg.bcc.split(",").map((e: string) => e.trim()) : undefined,
-          subject,
-          html: `
-            <h2>Nuova candidatura ricevuta</h2>
-            <p><strong>Tipo:</strong> ${tipo || "privato"}</p>
-            <p><strong>Nome:</strong> ${nome}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Telefono:</strong> ${telefono}</p>
-            <p><strong>Comune:</strong> ${comune}</p>
-            <p><strong>Denominazione:</strong> ${denominazione || "–"}</p>
-            <p><strong>Referente:</strong> ${referente || "–"}</p>
-            ${file_url ? `<p><strong>Allegato:</strong> <a href="${file_url}">${file_url}</a></p>` : ""}
-          `,
-        }),
+      await sendSmtpEmail({
+        host: cfg.smtp_host,
+        port: cfg.smtp_port || 587,
+        user: cfg.smtp_user,
+        pass: cfg.smtp_pass,
+        from: `${cfg.from_name} <${cfg.from_email}>`,
+        to: recipients,
+        replyTo: cfg.reply_to || undefined,
+        cc: cfg.cc ? cfg.cc.split(",").map((e: string) => e.trim()) : undefined,
+        bcc: cfg.bcc ? cfg.bcc.split(",").map((e: string) => e.trim()) : undefined,
+        subject,
+        html: `
+          <h2>Nuova candidatura ricevuta</h2>
+          <p><strong>Tipo:</strong> ${tipo || "privato"}</p>
+          <p><strong>Nome:</strong> ${nome}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Telefono:</strong> ${telefono}</p>
+          <p><strong>Comune:</strong> ${comune}</p>
+          <p><strong>Denominazione:</strong> ${denominazione || "–"}</p>
+          <p><strong>Referente:</strong> ${referente || "–"}</p>
+          ${file_url ? `<p><strong>Allegato:</strong> <a href="${file_url}">${file_url}</a></p>` : ""}
+        `,
       });
     }
 

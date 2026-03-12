@@ -371,6 +371,25 @@ const Admin = () => {
           </label>
 
           <div className="space-y-3">
+            <h3 className="text-sm font-bold text-foreground pt-2 border-b border-border pb-1">Server SMTP</h3>
+            <div>
+              <label className="text-xs font-semibold text-foreground block mb-1">SMTP Host</label>
+              <input value={emailConfig.smtp_host || ""} onChange={(e) => setEmailConfig({ ...emailConfig, smtp_host: e.target.value })} className={inputClass} placeholder="smtp.tuoserver.it" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-foreground block mb-1">SMTP Porta</label>
+              <input type="number" value={emailConfig.smtp_port || 587} onChange={(e) => setEmailConfig({ ...emailConfig, smtp_port: parseInt(e.target.value) || 587 })} className={inputClass} />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-foreground block mb-1">SMTP Utente</label>
+              <input value={emailConfig.smtp_user || ""} onChange={(e) => setEmailConfig({ ...emailConfig, smtp_user: e.target.value })} className={inputClass} placeholder="utente@tuoserver.it" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-foreground block mb-1">SMTP Password</label>
+              <input type="password" value={emailConfig.smtp_pass || ""} onChange={(e) => setEmailConfig({ ...emailConfig, smtp_pass: e.target.value })} className={inputClass} />
+            </div>
+
+            <h3 className="text-sm font-bold text-foreground pt-4 border-b border-border pb-1">Mittente e destinatari</h3>
             <div>
               <label className="text-xs font-semibold text-foreground block mb-1">From name</label>
               <input value={emailConfig.from_name || ""} onChange={(e) => setEmailConfig({ ...emailConfig, from_name: e.target.value })} className={inputClass} />

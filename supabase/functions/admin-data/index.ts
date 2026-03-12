@@ -1,10 +1,58 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+interface SmtpEmailOptions {
+  host: string;
+  port: number;
+  user: string;
+  pass: string;
+  from: string;
+  to: string[];
+  replyTo?: string;
+  cc?: string[];
+  bcc?: string[];
+  subject: string;
+  html: string;
+}
+
+async function sendSmtpEmail(opts: SmtpEmailOptions): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const client = new SmtpClient();
+    const connectConfig = {
+      hostname: opts.host,
+      port: opts.port,
+      username: opts.user,
+      password: opts.pass,
+    };
+
+    if (opts.port === 465) {
+      await client.connectTLS(connectConfig);
+    } else {
+      await client.connect(connectConfig);
+    }
+
+    await client.send({
+      from: opts.from,
+      to: opts.to.join(","),
+      cc: opts.cc?.join(","),
+      bcc: opts.bcc?.join(","),
+      subject: opts.subject,
+      content: "",
+      html: opts.html,
+    });
+
+    await client.close();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -91,6 +139,10 @@ serve(async (req) => {
             cc: config.cc || null,
             bcc: config.bcc || null,
             subject_template: config.subject_template,
+            smtp_host: config.smtp_host || '',
+            smtp_port: config.smtp_port || 587,
+            smtp_user: config.smtp_user || '',
+            smtp_pass: config.smtp_pass || '',
             updated_at: new Date().toISOString(),
           })
           .eq("id", existing[0].id);
@@ -111,34 +163,28 @@ serve(async (req) => {
 
       const cfg = configs?.[0];
       if (!cfg) throw new Error("Nessuna configurazione email trovata");
-
-      const resendKey = Deno.env.get("RESEND_API_KEY");
-      if (!resendKey) throw new Error("RESEND_API_KEY non configurata. Aggiungi il secret nelle impostazioni.");
+      if (!cfg.smtp_host || !cfg.smtp_user || !cfg.smtp_pass) {
+        throw new Error("Configurazione SMTP incompleta: compila host, utente e password");
+      }
 
       const recipients = cfg.to_recipients.split(",").map((e: string) => e.trim()).filter(Boolean);
       if (recipients.length === 0) throw new Error("Nessun destinatario configurato");
 
-      const resendRes = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: `${cfg.from_name} <${cfg.from_email}>`,
-          to: recipients,
-          reply_to: cfg.reply_to || undefined,
-          cc: cfg.cc ? cfg.cc.split(",").map((e: string) => e.trim()) : undefined,
-          bcc: cfg.bcc ? cfg.bcc.split(",").map((e: string) => e.trim()) : undefined,
-          subject: "Email di test – Cingoli Post-Sisma",
-          html: "<h2>Test email</h2><p>Questa è un'email di test dalla piattaforma Cingoli.</p>",
-        }),
+      const result = await sendSmtpEmail({
+        host: cfg.smtp_host,
+        port: cfg.smtp_port || 587,
+        user: cfg.smtp_user,
+        pass: cfg.smtp_pass,
+        from: `${cfg.from_name} <${cfg.from_email}>`,
+        to: recipients,
+        replyTo: cfg.reply_to || undefined,
+        cc: cfg.cc ? cfg.cc.split(",").map((e: string) => e.trim()) : undefined,
+        bcc: cfg.bcc ? cfg.bcc.split(",").map((e: string) => e.trim()) : undefined,
+        subject: "Email di test – Cingoli Post-Sisma",
+        html: "<h2>Test email</h2><p>Questa è un'email di test dalla piattaforma Cingoli.</p>",
       });
 
-      const resendBody = await resendRes.json();
-      if (!resendRes.ok) {
-        throw new Error(`Errore Resend: ${resendBody?.message || resendBody?.error || JSON.stringify(resendBody)}`);
-      }
+      if (!result.ok) throw new Error(result.error);
 
       return new Response(
         JSON.stringify({ success: true }),
