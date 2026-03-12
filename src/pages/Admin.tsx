@@ -101,6 +101,21 @@ const Admin = () => {
     if (selected?.id === id) setSelected({ ...selected, stato });
   };
 
+  const deleteCandidatura = async (id: string) => {
+    if (!confirm("Sei sicuro di voler eliminare questa candidatura?")) return;
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-data", {
+        body: { password: sessionStorage.getItem("admin_token"), action: "delete-candidatura", id },
+      });
+      if (error) throw error;
+      setCandidature((prev) => prev.filter((c) => c.id !== id));
+      if (selected?.id === id) setSelected(null);
+    } catch (e) {
+      console.error(e);
+      alert("Errore durante l'eliminazione");
+    }
+  };
+
   const saveEmailConfig = async () => {
     setEmailSaving(true);
     setEmailMsg("");
