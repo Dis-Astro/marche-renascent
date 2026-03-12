@@ -332,6 +332,15 @@ const Admin = () => {
                         {STATI.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </td>
+                    <td className="py-3 pr-4">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); deleteCandidatura(c.id); }}
+                        className="text-muted-foreground hover:text-destructive transition-colors"
+                        title="Elimina"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
