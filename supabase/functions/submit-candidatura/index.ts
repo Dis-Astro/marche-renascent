@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,34 +22,36 @@ interface SmtpEmailOptions {
 }
 
 async function sendSmtpEmail(opts: SmtpEmailOptions): Promise<{ ok: boolean; error?: string }> {
+  let client: SMTPClient | null = null;
   try {
-    const client = new SmtpClient();
-    const connectConfig = {
-      hostname: opts.host,
-      port: opts.port,
-      username: opts.user,
-      password: opts.pass,
-    };
-
-    if (opts.port === 465) {
-      await client.connectTLS(connectConfig);
-    } else {
-      await client.connect(connectConfig);
-    }
-
-    await client.send({
-      from: opts.from,
-      to: opts.to.join(","),
-      cc: opts.cc?.join(","),
-      bcc: opts.bcc?.join(","),
-      subject: opts.subject,
-      content: "",
-      html: opts.html,
+    const tls = opts.port === 465;
+    client = new SMTPClient({
+      connection: {
+        hostname: opts.host,
+        port: opts.port,
+        tls,
+        auth: {
+          username: opts.user,
+          password: opts.pass,
+        },
+      },
     });
 
+    const mailConfig: any = {
+      from: opts.from,
+      to: opts.to,
+      subject: opts.subject,
+      html: opts.html,
+    };
+    if (opts.replyTo) mailConfig.replyTo = opts.replyTo;
+    if (opts.cc && opts.cc.length > 0) mailConfig.cc = opts.cc;
+    if (opts.bcc && opts.bcc.length > 0) mailConfig.bcc = opts.bcc;
+
+    await client.send(mailConfig);
     await client.close();
     return { ok: true };
   } catch (err) {
+    try { client?.close(); } catch {}
     return { ok: false, error: (err as Error).message };
   }
 }
@@ -111,7 +113,7 @@ serve(async (req) => {
 
       await sendSmtpEmail({
         host: cfg.smtp_host,
-        port: cfg.smtp_port || 587,
+        port: cfg.smtp_port || 465,
         user: cfg.smtp_user,
         pass: cfg.smtp_pass,
         from: `${cfg.from_name} <${cfg.from_email}>`,

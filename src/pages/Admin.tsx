@@ -374,11 +374,13 @@ const Admin = () => {
             <h3 className="text-sm font-bold text-foreground pt-2 border-b border-border pb-1">Server SMTP</h3>
             <div>
               <label className="text-xs font-semibold text-foreground block mb-1">SMTP Host</label>
-              <input value={emailConfig.smtp_host || ""} onChange={(e) => setEmailConfig({ ...emailConfig, smtp_host: e.target.value })} className={inputClass} placeholder="smtp.tuoserver.it" />
+              <input value={emailConfig.smtp_host || ""} onChange={(e) => setEmailConfig({ ...emailConfig, smtp_host: e.target.value })} className={inputClass} placeholder="smtps.aruba.it" />
+              <p className="text-[10px] text-muted-foreground mt-1">Aruba: smtps.aruba.it (SSL porta 465) o smtp.aruba.it (STARTTLS porta 587)</p>
             </div>
             <div>
               <label className="text-xs font-semibold text-foreground block mb-1">SMTP Porta</label>
-              <input type="number" value={emailConfig.smtp_port || 587} onChange={(e) => setEmailConfig({ ...emailConfig, smtp_port: parseInt(e.target.value) || 587 })} className={inputClass} />
+              <input type="number" value={emailConfig.smtp_port || 465} onChange={(e) => setEmailConfig({ ...emailConfig, smtp_port: parseInt(e.target.value) || 465 })} className={inputClass} />
+              <p className="text-[10px] text-muted-foreground mt-1">465 = SSL diretto (consigliato Aruba) · 587 = STARTTLS</p>
             </div>
             <div>
               <label className="text-xs font-semibold text-foreground block mb-1">SMTP Utente</label>
