@@ -1,10 +1,58 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+interface SmtpEmailOptions {
+  host: string;
+  port: number;
+  user: string;
+  pass: string;
+  from: string;
+  to: string[];
+  replyTo?: string;
+  cc?: string[];
+  bcc?: string[];
+  subject: string;
+  html: string;
+}
+
+async function sendSmtpEmail(opts: SmtpEmailOptions): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const client = new SmtpClient();
+    const connectConfig = {
+      hostname: opts.host,
+      port: opts.port,
+      username: opts.user,
+      password: opts.pass,
+    };
+
+    if (opts.port === 465) {
+      await client.connectTLS(connectConfig);
+    } else {
+      await client.connect(connectConfig);
+    }
+
+    await client.send({
+      from: opts.from,
+      to: opts.to.join(","),
+      cc: opts.cc?.join(","),
+      bcc: opts.bcc?.join(","),
+      subject: opts.subject,
+      content: "",
+      html: opts.html,
+    });
+
+    await client.close();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
