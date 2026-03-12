@@ -51,9 +51,23 @@ async function sendSmtpEmail(opts: SmtpEmailOptions): Promise<{ ok: boolean; err
     await client.close();
     return { ok: true };
   } catch (err) {
-    try { client?.close(); } catch {}
+    try {
+      client?.close();
+    } catch {}
     return { ok: false, error: (err as Error).message };
   }
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  let timeoutId: number | undefined;
+
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(`${label} (>${ms}ms)`)), ms);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timeoutId) clearTimeout(timeoutId);
+  }) as Promise<T>;
 }
 
 serve(async (req) => {
@@ -102,38 +116,51 @@ serve(async (req) => {
     const cfg = configs?.[0];
 
     if (cfg?.enabled && cfg?.smtp_host && cfg?.smtp_user && cfg?.smtp_pass) {
-      const recipients = cfg.to_recipients.split(",").map((e: string) => e.trim()).filter(Boolean);
-      
-      // Build subject from template
-      let subject = cfg.subject_template || `Nuova candidatura: ${nome}`;
-      subject = subject
-        .replace("{tipo}", tipo || "privato")
-        .replace("{comune}", comune || "")
-        .replace("{referente}", referente || nome || "");
+      const recipients = cfg.to_recipients
+        .split(",")
+        .map((e: string) => e.trim())
+        .filter(Boolean);
 
-      await sendSmtpEmail({
-        host: cfg.smtp_host,
-        port: cfg.smtp_port || 465,
-        user: cfg.smtp_user,
-        pass: cfg.smtp_pass,
-        from: `${cfg.from_name} <${cfg.from_email}>`,
-        to: recipients,
-        replyTo: cfg.reply_to || undefined,
-        cc: cfg.cc ? cfg.cc.split(",").map((e: string) => e.trim()) : undefined,
-        bcc: cfg.bcc ? cfg.bcc.split(",").map((e: string) => e.trim()) : undefined,
-        subject,
-        html: `
-          <h2>Nuova candidatura ricevuta</h2>
-          <p><strong>Tipo:</strong> ${tipo || "privato"}</p>
-          <p><strong>Nome:</strong> ${nome}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Telefono:</strong> ${telefono}</p>
-          <p><strong>Comune:</strong> ${comune}</p>
-          <p><strong>Denominazione:</strong> ${denominazione || "–"}</p>
-          <p><strong>Referente:</strong> ${referente || "–"}</p>
-          ${file_url ? `<p><strong>Allegato:</strong> <a href="${file_url}">${file_url}</a></p>` : ""}
-        `,
-      });
+      if (recipients.length > 0) {
+        // Build subject from template
+        let subject = cfg.subject_template || `Nuova candidatura: ${nome}`;
+        subject = subject
+          .replace("{tipo}", tipo || "privato")
+          .replace("{comune}", comune || "")
+          .replace("{referente}", referente || nome || "");
+
+        const mailResult = await withTimeout(
+          sendSmtpEmail({
+            host: cfg.smtp_host,
+            port: cfg.smtp_port || 465,
+            user: cfg.smtp_user,
+            pass: cfg.smtp_pass,
+            from: `${cfg.from_name} <${cfg.from_email}>`,
+            to: recipients,
+            replyTo: cfg.reply_to || undefined,
+            cc: cfg.cc ? cfg.cc.split(",").map((e: string) => e.trim()) : undefined,
+            bcc: cfg.bcc ? cfg.bcc.split(",").map((e: string) => e.trim()) : undefined,
+            subject,
+            html: `
+              <h2>Nuova candidatura ricevuta</h2>
+              <p><strong>Tipo:</strong> ${tipo || "privato"}</p>
+              <p><strong>Nome:</strong> ${nome}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>Telefono:</strong> ${telefono}</p>
+              <p><strong>Comune:</strong> ${comune}</p>
+              <p><strong>Denominazione:</strong> ${denominazione || "–"}</p>
+              <p><strong>Referente:</strong> ${referente || "–"}</p>
+              ${file_url ? `<p><strong>Allegato:</strong> <a href="${file_url}">${file_url}</a></p>` : ""}
+            `,
+          }),
+          12000,
+          "Timeout invio SMTP"
+        ).catch((emailError) => ({ ok: false, error: (emailError as Error).message }));
+
+        if (!mailResult.ok) {
+          console.error("[submit-candidatura] Invio email non riuscito:", mailResult.error);
+        }
+      }
     }
 
     return new Response(
