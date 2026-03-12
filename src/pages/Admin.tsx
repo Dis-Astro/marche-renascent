@@ -302,6 +302,7 @@ const Admin = () => {
                   <th className="py-2 pr-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">Referente</th>
                   <th className="py-2 pr-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">Email</th>
                   <th className="py-2 pr-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">Stato</th>
+                  <th className="py-2 pr-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide"></th>
                 </tr>
               </thead>
               <tbody>
