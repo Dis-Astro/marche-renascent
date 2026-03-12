@@ -110,14 +110,15 @@ serve(async (req) => {
         .limit(1);
 
       const cfg = configs?.[0];
-      if (!cfg) throw new Error("No email config found");
+      if (!cfg) throw new Error("Nessuna configurazione email trovata");
 
       const resendKey = Deno.env.get("RESEND_API_KEY");
-      if (!resendKey) throw new Error("RESEND_API_KEY not configured");
+      if (!resendKey) throw new Error("RESEND_API_KEY non configurata. Aggiungi il secret nelle impostazioni.");
 
       const recipients = cfg.to_recipients.split(",").map((e: string) => e.trim()).filter(Boolean);
+      if (recipients.length === 0) throw new Error("Nessun destinatario configurato");
 
-      await fetch("https://api.resend.com/emails", {
+      const resendRes = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${resendKey}`,
@@ -133,6 +134,26 @@ serve(async (req) => {
           html: "<h2>Test email</h2><p>Questa è un'email di test dalla piattaforma Cingoli.</p>",
         }),
       });
+
+      const resendBody = await resendRes.json();
+      if (!resendRes.ok) {
+        throw new Error(`Errore Resend: ${resendBody?.message || resendBody?.error || JSON.stringify(resendBody)}`);
+      }
+
+      return new Response(
+        JSON.stringify({ success: true }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (action === "delete-candidatura") {
+      const { id } = body;
+      if (!id) throw new Error("ID mancante");
+      const { error } = await supabase
+        .from("candidature")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
 
       return new Response(
         JSON.stringify({ success: true }),
