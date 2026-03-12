@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronDown, Download, X, Mail, Settings, Code } from "lucide-react";
+import { ChevronDown, Download, X, Mail, Settings, Code, Trash2 } from "lucide-react";
 
 type Candidatura = {
   id: string;
@@ -101,6 +101,21 @@ const Admin = () => {
     if (selected?.id === id) setSelected({ ...selected, stato });
   };
 
+  const deleteCandidatura = async (id: string) => {
+    if (!confirm("Sei sicuro di voler eliminare questa candidatura?")) return;
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-data", {
+        body: { password: sessionStorage.getItem("admin_token"), action: "delete-candidatura", id },
+      });
+      if (error) throw error;
+      setCandidature((prev) => prev.filter((c) => c.id !== id));
+      if (selected?.id === id) setSelected(null);
+    } catch (e) {
+      console.error(e);
+      alert("Errore durante l'eliminazione");
+    }
+  };
+
   const saveEmailConfig = async () => {
     setEmailSaving(true);
     setEmailMsg("");
@@ -118,12 +133,20 @@ const Admin = () => {
   const sendTestEmail = async () => {
     setEmailMsg("Invio test...");
     try {
-      await supabase.functions.invoke("admin-data", {
+      const { data, error } = await supabase.functions.invoke("admin-data", {
         body: { password: sessionStorage.getItem("admin_token"), action: "test-email" },
       });
-      setEmailMsg("Email di test inviata!");
-    } catch {
-      setEmailMsg("Errore invio test");
+      if (error) {
+        setEmailMsg(`Errore: ${error.message}`);
+        return;
+      }
+      if (data?.error) {
+        setEmailMsg(`Errore: ${data.error}`);
+        return;
+      }
+      setEmailMsg("✅ Email di test inviata!");
+    } catch (e: any) {
+      setEmailMsg(`Errore: ${e.message || "invio test fallito"}`);
     }
   };
 
@@ -279,6 +302,7 @@ const Admin = () => {
                   <th className="py-2 pr-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">Referente</th>
                   <th className="py-2 pr-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">Email</th>
                   <th className="py-2 pr-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">Stato</th>
+                  <th className="py-2 pr-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide"></th>
                 </tr>
               </thead>
               <tbody>
@@ -307,6 +331,15 @@ const Admin = () => {
                       >
                         {STATI.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
+                    </td>
+                    <td className="py-3 pr-4">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); deleteCandidatura(c.id); }}
+                        className="text-muted-foreground hover:text-destructive transition-colors"
+                        title="Elimina"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </td>
                   </tr>
                 ))}
