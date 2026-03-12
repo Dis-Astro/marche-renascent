@@ -133,15 +133,20 @@ const Admin = () => {
   const sendTestEmail = async () => {
     setEmailMsg("Invio test...");
     try {
-      const { data, error } = await supabase.functions.invoke("admin-data", {
-        body: { password: sessionStorage.getItem("admin_token"), action: "test-email" },
-      });
-      if (error) {
-        setEmailMsg(`Errore: ${error.message}`);
-        return;
-      }
-      if (data?.error) {
-        setEmailMsg(`Errore: ${data.error}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-data`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
+          body: JSON.stringify({ password: sessionStorage.getItem("admin_token"), action: "test-email" }),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok || data?.error) {
+        setEmailMsg(`Errore: ${data?.error || "invio fallito"}`);
         return;
       }
       setEmailMsg("✅ Email di test inviata!");
