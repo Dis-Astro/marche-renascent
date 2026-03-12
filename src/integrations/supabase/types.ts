@@ -74,6 +74,10 @@ export type Database = {
           from_name: string
           id: string
           reply_to: string | null
+          smtp_host: string | null
+          smtp_pass: string | null
+          smtp_port: number | null
+          smtp_user: string | null
           subject_template: string
           to_recipients: string
           updated_at: string
@@ -86,6 +90,10 @@ export type Database = {
           from_name?: string
           id?: string
           reply_to?: string | null
+          smtp_host?: string | null
+          smtp_pass?: string | null
+          smtp_port?: number | null
+          smtp_user?: string | null
           subject_template?: string
           to_recipients?: string
           updated_at?: string
@@ -98,6 +106,10 @@ export type Database = {
           from_name?: string
           id?: string
           reply_to?: string | null
+          smtp_host?: string | null
+          smtp_pass?: string | null
+          smtp_port?: number | null
+          smtp_user?: string | null
           subject_template?: string
           to_recipients?: string
           updated_at?: string
