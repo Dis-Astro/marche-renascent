@@ -51,9 +51,23 @@ async function sendSmtpEmail(opts: SmtpEmailOptions): Promise<{ ok: boolean; err
     await client.close();
     return { ok: true };
   } catch (err) {
-    try { client?.close(); } catch {}
+    try {
+      client?.close();
+    } catch {}
     return { ok: false, error: (err as Error).message };
   }
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  let timeoutId: number | undefined;
+
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(`${label} (>${ms}ms)`)), ms);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timeoutId) clearTimeout(timeoutId);
+  }) as Promise<T>;
 }
 
 serve(async (req) => {
