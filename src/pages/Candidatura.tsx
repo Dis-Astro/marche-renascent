@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Step1Anagrafica from "@/components/form/Step1Anagrafica";
@@ -10,7 +10,19 @@ import logoCingoli from "@/assets/logo-cingoli.png";
 export type TipoUtente = "proprietario" | "progettista";
 export type FormData = Record<string, any>;
 
+type SubmitStage = "upload" | "submit" | "";
+
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];
+const REQUEST_TIMEOUT_MS = 20000;
+
+const withTimeout = async <T,>(promise: Promise<T>, message: string): Promise<T> => {
+  return await Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      window.setTimeout(() => reject(new Error(message)), REQUEST_TIMEOUT_MS);
+    }),
+  ]);
+};
 
 const Candidatura = () => {
   const [searchParams] = useSearchParams();
@@ -22,6 +34,7 @@ const Candidatura = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [submitStage, setSubmitStage] = useState<SubmitStage>("");
 
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
@@ -29,47 +42,60 @@ const Candidatura = () => {
   const next = () => setStep((s) => Math.min(s + 1, 2));
   const prev = () => setStep((s) => Math.max(s - 1, 0));
 
+  const uploadFile = async (file: File) => {
+    const ext = file.name.split(".").pop() || "file";
+    const path = `${crypto.randomUUID()}.${ext}`;
+
+    const { error: uploadErr } = await withTimeout(
+      supabase.storage.from("candidature-files").upload(path, file),
+      `Timeout durante il caricamento di ${file.name}`
+    );
+
+    if (uploadErr) throw uploadErr;
+
+    const { data: urlData } = supabase.storage
+      .from("candidature-files")
+      .getPublicUrl(path);
+
+    return urlData.publicUrl;
+  };
+
   const handleSubmit = async () => {
     setError("");
     setLoading(true);
+    setSubmitStage(files.length > 0 ? "upload" : "submit");
 
     try {
-      const fileUrls: string[] = [];
-      for (const file of files) {
-        const ext = file.name.split(".").pop();
-        const path = `${crypto.randomUUID()}.${ext}`;
-        const { error: uploadErr } = await supabase.storage
-          .from("candidature-files")
-          .upload(path, file);
-        if (uploadErr) throw uploadErr;
-        const { data: urlData } = supabase.storage
-          .from("candidature-files")
-          .getPublicUrl(path);
-        fileUrls.push(urlData.publicUrl);
-      }
-
+      const fileUrls = await Promise.all(files.map(uploadFile));
       const payload = { ...form, tipo, file_urls: fileUrls };
 
-      const { error: fnErr } = await supabase.functions.invoke("submit-candidatura", {
-        body: {
-          tipo,
-          nome: form.nome_referente || "",
-          email: form.email || "",
-          telefono: form.telefono || "",
-          comune: form.citta || "",
-          denominazione: form.denominazione || "",
-          referente: form.referente_tipo || "",
-          payload,
-          file_url: fileUrls[0] || null,
-        },
-      });
+      setSubmitStage("submit");
+
+      const { error: fnErr } = await withTimeout(
+        supabase.functions.invoke("submit-candidatura", {
+          body: {
+            tipo,
+            nome: form.nome_referente || "",
+            email: form.email || "",
+            telefono: form.telefono || "",
+            comune: form.citta || "",
+            denominazione: form.denominazione || "",
+            referente: form.referente_tipo || "",
+            payload,
+            file_url: fileUrls[0] || null,
+          },
+        }),
+        "Timeout durante l'invio della candidatura"
+      );
 
       if (fnErr) throw fnErr;
       setSuccess(true);
     } catch (err: any) {
+      console.error("[candidatura] submit failed", err);
       setError(err.message || "Errore durante l'invio.");
     } finally {
       setLoading(false);
+      setSubmitStage("");
     }
   };
 
@@ -194,7 +220,11 @@ const Candidatura = () => {
             ) : (
               <button onClick={handleSubmit} disabled={loading}
                 className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50">
-                {loading ? "Invio in corso..." : "Invia candidatura"}
+                {loading
+                  ? submitStage === "upload"
+                    ? "Caricamento allegati..."
+                    : "Invio in corso..."
+                  : "Invia candidatura"}
               </button>
             )}
           </div>
