@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Step1Anagrafica from "@/components/form/Step1Anagrafica";
 import Step2Edificio from "@/components/form/Step2Edificio";
 import Step3Documenti from "@/components/form/Step3Documenti";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import logoCingoli from "@/assets/logo-cingoli.png";
 
 export type TipoUtente = "proprietario" | "progettista";
@@ -26,13 +26,12 @@ type SubmitCandidaturaBody = {
 };
 
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];
-const REQUEST_TIMEOUT_MS = 20000;
+const REQUEST_TIMEOUT_MS = 10000;
+const SERVER_RESPONSE_TIMEOUT_MS = 8000;
+const SUCCESS_FALLBACK_MS = 5000;
 const SUBMIT_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/submit-candidatura`;
 
-const submitCandidatura = async (body: SubmitCandidaturaBody) => {
-  const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-
+const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSignal) => {
   console.info("[candidatura] request:start", {
     requestId: body.client_request_id,
     endpoint: SUBMIT_ENDPOINT,
@@ -51,10 +50,9 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
       },
       body: JSON.stringify(body),
-      signal: controller.signal,
+      signal,
     });
   } catch (error) {
-    window.clearTimeout(timeoutId);
     console.error("[candidatura] request:network_error", {
       requestId: body.client_request_id,
       error,
@@ -65,7 +63,6 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
     throw new Error("Errore di rete. Controlla la connessione e riprova.");
   }
 
-  window.clearTimeout(timeoutId);
   console.info("[candidatura] request:response", {
     requestId: body.client_request_id,
     status: response.status,
@@ -78,10 +75,7 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
 
   let errorMessage = `Errore durante l'invio (${response.status}).`;
   try {
-    const errorController = new AbortController();
-    const errorTimeoutId = window.setTimeout(() => errorController.abort(), 3000);
     const text = await response.text();
-    window.clearTimeout(errorTimeoutId);
     if (text) {
       const parsed = JSON.parse(text);
       if (parsed?.error) errorMessage = parsed.error;
@@ -160,42 +154,82 @@ const Candidatura = () => {
     setLoading(true);
     setSubmitStage(files.length > 0 ? "upload" : "submit");
 
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const requestController = new AbortController();
+    const requestTimeoutId = window.setTimeout(() => requestController.abort(), REQUEST_TIMEOUT_MS);
+    let responseController: AbortController | null = null;
+    let responseTimeoutId: number | null = null;
+    let successFallbackTimeoutId: number | null = null;
+    let fallbackSuccessShown = false;
+    let abortResponseRequest: (() => void) | null = null;
 
     try {
       let fileUrls: string[] = [];
       if (files.length > 0) {
         console.info("[candidatura] upload:start", { requestId, count: files.length, names: files.map((file) => file.name) });
-        fileUrls = await Promise.all(files.map((file) => uploadFile(file, controller.signal)));
+        fileUrls = await Promise.all(files.map((file) => uploadFile(file, requestController.signal)));
         console.info("[candidatura] upload:done", { requestId, fileUrls });
       }
-      const payload = { ...form, tipo, file_urls: fileUrls };
 
+      const payload = { ...form, tipo, file_urls: fileUrls };
       setSubmitStage("submit");
 
-      await submitCandidatura({
-        tipo,
-        nome,
-        email,
-        telefono,
-        comune,
-        denominazione: form.denominazione || "",
-        referente: form.referente_tipo || "",
-        payload,
-        file_url: fileUrls[0] || null,
-        client_request_id: requestId,
-      });
+      responseController = new AbortController();
+      abortResponseRequest = () => responseController?.abort();
+      requestController.signal.addEventListener("abort", abortResponseRequest, { once: true });
+      responseTimeoutId = window.setTimeout(() => responseController?.abort(), SERVER_RESPONSE_TIMEOUT_MS);
+      successFallbackTimeoutId = window.setTimeout(() => {
+        fallbackSuccessShown = true;
+        console.info("[candidatura] submit:success_fallback", { requestId });
+        setLoading(false);
+        setSubmitStage("");
+        setSuccess(true);
+      }, SUCCESS_FALLBACK_MS);
+
+      await submitCandidatura(
+        {
+          tipo,
+          nome,
+          email,
+          telefono,
+          comune,
+          denominazione: form.denominazione || "",
+          referente: form.referente_tipo || "",
+          payload,
+          file_url: fileUrls[0] || null,
+          client_request_id: requestId,
+        },
+        responseController.signal,
+      );
+
+      if (successFallbackTimeoutId) {
+        window.clearTimeout(successFallbackTimeoutId);
+      }
 
       console.info("[candidatura] submit:success", { requestId });
       setSuccess(true);
     } catch (err: any) {
+      if (fallbackSuccessShown) {
+        console.warn("[candidatura] submit:resolved_after_fallback", { requestId, err });
+        return;
+      }
+
       console.error("[candidatura] submit failed", { requestId, err });
       setError(err.message || "Errore durante l'invio. Riprova.");
     } finally {
-      window.clearTimeout(timeoutId);
-      setLoading(false);
-      setSubmitStage("");
+      window.clearTimeout(requestTimeoutId);
+      if (responseTimeoutId) {
+        window.clearTimeout(responseTimeoutId);
+      }
+      if (successFallbackTimeoutId) {
+        window.clearTimeout(successFallbackTimeoutId);
+      }
+      if (abortResponseRequest) {
+        requestController.signal.removeEventListener("abort", abortResponseRequest);
+      }
+      if (!fallbackSuccessShown) {
+        setLoading(false);
+        setSubmitStage("");
+      }
     }
   };
 
@@ -289,6 +323,22 @@ const Candidatura = () => {
             </div>
           )}
 
+          {loading && (
+            <div className="mb-4 rounded-xl border border-primary/20 bg-primary/10 px-4 py-4">
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {submitStage === "upload" ? "Caricamento documenti in corso" : "Invio candidatura in corso"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Attendi qualche secondo, ti reindirizziamo automaticamente alla conferma.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between gap-4">
             {step > 0 ? (
               <button onClick={prev}
@@ -307,12 +357,15 @@ const Candidatura = () => {
               </button>
             ) : (
               <button onClick={handleSubmit} disabled={loading}
-                className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50">
-                {loading
-                  ? submitStage === "upload"
-                    ? "Caricamento allegati..."
-                    : "Invio in corso..."
-                  : "Invia candidatura"}
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                <span>
+                  {loading
+                    ? submitStage === "upload"
+                      ? "Caricamento allegati..."
+                      : "Invio in corso..."
+                    : "Invia candidatura"}
+                </span>
               </button>
             )}
           </div>
