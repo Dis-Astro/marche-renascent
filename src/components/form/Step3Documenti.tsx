@@ -18,6 +18,7 @@ interface Props {
   files: File[];
   setFiles: (f: File[]) => void;
   inputClass: string;
+  fileInputRef?: MutableRefObject<HTMLInputElement | null>;
 }
 
 const InputField = ({ label, value, onChange, inputClass, required, type = "text" }: any) => (
