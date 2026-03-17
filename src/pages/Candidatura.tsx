@@ -323,6 +323,22 @@ const Candidatura = () => {
             </div>
           )}
 
+          {loading && (
+            <div className="mb-4 rounded-xl border border-primary/20 bg-primary/10 px-4 py-4">
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {submitStage === "upload" ? "Caricamento documenti in corso" : "Invio candidatura in corso"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Attendi qualche secondo, ti reindirizziamo automaticamente alla conferma.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between gap-4">
             {step > 0 ? (
               <button onClick={prev}
@@ -341,12 +357,15 @@ const Candidatura = () => {
               </button>
             ) : (
               <button onClick={handleSubmit} disabled={loading}
-                className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50">
-                {loading
-                  ? submitStage === "upload"
-                    ? "Caricamento allegati..."
-                    : "Invio in corso..."
-                  : "Invia candidatura"}
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                <span>
+                  {loading
+                    ? submitStage === "upload"
+                      ? "Caricamento allegati..."
+                      : "Invio in corso..."
+                    : "Invia candidatura"}
+                </span>
               </button>
             )}
           </div>
