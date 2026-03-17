@@ -78,12 +78,10 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
 
   let errorMessage = `Errore durante l'invio (${response.status}).`;
   try {
-    const text = await Promise.race([
-      response.text(),
-      new Promise<string>((_, reject) =>
-        setTimeout(() => reject(new Error("timeout")), 3000)
-      ),
-    ]);
+    const errorController = new AbortController();
+    const errorTimeoutId = window.setTimeout(() => errorController.abort(), 3000);
+    const text = await response.text();
+    window.clearTimeout(errorTimeoutId);
     if (text) {
       const parsed = JSON.parse(text);
       if (parsed?.error) errorMessage = parsed.error;
