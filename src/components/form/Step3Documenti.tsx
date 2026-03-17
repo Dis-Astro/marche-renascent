@@ -1,3 +1,4 @@
+import { useRef, type MutableRefObject } from "react";
 import { TipoUtente, FormData } from "@/pages/Candidatura";
 import {
   STATO_DOCUMENTO,
@@ -17,6 +18,7 @@ interface Props {
   files: File[];
   setFiles: (f: File[]) => void;
   inputClass: string;
+  fileInputRef?: MutableRefObject<HTMLInputElement | null>;
 }
 
 const InputField = ({ label, value, onChange, inputClass, required, type = "text" }: any) => (
@@ -29,7 +31,7 @@ const InputField = ({ label, value, onChange, inputClass, required, type = "text
   </div>
 );
 
-const Step3Documenti = ({ tipo, form, update, files, setFiles, inputClass }: Props) => {
+const Step3Documenti = ({ tipo, form, update, files, setFiles, inputClass, fileInputRef }: Props) => {
   if (tipo === "proprietario") {
     return (
       <div className="space-y-4">
@@ -45,6 +47,7 @@ const Step3Documenti = ({ tipo, form, update, files, setFiles, inputClass }: Pro
             Allega i documenti che ritieni utile per farci capire lo stato dell'immobile e della pratica <span className="text-[10px] text-primary/60 ml-1">Facoltativo</span>
           </label>
           <input
+            ref={fileInputRef}
             type="file"
             accept="image/*,.pdf,.doc,.docx"
             multiple
@@ -129,6 +132,7 @@ const Step3Documenti = ({ tipo, form, update, files, setFiles, inputClass }: Pro
           Allegati (foto, documenti) <span className="text-[10px] text-primary/60 ml-1">Facoltativo</span>
         </label>
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*,.pdf,.doc,.docx"
           multiple

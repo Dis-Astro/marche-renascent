@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Step1Anagrafica from "@/components/form/Step1Anagrafica";
@@ -34,8 +34,6 @@ const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSigna
     requestId: body.client_request_id,
     endpoint: SUBMIT_ENDPOINT,
     hasFile: Boolean(body.file_url),
-    comune: body.comune,
-    tipo: body.tipo,
   });
 
   let response: Response;
@@ -52,10 +50,7 @@ const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSigna
       keepalive: true,
     });
   } catch (error) {
-    console.error("[candidatura] request:network_error", {
-      requestId: body.client_request_id,
-      error,
-    });
+    console.error("[candidatura] request:network_error", { requestId: body.client_request_id, error });
     if (error instanceof DOMException && error.name === "AbortError") {
       throw new Error("Timeout durante l'invio della candidatura. Riprova.");
     }
@@ -80,7 +75,7 @@ const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSigna
       if (parsed?.error) errorMessage = parsed.error;
     }
   } catch {
-    // ignore - we already have a fallback error message
+    // fallback error message already set
   }
 
   console.error("[candidatura] request:error_response", {
@@ -103,11 +98,46 @@ const Candidatura = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
+  // Guards and refs
+  const isSubmittingRef = useRef(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fallbackTimerId = useRef<number | null>(null);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      // Clean up fallback timer on unmount
+      if (fallbackTimerId.current !== null) {
+        window.clearTimeout(fallbackTimerId.current);
+      }
+    };
+  }, []);
+
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
 
   const next = () => setStep((s) => Math.min(s + 1, 2));
   const prev = () => setStep((s) => Math.max(s - 1, 0));
+
+  /** Transition to success state - idempotent, safe to call multiple times */
+  const transitionToSuccess = useCallback(() => {
+    if (!mountedRef.current) return;
+    console.info("[candidatura] navigate:start");
+    setLoading(false);
+    setSuccess(true);
+    // Reset form data and files to free memory
+    console.info("[candidatura] reset:start");
+    setForm({});
+    setFiles([]);
+    // Reset DOM file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    console.info("[candidatura] reset:end");
+    console.info("[candidatura] navigate:end");
+  }, []);
 
   const uploadFile = async (file: File, signal: AbortSignal) => {
     const ext = file.name.split(".").pop() || "file";
@@ -128,7 +158,11 @@ const Candidatura = () => {
   };
 
   const handleSubmit = () => {
-    if (loading) return;
+    // Guard: prevent double submit via ref (survives re-renders)
+    if (isSubmittingRef.current || loading) {
+      console.warn("[candidatura] submit:blocked (already submitting)");
+      return;
+    }
 
     const requestId = crypto.randomUUID();
     const nome = form.nome_referente || "";
@@ -136,48 +170,51 @@ const Candidatura = () => {
     const telefono = form.telefono || "";
     const comune = form.citta || "";
 
-    console.info("[candidatura] submit:start", {
-      requestId,
-      tipo,
-      files: files.length,
-      comune,
-      email,
-    });
+    console.info("[candidatura] submit:start", { requestId, tipo, files: files.length, comune, email });
 
     if (!nome.trim() || !email.trim() || !telefono.trim() || !comune.trim()) {
-      console.warn("[candidatura] submit:validation_failed", { requestId, nome, email, telefono, comune });
+      console.warn("[candidatura] submit:validation_failed", { requestId });
       setError("Per favore compila tutti i campi obbligatori: Nome, Email, Telefono e Città.");
       return;
     }
 
+    // Lock submission
+    isSubmittingRef.current = true;
     setError("");
     setLoading(true);
 
-    window.setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
+    // Capture files snapshot before any state reset
+    const submittedFiles = [...files];
+    const submittedForm = { ...form };
+
+    // Optimistic fallback: show success after 2s no matter what
+    fallbackTimerId.current = window.setTimeout(() => {
+      console.info("[candidatura] submit:fallback_triggered", { requestId });
+      transitionToSuccess();
     }, SUCCESS_FALLBACK_MS);
 
+    // Fire-and-forget background work
     void (async () => {
       const requestController = new AbortController();
       const requestTimeoutId = window.setTimeout(() => requestController.abort(), REQUEST_TIMEOUT_MS);
       let responseController: AbortController | null = null;
       let responseTimeoutId: number | null = null;
-      let abortResponseRequest: (() => void) | null = null;
 
       try {
+        // --- Upload files ---
         let fileUrls: string[] = [];
-        if (files.length > 0) {
-          console.info("[candidatura] upload:start", { requestId, count: files.length, names: files.map((file) => file.name) });
-          fileUrls = await Promise.all(files.map((file) => uploadFile(file, requestController.signal)));
+        if (submittedFiles.length > 0) {
+          console.info("[candidatura] upload:start", { requestId, count: submittedFiles.length });
+          fileUrls = await Promise.all(submittedFiles.map((file) => uploadFile(file, requestController.signal)));
           console.info("[candidatura] upload:done", { requestId, fileUrls });
         }
 
-        const payload = { ...form, tipo, file_urls: fileUrls };
+        // --- Submit to backend ---
+        const payload = { ...submittedForm, tipo, file_urls: fileUrls };
 
         responseController = new AbortController();
-        abortResponseRequest = () => responseController?.abort();
-        requestController.signal.addEventListener("abort", abortResponseRequest, { once: true });
+        const abortResponseOnGlobal = () => responseController?.abort();
+        requestController.signal.addEventListener("abort", abortResponseOnGlobal, { once: true });
         responseTimeoutId = window.setTimeout(() => responseController?.abort(), SERVER_RESPONSE_TIMEOUT_MS);
 
         await submitCandidatura(
@@ -187,8 +224,8 @@ const Candidatura = () => {
             email,
             telefono,
             comune,
-            denominazione: form.denominazione || "",
-            referente: form.referente_tipo || "",
+            denominazione: submittedForm.denominazione || "",
+            referente: submittedForm.referente_tipo || "",
             payload,
             file_url: fileUrls[0] || null,
             client_request_id: requestId,
@@ -197,15 +234,31 @@ const Candidatura = () => {
         );
 
         console.info("[candidatura] submit:accepted", { requestId });
+
+        // If response arrived before fallback timer, transition immediately
+        if (fallbackTimerId.current !== null) {
+          window.clearTimeout(fallbackTimerId.current);
+          fallbackTimerId.current = null;
+        }
+        transitionToSuccess();
       } catch (err) {
         console.error("[candidatura] submit:background_error", { requestId, err });
+        // Don't block UX - fallback timer will handle success transition
       } finally {
+        console.info("[candidatura] submit:finally", { requestId });
         window.clearTimeout(requestTimeoutId);
-        if (responseTimeoutId) {
-          window.clearTimeout(responseTimeoutId);
-        }
-        if (abortResponseRequest) {
-          requestController.signal.removeEventListener("abort", abortResponseRequest);
+        if (responseTimeoutId) window.clearTimeout(responseTimeoutId);
+        isSubmittingRef.current = false;
+
+        // --- Best-effort tracking (non-blocking) ---
+        try {
+          console.info("[candidatura] tracking:start", { requestId });
+          // Placeholder for any analytics/tracking calls
+          // e.g. gtag('event', 'conversion', {...})
+          // These MUST NOT be awaited
+          console.info("[candidatura] tracking:done", { requestId });
+        } catch (trackingErr) {
+          console.error("[candidatura] tracking:error", { requestId, trackingErr });
         }
       }
     })();
@@ -291,7 +344,7 @@ const Candidatura = () => {
             {step === 0 && <Step1Anagrafica tipo={tipo} form={form} update={update} inputClass={inputClass} />}
             {step === 1 && <Step2Edificio tipo={tipo} form={form} update={update} inputClass={inputClass} />}
             {step === 2 && (
-              <Step3Documenti tipo={tipo} form={form} update={update} files={files} setFiles={setFiles} inputClass={inputClass} />
+              <Step3Documenti tipo={tipo} form={form} update={update} files={files} setFiles={setFiles} inputClass={inputClass} fileInputRef={fileInputRef} />
             )}
           </div>
 
