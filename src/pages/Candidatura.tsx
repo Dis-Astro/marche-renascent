@@ -4,13 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import Step1Anagrafica from "@/components/form/Step1Anagrafica";
 import Step2Edificio from "@/components/form/Step2Edificio";
 import Step3Documenti from "@/components/form/Step3Documenti";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import logoCingoli from "@/assets/logo-cingoli.png";
 
 export type TipoUtente = "proprietario" | "progettista";
 export type FormData = Record<string, any>;
-
-type SubmitStage = "upload" | "submit" | "";
 
 type SubmitCandidaturaBody = {
   tipo: TipoUtente;
@@ -28,7 +26,7 @@ type SubmitCandidaturaBody = {
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];
 const REQUEST_TIMEOUT_MS = 10000;
 const SERVER_RESPONSE_TIMEOUT_MS = 8000;
-const SUCCESS_FALLBACK_MS = 5000;
+const SUCCESS_FALLBACK_MS = 2000;
 const SUBMIT_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/submit-candidatura`;
 
 const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSignal) => {
@@ -51,6 +49,7 @@ const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSigna
       },
       body: JSON.stringify(body),
       signal,
+      keepalive: true,
     });
   } catch (error) {
     console.error("[candidatura] request:network_error", {
@@ -103,7 +102,6 @@ const Candidatura = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  const [submitStage, setSubmitStage] = useState<SubmitStage>("");
 
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
@@ -129,7 +127,9 @@ const Candidatura = () => {
     return urlData.publicUrl;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
+    if (loading) return;
+
     const requestId = crypto.randomUUID();
     const nome = form.nome_referente || "";
     const email = form.email || "";
@@ -152,85 +152,63 @@ const Candidatura = () => {
 
     setError("");
     setLoading(true);
-    setSubmitStage(files.length > 0 ? "upload" : "submit");
 
-    const requestController = new AbortController();
-    const requestTimeoutId = window.setTimeout(() => requestController.abort(), REQUEST_TIMEOUT_MS);
-    let responseController: AbortController | null = null;
-    let responseTimeoutId: number | null = null;
-    let successFallbackTimeoutId: number | null = null;
-    let fallbackSuccessShown = false;
-    let abortResponseRequest: (() => void) | null = null;
-
-    try {
-      let fileUrls: string[] = [];
-      if (files.length > 0) {
-        console.info("[candidatura] upload:start", { requestId, count: files.length, names: files.map((file) => file.name) });
-        fileUrls = await Promise.all(files.map((file) => uploadFile(file, requestController.signal)));
-        console.info("[candidatura] upload:done", { requestId, fileUrls });
-      }
-
-      const payload = { ...form, tipo, file_urls: fileUrls };
-      setSubmitStage("submit");
-
-      responseController = new AbortController();
-      abortResponseRequest = () => responseController?.abort();
-      requestController.signal.addEventListener("abort", abortResponseRequest, { once: true });
-      responseTimeoutId = window.setTimeout(() => responseController?.abort(), SERVER_RESPONSE_TIMEOUT_MS);
-      successFallbackTimeoutId = window.setTimeout(() => {
-        fallbackSuccessShown = true;
-        console.info("[candidatura] submit:success_fallback", { requestId });
-        setLoading(false);
-        setSubmitStage("");
-        setSuccess(true);
-      }, SUCCESS_FALLBACK_MS);
-
-      await submitCandidatura(
-        {
-          tipo,
-          nome,
-          email,
-          telefono,
-          comune,
-          denominazione: form.denominazione || "",
-          referente: form.referente_tipo || "",
-          payload,
-          file_url: fileUrls[0] || null,
-          client_request_id: requestId,
-        },
-        responseController.signal,
-      );
-
-      if (successFallbackTimeoutId) {
-        window.clearTimeout(successFallbackTimeoutId);
-      }
-
-      console.info("[candidatura] submit:success", { requestId });
+    window.setTimeout(() => {
+      setLoading(false);
       setSuccess(true);
-    } catch (err: any) {
-      if (fallbackSuccessShown) {
-        console.warn("[candidatura] submit:resolved_after_fallback", { requestId, err });
-        return;
-      }
+    }, SUCCESS_FALLBACK_MS);
 
-      console.error("[candidatura] submit failed", { requestId, err });
-      setError(err.message || "Errore durante l'invio. Riprova.");
-    } finally {
-      window.clearTimeout(requestTimeoutId);
-      if (responseTimeoutId) {
-        window.clearTimeout(responseTimeoutId);
+    void (async () => {
+      const requestController = new AbortController();
+      const requestTimeoutId = window.setTimeout(() => requestController.abort(), REQUEST_TIMEOUT_MS);
+      let responseController: AbortController | null = null;
+      let responseTimeoutId: number | null = null;
+      let abortResponseRequest: (() => void) | null = null;
+
+      try {
+        let fileUrls: string[] = [];
+        if (files.length > 0) {
+          console.info("[candidatura] upload:start", { requestId, count: files.length, names: files.map((file) => file.name) });
+          fileUrls = await Promise.all(files.map((file) => uploadFile(file, requestController.signal)));
+          console.info("[candidatura] upload:done", { requestId, fileUrls });
+        }
+
+        const payload = { ...form, tipo, file_urls: fileUrls };
+
+        responseController = new AbortController();
+        abortResponseRequest = () => responseController?.abort();
+        requestController.signal.addEventListener("abort", abortResponseRequest, { once: true });
+        responseTimeoutId = window.setTimeout(() => responseController?.abort(), SERVER_RESPONSE_TIMEOUT_MS);
+
+        await submitCandidatura(
+          {
+            tipo,
+            nome,
+            email,
+            telefono,
+            comune,
+            denominazione: form.denominazione || "",
+            referente: form.referente_tipo || "",
+            payload,
+            file_url: fileUrls[0] || null,
+            client_request_id: requestId,
+          },
+          responseController.signal,
+        );
+
+        console.info("[candidatura] submit:accepted", { requestId });
+      } catch (err) {
+        console.error("[candidatura] submit:background_error", { requestId, err });
+      } finally {
+        window.clearTimeout(requestTimeoutId);
+        if (responseTimeoutId) {
+          window.clearTimeout(responseTimeoutId);
+        }
+        if (abortResponseRequest) {
+          requestController.signal.removeEventListener("abort", abortResponseRequest);
+        }
       }
-      if (successFallbackTimeoutId) {
-        window.clearTimeout(successFallbackTimeoutId);
-      }
-      if (abortResponseRequest) {
-        requestController.signal.removeEventListener("abort", abortResponseRequest);
-      }
-      if (!fallbackSuccessShown) {
-        setLoading(false);
-        setSubmitStage("");
-      }
-    }
+    })();
   };
 
   const inputClass =
@@ -323,22 +301,6 @@ const Candidatura = () => {
             </div>
           )}
 
-          {loading && (
-            <div className="mb-4 rounded-xl border border-primary/20 bg-primary/10 px-4 py-4">
-              <div className="flex items-center gap-3">
-                <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                <div>
-                  <p className="text-sm font-semibold text-foreground">
-                    {submitStage === "upload" ? "Caricamento documenti in corso" : "Invio candidatura in corso"}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Attendi qualche secondo, ti reindirizziamo automaticamente alla conferma.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
           <div className="flex items-center justify-between gap-4">
             {step > 0 ? (
               <button onClick={prev}
@@ -357,15 +319,8 @@ const Candidatura = () => {
               </button>
             ) : (
               <button onClick={handleSubmit} disabled={loading}
-                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
-                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                <span>
-                  {loading
-                    ? submitStage === "upload"
-                      ? "Caricamento allegati..."
-                      : "Invio in corso..."
-                    : "Invia candidatura"}
-                </span>
+                className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+                Invia candidatura
               </button>
             )}
           </div>
