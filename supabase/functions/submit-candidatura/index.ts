@@ -179,9 +179,18 @@ Deno.serve(async (req) => {
 
   try {
     const body = (await req.json()) as SubmitBody;
-    const { tipo, nome, email, telefono, comune, denominazione, referente, payload, file_url } = body;
+    const { tipo, nome, email, telefono, comune, denominazione, referente, payload, file_url, client_request_id } = body;
+
+    console.log("[submit-candidatura] request:received", JSON.stringify({
+      client_request_id: client_request_id || null,
+      tipo: tipo || "privato",
+      comune,
+      has_file: Boolean(file_url),
+      has_payload: Boolean(payload),
+    }));
 
     if (!nome || !email || !telefono || !comune) {
+      console.warn("[submit-candidatura] request:validation_failed", JSON.stringify({ client_request_id: client_request_id || null }));
       return new Response(JSON.stringify({ error: "Campi obbligatori mancanti" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -207,12 +216,15 @@ Deno.serve(async (req) => {
     });
 
     if (dbError) {
+      console.error("[submit-candidatura] request:db_error", JSON.stringify({ client_request_id: client_request_id || null, message: dbError.message }));
       throw dbError;
     }
 
+    console.log("[submit-candidatura] request:db_inserted", JSON.stringify({ client_request_id: client_request_id || null }));
     runInBackground(notifyByEmail(supabase, body));
+    console.log("[submit-candidatura] request:success", JSON.stringify({ client_request_id: client_request_id || null }));
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, client_request_id: client_request_id || null }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {

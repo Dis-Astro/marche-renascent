@@ -152,13 +152,22 @@ const Candidatura = () => {
   };
 
   const handleSubmit = async () => {
-    // Client-side validation to prevent 400 errors
+    const requestId = crypto.randomUUID();
     const nome = form.nome_referente || "";
     const email = form.email || "";
     const telefono = form.telefono || "";
     const comune = form.citta || "";
 
+    console.info("[candidatura] submit:start", {
+      requestId,
+      tipo,
+      files: files.length,
+      comune,
+      email,
+    });
+
     if (!nome.trim() || !email.trim() || !telefono.trim() || !comune.trim()) {
+      console.warn("[candidatura] submit:validation_failed", { requestId, nome, email, telefono, comune });
       setError("Per favore compila tutti i campi obbligatori: Nome, Email, Telefono e Città.");
       return;
     }
@@ -170,7 +179,9 @@ const Candidatura = () => {
     try {
       let fileUrls: string[] = [];
       if (files.length > 0) {
+        console.info("[candidatura] upload:start", { requestId, count: files.length, names: files.map((file) => file.name) });
         fileUrls = await Promise.all(files.map(uploadFile));
+        console.info("[candidatura] upload:done", { requestId, fileUrls });
       }
       const payload = { ...form, tipo, file_urls: fileUrls };
 
@@ -186,11 +197,13 @@ const Candidatura = () => {
         referente: form.referente_tipo || "",
         payload,
         file_url: fileUrls[0] || null,
+        client_request_id: requestId,
       });
 
+      console.info("[candidatura] submit:success", { requestId });
       setSuccess(true);
     } catch (err: any) {
-      console.error("[candidatura] submit failed", err);
+      console.error("[candidatura] submit failed", { requestId, err });
       setError(err.message || "Errore durante l'invio. Riprova.");
     } finally {
       setLoading(false);
