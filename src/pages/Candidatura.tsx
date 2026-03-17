@@ -22,6 +22,7 @@ type SubmitCandidaturaBody = {
   referente: string;
   payload: FormData;
   file_url: string | null;
+  client_request_id: string;
 };
 
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];

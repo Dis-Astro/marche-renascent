@@ -30,6 +30,7 @@ interface SubmitBody {
   referente?: string;
   payload?: Record<string, unknown>;
   file_url?: string | null;
+  client_request_id?: string;
 }
 
 async function sendSmtpEmail(opts: SmtpEmailOptions): Promise<{ ok: boolean; error?: string }> {
