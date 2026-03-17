@@ -162,11 +162,14 @@ const Candidatura = () => {
     setLoading(true);
     setSubmitStage(files.length > 0 ? "upload" : "submit");
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
     try {
       let fileUrls: string[] = [];
       if (files.length > 0) {
         console.info("[candidatura] upload:start", { requestId, count: files.length, names: files.map((file) => file.name) });
-        fileUrls = await Promise.all(files.map(uploadFile));
+        fileUrls = await Promise.all(files.map((file) => uploadFile(file, controller.signal)));
         console.info("[candidatura] upload:done", { requestId, fileUrls });
       }
       const payload = { ...form, tipo, file_urls: fileUrls };
