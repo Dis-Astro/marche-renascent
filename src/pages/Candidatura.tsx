@@ -199,8 +199,6 @@ const Candidatura = () => {
       setLoading(false);
       setSubmitStage("");
     }
-      setSubmitStage("");
-    }
   };
 
   const inputClass =
