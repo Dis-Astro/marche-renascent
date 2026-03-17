@@ -47,6 +47,14 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
+  console.info("[candidatura] request:start", {
+    requestId: body.client_request_id,
+    endpoint: SUBMIT_ENDPOINT,
+    hasFile: Boolean(body.file_url),
+    comune: body.comune,
+    tipo: body.tipo,
+  });
+
   let response: Response;
   try {
     response = await fetch(SUBMIT_ENDPOINT, {
@@ -61,6 +69,10 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
     });
   } catch (error) {
     window.clearTimeout(timeoutId);
+    console.error("[candidatura] request:network_error", {
+      requestId: body.client_request_id,
+      error,
+    });
     if (error instanceof DOMException && error.name === "AbortError") {
       throw new Error("Timeout durante l'invio della candidatura. Riprova.");
     }
@@ -68,14 +80,16 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   }
 
   window.clearTimeout(timeoutId);
+  console.info("[candidatura] request:response", {
+    requestId: body.client_request_id,
+    status: response.status,
+    ok: response.ok,
+  });
 
-  // Regardless of what happens reading the body, use the status to decide
   if (response.ok) {
-    // Don't even try to read the body - just succeed
     return { success: true };
   }
 
-  // Try to read error message, but don't hang on it
   let errorMessage = `Errore durante l'invio (${response.status}).`;
   try {
     const text = await Promise.race([
@@ -91,6 +105,12 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   } catch {
     // ignore - we already have a fallback error message
   }
+
+  console.error("[candidatura] request:error_response", {
+    requestId: body.client_request_id,
+    status: response.status,
+    errorMessage,
+  });
 
   throw new Error(errorMessage);
 };
