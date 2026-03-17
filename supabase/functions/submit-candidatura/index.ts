@@ -1,10 +1,9 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 interface SmtpEmailOptions {
@@ -21,10 +20,24 @@ interface SmtpEmailOptions {
   html: string;
 }
 
+interface SubmitBody {
+  tipo?: string;
+  nome: string;
+  email: string;
+  telefono: string;
+  comune: string;
+  denominazione?: string;
+  referente?: string;
+  payload?: Record<string, unknown>;
+  file_url?: string | null;
+}
+
 async function sendSmtpEmail(opts: SmtpEmailOptions): Promise<{ ok: boolean; error?: string }> {
   let client: SMTPClient | null = null;
+
   try {
     const tls = opts.port === 465;
+
     client = new SMTPClient({
       connection: {
         hostname: opts.host,
@@ -37,23 +50,28 @@ async function sendSmtpEmail(opts: SmtpEmailOptions): Promise<{ ok: boolean; err
       },
     });
 
-    const mailConfig: any = {
+    const mailConfig: Record<string, unknown> = {
       from: opts.from,
       to: opts.to,
       subject: opts.subject,
       html: opts.html,
     };
+
     if (opts.replyTo) mailConfig.replyTo = opts.replyTo;
-    if (opts.cc && opts.cc.length > 0) mailConfig.cc = opts.cc;
-    if (opts.bcc && opts.bcc.length > 0) mailConfig.bcc = opts.bcc;
+    if (opts.cc?.length) mailConfig.cc = opts.cc;
+    if (opts.bcc?.length) mailConfig.bcc = opts.bcc;
 
     await client.send(mailConfig);
     await client.close();
+
     return { ok: true };
   } catch (err) {
     try {
       client?.close();
-    } catch {}
+    } catch {
+      // no-op
+    }
+
     return { ok: false, error: (err as Error).message };
   }
 }
@@ -66,32 +84,114 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
   });
 
   return Promise.race([promise, timeoutPromise]).finally(() => {
-    if (timeoutId) clearTimeout(timeoutId);
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
   }) as Promise<T>;
 }
 
-serve(async (req) => {
+function runInBackground(task: Promise<unknown>) {
+  const edgeRuntime = (globalThis as typeof globalThis & {
+    EdgeRuntime?: { waitUntil?: (promise: Promise<unknown>) => void };
+  }).EdgeRuntime;
+
+  if (edgeRuntime?.waitUntil) {
+    edgeRuntime.waitUntil(task);
+    return;
+  }
+
+  task.catch((error) => {
+    console.error("[submit-candidatura] Background task failed:", error);
+  });
+}
+
+async function notifyByEmail(
+  supabase: ReturnType<typeof createClient>,
+  { tipo, nome, email, telefono, comune, denominazione, referente, file_url }: SubmitBody,
+) {
+  const { data: configs, error: configError } = await supabase
+    .from("email_config")
+    .select("*")
+    .limit(1);
+
+  if (configError) {
+    console.error("[submit-candidatura] Config email non leggibile:", configError.message);
+    return;
+  }
+
+  const cfg = configs?.[0];
+
+  if (!cfg?.enabled || !cfg.smtp_host || !cfg.smtp_user || !cfg.smtp_pass) {
+    return;
+  }
+
+  const recipients = cfg.to_recipients
+    .split(",")
+    .map((entry: string) => entry.trim())
+    .filter(Boolean);
+
+  if (!recipients.length) {
+    return;
+  }
+
+  let subject = cfg.subject_template || `Nuova candidatura: ${nome}`;
+  subject = subject
+    .replace("{tipo}", tipo || "privato")
+    .replace("{comune}", comune || "")
+    .replace("{referente}", referente || nome || "");
+
+  const mailResult = await withTimeout(
+    sendSmtpEmail({
+      host: cfg.smtp_host,
+      port: cfg.smtp_port || 465,
+      user: cfg.smtp_user,
+      pass: cfg.smtp_pass,
+      from: `${cfg.from_name} <${cfg.from_email}>`,
+      to: recipients,
+      replyTo: cfg.reply_to || undefined,
+      cc: cfg.cc ? cfg.cc.split(",").map((entry: string) => entry.trim()) : undefined,
+      bcc: cfg.bcc ? cfg.bcc.split(",").map((entry: string) => entry.trim()) : undefined,
+      subject,
+      html: `
+        <h2>Nuova candidatura ricevuta</h2>
+        <p><strong>Tipo:</strong> ${tipo || "privato"}</p>
+        <p><strong>Nome:</strong> ${nome}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Telefono:</strong> ${telefono}</p>
+        <p><strong>Comune:</strong> ${comune}</p>
+        <p><strong>Denominazione:</strong> ${denominazione || "–"}</p>
+        <p><strong>Referente:</strong> ${referente || "–"}</p>
+        ${file_url ? `<p><strong>Allegato:</strong> <a href="${file_url}">${file_url}</a></p>` : ""}
+      `,
+    }),
+    12000,
+    "Timeout invio SMTP",
+  ).catch((emailError) => ({ ok: false, error: (emailError as Error).message }));
+
+  if (!mailResult.ok) {
+    console.error("[submit-candidatura] Invio email non riuscito:", mailResult.error);
+  }
+}
+
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    const body = await req.json();
+    const body = (await req.json()) as SubmitBody;
     const { tipo, nome, email, telefono, comune, denominazione, referente, payload, file_url } = body;
 
     if (!nome || !email || !telefono || !comune) {
-      return new Response(
-        JSON.stringify({ error: "Campi obbligatori mancanti" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "Campi obbligatori mancanti" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // Insert candidatura
     const { error: dbError } = await supabase.from("candidature").insert({
       tipo: tipo || "privato",
       nome,
@@ -105,72 +205,21 @@ serve(async (req) => {
       stato: "nuova",
     });
 
-    if (dbError) throw dbError;
-
-    // Get email config
-    const { data: configs } = await supabase
-      .from("email_config")
-      .select("*")
-      .limit(1);
-
-    const cfg = configs?.[0];
-
-    if (cfg?.enabled && cfg?.smtp_host && cfg?.smtp_user && cfg?.smtp_pass) {
-      const recipients = cfg.to_recipients
-        .split(",")
-        .map((e: string) => e.trim())
-        .filter(Boolean);
-
-      if (recipients.length > 0) {
-        // Build subject from template
-        let subject = cfg.subject_template || `Nuova candidatura: ${nome}`;
-        subject = subject
-          .replace("{tipo}", tipo || "privato")
-          .replace("{comune}", comune || "")
-          .replace("{referente}", referente || nome || "");
-
-        const mailResult = await withTimeout(
-          sendSmtpEmail({
-            host: cfg.smtp_host,
-            port: cfg.smtp_port || 465,
-            user: cfg.smtp_user,
-            pass: cfg.smtp_pass,
-            from: `${cfg.from_name} <${cfg.from_email}>`,
-            to: recipients,
-            replyTo: cfg.reply_to || undefined,
-            cc: cfg.cc ? cfg.cc.split(",").map((e: string) => e.trim()) : undefined,
-            bcc: cfg.bcc ? cfg.bcc.split(",").map((e: string) => e.trim()) : undefined,
-            subject,
-            html: `
-              <h2>Nuova candidatura ricevuta</h2>
-              <p><strong>Tipo:</strong> ${tipo || "privato"}</p>
-              <p><strong>Nome:</strong> ${nome}</p>
-              <p><strong>Email:</strong> ${email}</p>
-              <p><strong>Telefono:</strong> ${telefono}</p>
-              <p><strong>Comune:</strong> ${comune}</p>
-              <p><strong>Denominazione:</strong> ${denominazione || "–"}</p>
-              <p><strong>Referente:</strong> ${referente || "–"}</p>
-              ${file_url ? `<p><strong>Allegato:</strong> <a href="${file_url}">${file_url}</a></p>` : ""}
-            `,
-          }),
-          12000,
-          "Timeout invio SMTP"
-        ).catch((emailError) => ({ ok: false, error: (emailError as Error).message }));
-
-        if (!mailResult.ok) {
-          console.error("[submit-candidatura] Invio email non riuscito:", mailResult.error);
-        }
-      }
+    if (dbError) {
+      throw dbError;
     }
 
-    return new Response(
-      JSON.stringify({ success: true }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    runInBackground(notifyByEmail(supabase, body));
+
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: (err as Error).message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    console.error("[submit-candidatura] Request failed:", err);
+
+    return new Response(JSON.stringify({ error: (err as Error).message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
