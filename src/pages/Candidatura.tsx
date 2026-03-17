@@ -42,22 +42,13 @@ const withTimeout = <T,>(promise: Promise<T>, message: string): Promise<T> => {
   }) as Promise<T>;
 };
 
-const readErrorResponse = async (response: Response) => {
-  try {
-    const raw = await withTimeout(response.text(), "Timeout durante la lettura della risposta del server");
-    return raw ? JSON.parse(raw) : null;
-  } catch (error) {
-    console.warn("[candidatura] unable to parse error response", error);
-    return null;
-  }
-};
-
 const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
+  let response: Response;
   try {
-    const response = await fetch(SUBMIT_ENDPOINT, {
+    response = await fetch(SUBMIT_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,22 +58,40 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
       body: JSON.stringify(body),
       signal: controller.signal,
     });
-
-    if (!response.ok) {
-      const data = await readErrorResponse(response);
-      throw new Error(data?.error || `Errore durante l'invio della candidatura (${response.status}).`);
-    }
-
-    return { success: true };
   } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") {
-      throw new Error("Timeout durante l'invio della candidatura");
-    }
-
-    throw error;
-  } finally {
     window.clearTimeout(timeoutId);
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("Timeout durante l'invio della candidatura. Riprova.");
+    }
+    throw new Error("Errore di rete. Controlla la connessione e riprova.");
   }
+
+  window.clearTimeout(timeoutId);
+
+  // Regardless of what happens reading the body, use the status to decide
+  if (response.ok) {
+    // Don't even try to read the body - just succeed
+    return { success: true };
+  }
+
+  // Try to read error message, but don't hang on it
+  let errorMessage = `Errore durante l'invio (${response.status}).`;
+  try {
+    const text = await Promise.race([
+      response.text(),
+      new Promise<string>((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), 3000)
+      ),
+    ]);
+    if (text) {
+      const parsed = JSON.parse(text);
+      if (parsed?.error) errorMessage = parsed.error;
+    }
+  } catch {
+    // ignore - we already have a fallback error message
+  }
+
+  throw new Error(errorMessage);
 };
 
 const Candidatura = () => {
@@ -122,22 +131,36 @@ const Candidatura = () => {
   };
 
   const handleSubmit = async () => {
+    // Client-side validation to prevent 400 errors
+    const nome = form.nome_referente || "";
+    const email = form.email || "";
+    const telefono = form.telefono || "";
+    const comune = form.citta || "";
+
+    if (!nome.trim() || !email.trim() || !telefono.trim() || !comune.trim()) {
+      setError("Per favore compila tutti i campi obbligatori: Nome, Email, Telefono e Città.");
+      return;
+    }
+
     setError("");
     setLoading(true);
     setSubmitStage(files.length > 0 ? "upload" : "submit");
 
     try {
-      const fileUrls = await Promise.all(files.map(uploadFile));
+      let fileUrls: string[] = [];
+      if (files.length > 0) {
+        fileUrls = await Promise.all(files.map(uploadFile));
+      }
       const payload = { ...form, tipo, file_urls: fileUrls };
 
       setSubmitStage("submit");
 
       await submitCandidatura({
         tipo,
-        nome: form.nome_referente || "",
-        email: form.email || "",
-        telefono: form.telefono || "",
-        comune: form.citta || "",
+        nome,
+        email,
+        telefono,
+        comune,
         denominazione: form.denominazione || "",
         referente: form.referente_tipo || "",
         payload,
@@ -147,7 +170,7 @@ const Candidatura = () => {
       setSuccess(true);
     } catch (err: any) {
       console.error("[candidatura] submit failed", err);
-      setError(err.message || "Errore durante l'invio.");
+      setError(err.message || "Errore durante l'invio. Riprova.");
     } finally {
       setLoading(false);
       setSubmitStage("");
