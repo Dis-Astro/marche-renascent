@@ -1,3 +1,4 @@
+import { useRef, type MutableRefObject } from "react";
 import { TipoUtente, FormData } from "@/pages/Candidatura";
 import {
   STATO_DOCUMENTO,
