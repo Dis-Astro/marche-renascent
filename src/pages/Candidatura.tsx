@@ -195,7 +195,10 @@ const Candidatura = () => {
       console.error("[candidatura] submit failed", { requestId, err });
       setError(err.message || "Errore durante l'invio. Riprova.");
     } finally {
+      window.clearTimeout(timeoutId);
       setLoading(false);
+      setSubmitStage("");
+    }
       setSubmitStage("");
     }
   };
