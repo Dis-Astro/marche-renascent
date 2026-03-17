@@ -22,6 +22,7 @@ type SubmitCandidaturaBody = {
   referente: string;
   payload: FormData;
   file_url: string | null;
+  client_request_id: string;
 };
 
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];
@@ -46,6 +47,14 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
+  console.info("[candidatura] request:start", {
+    requestId: body.client_request_id,
+    endpoint: SUBMIT_ENDPOINT,
+    hasFile: Boolean(body.file_url),
+    comune: body.comune,
+    tipo: body.tipo,
+  });
+
   let response: Response;
   try {
     response = await fetch(SUBMIT_ENDPOINT, {
@@ -60,6 +69,10 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
     });
   } catch (error) {
     window.clearTimeout(timeoutId);
+    console.error("[candidatura] request:network_error", {
+      requestId: body.client_request_id,
+      error,
+    });
     if (error instanceof DOMException && error.name === "AbortError") {
       throw new Error("Timeout durante l'invio della candidatura. Riprova.");
     }
@@ -67,14 +80,16 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   }
 
   window.clearTimeout(timeoutId);
+  console.info("[candidatura] request:response", {
+    requestId: body.client_request_id,
+    status: response.status,
+    ok: response.ok,
+  });
 
-  // Regardless of what happens reading the body, use the status to decide
   if (response.ok) {
-    // Don't even try to read the body - just succeed
     return { success: true };
   }
 
-  // Try to read error message, but don't hang on it
   let errorMessage = `Errore durante l'invio (${response.status}).`;
   try {
     const text = await Promise.race([
@@ -90,6 +105,12 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   } catch {
     // ignore - we already have a fallback error message
   }
+
+  console.error("[candidatura] request:error_response", {
+    requestId: body.client_request_id,
+    status: response.status,
+    errorMessage,
+  });
 
   throw new Error(errorMessage);
 };
@@ -131,13 +152,22 @@ const Candidatura = () => {
   };
 
   const handleSubmit = async () => {
-    // Client-side validation to prevent 400 errors
+    const requestId = crypto.randomUUID();
     const nome = form.nome_referente || "";
     const email = form.email || "";
     const telefono = form.telefono || "";
     const comune = form.citta || "";
 
+    console.info("[candidatura] submit:start", {
+      requestId,
+      tipo,
+      files: files.length,
+      comune,
+      email,
+    });
+
     if (!nome.trim() || !email.trim() || !telefono.trim() || !comune.trim()) {
+      console.warn("[candidatura] submit:validation_failed", { requestId, nome, email, telefono, comune });
       setError("Per favore compila tutti i campi obbligatori: Nome, Email, Telefono e Città.");
       return;
     }
@@ -149,7 +179,9 @@ const Candidatura = () => {
     try {
       let fileUrls: string[] = [];
       if (files.length > 0) {
+        console.info("[candidatura] upload:start", { requestId, count: files.length, names: files.map((file) => file.name) });
         fileUrls = await Promise.all(files.map(uploadFile));
+        console.info("[candidatura] upload:done", { requestId, fileUrls });
       }
       const payload = { ...form, tipo, file_urls: fileUrls };
 
@@ -165,11 +197,13 @@ const Candidatura = () => {
         referente: form.referente_tipo || "",
         payload,
         file_url: fileUrls[0] || null,
+        client_request_id: requestId,
       });
 
+      console.info("[candidatura] submit:success", { requestId });
       setSuccess(true);
     } catch (err: any) {
-      console.error("[candidatura] submit failed", err);
+      console.error("[candidatura] submit failed", { requestId, err });
       setError(err.message || "Errore durante l'invio. Riprova.");
     } finally {
       setLoading(false);
