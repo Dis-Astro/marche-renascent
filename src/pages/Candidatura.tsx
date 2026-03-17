@@ -29,20 +29,6 @@ const STEPS = ["Anagrafica", "Edificio", "Documenti"];
 const REQUEST_TIMEOUT_MS = 20000;
 const SUBMIT_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/submit-candidatura`;
 
-const withTimeout = <T,>(promise: Promise<T>, message: string): Promise<T> => {
-  let timeoutId: number | undefined;
-
-  const timeoutPromise = new Promise<T>((_, reject) => {
-    timeoutId = window.setTimeout(() => reject(new Error(message)), REQUEST_TIMEOUT_MS);
-  });
-
-  return Promise.race([promise, timeoutPromise]).finally(() => {
-    if (timeoutId !== undefined) {
-      window.clearTimeout(timeoutId);
-    }
-  }) as Promise<T>;
-};
-
 const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -92,12 +78,10 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
 
   let errorMessage = `Errore durante l'invio (${response.status}).`;
   try {
-    const text = await Promise.race([
-      response.text(),
-      new Promise<string>((_, reject) =>
-        setTimeout(() => reject(new Error("timeout")), 3000)
-      ),
-    ]);
+    const errorController = new AbortController();
+    const errorTimeoutId = window.setTimeout(() => errorController.abort(), 3000);
+    const text = await response.text();
+    window.clearTimeout(errorTimeoutId);
     if (text) {
       const parsed = JSON.parse(text);
       if (parsed?.error) errorMessage = parsed.error;
@@ -133,15 +117,15 @@ const Candidatura = () => {
   const next = () => setStep((s) => Math.min(s + 1, 2));
   const prev = () => setStep((s) => Math.max(s - 1, 0));
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File, signal: AbortSignal) => {
     const ext = file.name.split(".").pop() || "file";
     const path = `${crypto.randomUUID()}.${ext}`;
 
-    const { error: uploadErr } = await withTimeout(
-      supabase.storage.from("candidature-files").upload(path, file),
-      `Timeout durante il caricamento di ${file.name}`
-    );
+    const { error: uploadErr } = await supabase.storage
+      .from("candidature-files")
+      .upload(path, file, { upsert: false });
 
+    if (signal.aborted) throw new Error(`Upload annullato per ${file.name}`);
     if (uploadErr) throw uploadErr;
 
     const { data: urlData } = supabase.storage
@@ -176,11 +160,14 @@ const Candidatura = () => {
     setLoading(true);
     setSubmitStage(files.length > 0 ? "upload" : "submit");
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
     try {
       let fileUrls: string[] = [];
       if (files.length > 0) {
         console.info("[candidatura] upload:start", { requestId, count: files.length, names: files.map((file) => file.name) });
-        fileUrls = await Promise.all(files.map(uploadFile));
+        fileUrls = await Promise.all(files.map((file) => uploadFile(file, controller.signal)));
         console.info("[candidatura] upload:done", { requestId, fileUrls });
       }
       const payload = { ...form, tipo, file_urls: fileUrls };
@@ -206,6 +193,7 @@ const Candidatura = () => {
       console.error("[candidatura] submit failed", { requestId, err });
       setError(err.message || "Errore durante l'invio. Riprova.");
     } finally {
+      window.clearTimeout(timeoutId);
       setLoading(false);
       setSubmitStage("");
     }
