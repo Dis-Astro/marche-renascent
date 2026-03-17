@@ -119,15 +119,15 @@ const Candidatura = () => {
   const next = () => setStep((s) => Math.min(s + 1, 2));
   const prev = () => setStep((s) => Math.max(s - 1, 0));
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File, signal: AbortSignal) => {
     const ext = file.name.split(".").pop() || "file";
     const path = `${crypto.randomUUID()}.${ext}`;
 
-    const { error: uploadErr } = await withTimeout(
-      supabase.storage.from("candidature-files").upload(path, file),
-      `Timeout durante il caricamento di ${file.name}`
-    );
+    const { error: uploadErr } = await supabase.storage
+      .from("candidature-files")
+      .upload(path, file, { upsert: false });
 
+    if (signal.aborted) throw new Error(`Upload annullato per ${file.name}`);
     if (uploadErr) throw uploadErr;
 
     const { data: urlData } = supabase.storage
