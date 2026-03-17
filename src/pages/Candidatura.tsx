@@ -131,22 +131,36 @@ const Candidatura = () => {
   };
 
   const handleSubmit = async () => {
+    // Client-side validation to prevent 400 errors
+    const nome = form.nome_referente || "";
+    const email = form.email || "";
+    const telefono = form.telefono || "";
+    const comune = form.citta || "";
+
+    if (!nome.trim() || !email.trim() || !telefono.trim() || !comune.trim()) {
+      setError("Per favore compila tutti i campi obbligatori: Nome, Email, Telefono e Città.");
+      return;
+    }
+
     setError("");
     setLoading(true);
     setSubmitStage(files.length > 0 ? "upload" : "submit");
 
     try {
-      const fileUrls = await Promise.all(files.map(uploadFile));
+      let fileUrls: string[] = [];
+      if (files.length > 0) {
+        fileUrls = await Promise.all(files.map(uploadFile));
+      }
       const payload = { ...form, tipo, file_urls: fileUrls };
 
       setSubmitStage("submit");
 
       await submitCandidatura({
         tipo,
-        nome: form.nome_referente || "",
-        email: form.email || "",
-        telefono: form.telefono || "",
-        comune: form.citta || "",
+        nome,
+        email,
+        telefono,
+        comune,
         denominazione: form.denominazione || "",
         referente: form.referente_tipo || "",
         payload,
@@ -156,7 +170,7 @@ const Candidatura = () => {
       setSuccess(true);
     } catch (err: any) {
       console.error("[candidatura] submit failed", err);
-      setError(err.message || "Errore durante l'invio.");
+      setError(err.message || "Errore durante l'invio. Riprova.");
     } finally {
       setLoading(false);
       setSubmitStage("");
