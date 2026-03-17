@@ -42,22 +42,13 @@ const withTimeout = <T,>(promise: Promise<T>, message: string): Promise<T> => {
   }) as Promise<T>;
 };
 
-const readErrorResponse = async (response: Response) => {
-  try {
-    const raw = await withTimeout(response.text(), "Timeout durante la lettura della risposta del server");
-    return raw ? JSON.parse(raw) : null;
-  } catch (error) {
-    console.warn("[candidatura] unable to parse error response", error);
-    return null;
-  }
-};
-
 const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
+  let response: Response;
   try {
-    const response = await fetch(SUBMIT_ENDPOINT, {
+    response = await fetch(SUBMIT_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,22 +58,40 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
       body: JSON.stringify(body),
       signal: controller.signal,
     });
-
-    if (!response.ok) {
-      const data = await readErrorResponse(response);
-      throw new Error(data?.error || `Errore durante l'invio della candidatura (${response.status}).`);
-    }
-
-    return { success: true };
   } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") {
-      throw new Error("Timeout durante l'invio della candidatura");
-    }
-
-    throw error;
-  } finally {
     window.clearTimeout(timeoutId);
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("Timeout durante l'invio della candidatura. Riprova.");
+    }
+    throw new Error("Errore di rete. Controlla la connessione e riprova.");
   }
+
+  window.clearTimeout(timeoutId);
+
+  // Regardless of what happens reading the body, use the status to decide
+  if (response.ok) {
+    // Don't even try to read the body - just succeed
+    return { success: true };
+  }
+
+  // Try to read error message, but don't hang on it
+  let errorMessage = `Errore durante l'invio (${response.status}).`;
+  try {
+    const text = await Promise.race([
+      response.text(),
+      new Promise<string>((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), 3000)
+      ),
+    ]);
+    if (text) {
+      const parsed = JSON.parse(text);
+      if (parsed?.error) errorMessage = parsed.error;
+    }
+  } catch {
+    // ignore - we already have a fallback error message
+  }
+
+  throw new Error(errorMessage);
 };
 
 const Candidatura = () => {
