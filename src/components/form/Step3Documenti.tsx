@@ -31,7 +31,7 @@ const InputField = ({ label, value, onChange, inputClass, required, type = "text
   </div>
 );
 
-const Step3Documenti = ({ tipo, form, update, files, setFiles, inputClass }: Props) => {
+const Step3Documenti = ({ tipo, form, update, files, setFiles, inputClass, fileInputRef }: Props) => {
   if (tipo === "proprietario") {
     return (
       <div className="space-y-4">
