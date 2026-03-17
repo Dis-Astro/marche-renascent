@@ -29,20 +29,6 @@ const STEPS = ["Anagrafica", "Edificio", "Documenti"];
 const REQUEST_TIMEOUT_MS = 20000;
 const SUBMIT_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/submit-candidatura`;
 
-const withTimeout = <T,>(promise: Promise<T>, message: string): Promise<T> => {
-  let timeoutId: number | undefined;
-
-  const timeoutPromise = new Promise<T>((_, reject) => {
-    timeoutId = window.setTimeout(() => reject(new Error(message)), REQUEST_TIMEOUT_MS);
-  });
-
-  return Promise.race([promise, timeoutPromise]).finally(() => {
-    if (timeoutId !== undefined) {
-      window.clearTimeout(timeoutId);
-    }
-  }) as Promise<T>;
-};
-
 const submitCandidatura = async (body: SubmitCandidaturaBody) => {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
