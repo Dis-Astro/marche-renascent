@@ -28,13 +28,28 @@ const STEPS = ["Anagrafica", "Edificio", "Documenti"];
 const REQUEST_TIMEOUT_MS = 20000;
 const SUBMIT_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/submit-candidatura`;
 
-const withTimeout = async <T,>(promise: Promise<T>, message: string): Promise<T> => {
-  return await Promise.race([
-    promise,
-    new Promise<T>((_, reject) => {
-      window.setTimeout(() => reject(new Error(message)), REQUEST_TIMEOUT_MS);
-    }),
-  ]);
+const withTimeout = <T,>(promise: Promise<T>, message: string): Promise<T> => {
+  let timeoutId: number | undefined;
+
+  const timeoutPromise = new Promise<T>((_, reject) => {
+    timeoutId = window.setTimeout(() => reject(new Error(message)), REQUEST_TIMEOUT_MS);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timeoutId !== undefined) {
+      window.clearTimeout(timeoutId);
+    }
+  }) as Promise<T>;
+};
+
+const readErrorResponse = async (response: Response) => {
+  try {
+    const raw = await withTimeout(response.text(), "Timeout durante la lettura della risposta del server");
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    console.warn("[candidatura] unable to parse error response", error);
+    return null;
+  }
 };
 
 const submitCandidatura = async (body: SubmitCandidaturaBody) => {
@@ -53,14 +68,12 @@ const submitCandidatura = async (body: SubmitCandidaturaBody) => {
       signal: controller.signal,
     });
 
-    const raw = await response.text();
-    const data = raw ? JSON.parse(raw) : null;
-
     if (!response.ok) {
-      throw new Error(data?.error || "Errore durante l'invio della candidatura.");
+      const data = await readErrorResponse(response);
+      throw new Error(data?.error || `Errore durante l'invio della candidatura (${response.status}).`);
     }
 
-    return data;
+    return { success: true };
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
       throw new Error("Timeout durante l'invio della candidatura");
