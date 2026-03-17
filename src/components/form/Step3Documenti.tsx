@@ -132,6 +132,7 @@ const Step3Documenti = ({ tipo, form, update, files, setFiles, inputClass, fileI
           Allegati (foto, documenti) <span className="text-[10px] text-primary/60 ml-1">Facoltativo</span>
         </label>
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*,.pdf,.doc,.docx"
           multiple
