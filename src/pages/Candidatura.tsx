@@ -12,8 +12,21 @@ export type FormData = Record<string, any>;
 
 type SubmitStage = "upload" | "submit" | "";
 
+type SubmitCandidaturaBody = {
+  tipo: TipoUtente;
+  nome: string;
+  email: string;
+  telefono: string;
+  comune: string;
+  denominazione: string;
+  referente: string;
+  payload: FormData;
+  file_url: string | null;
+};
+
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];
 const REQUEST_TIMEOUT_MS = 20000;
+const SUBMIT_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/submit-candidatura`;
 
 const withTimeout = async <T,>(promise: Promise<T>, message: string): Promise<T> => {
   return await Promise.race([
@@ -22,6 +35,41 @@ const withTimeout = async <T,>(promise: Promise<T>, message: string): Promise<T>
       window.setTimeout(() => reject(new Error(message)), REQUEST_TIMEOUT_MS);
     }),
   ]);
+};
+
+const submitCandidatura = async (body: SubmitCandidaturaBody) => {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(SUBMIT_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+
+    const raw = await response.text();
+    const data = raw ? JSON.parse(raw) : null;
+
+    if (!response.ok) {
+      throw new Error(data?.error || "Errore durante l'invio della candidatura.");
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("Timeout durante l'invio della candidatura");
+    }
+
+    throw error;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
 };
 
 const Candidatura = () => {
@@ -71,24 +119,18 @@ const Candidatura = () => {
 
       setSubmitStage("submit");
 
-      const { error: fnErr } = await withTimeout(
-        supabase.functions.invoke("submit-candidatura", {
-          body: {
-            tipo,
-            nome: form.nome_referente || "",
-            email: form.email || "",
-            telefono: form.telefono || "",
-            comune: form.citta || "",
-            denominazione: form.denominazione || "",
-            referente: form.referente_tipo || "",
-            payload,
-            file_url: fileUrls[0] || null,
-          },
-        }),
-        "Timeout durante l'invio della candidatura"
-      );
+      await submitCandidatura({
+        tipo,
+        nome: form.nome_referente || "",
+        email: form.email || "",
+        telefono: form.telefono || "",
+        comune: form.citta || "",
+        denominazione: form.denominazione || "",
+        referente: form.referente_tipo || "",
+        payload,
+        file_url: fileUrls[0] || null,
+      });
 
-      if (fnErr) throw fnErr;
       setSuccess(true);
     } catch (err: any) {
       console.error("[candidatura] submit failed", err);
@@ -99,15 +141,12 @@ const Candidatura = () => {
     }
   };
 
-  /* ── INPUT CLASS ── */
   const inputClass =
     "w-full border border-border bg-background text-foreground px-4 py-3 text-sm rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder:text-muted-foreground transition-colors";
 
-  /* ── SUCCESS ── */
   if (success) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        {/* Navbar */}
         <nav className="border-b border-border px-6 h-14 flex items-center">
           <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer" className="-my-1">
             <img src={logoCingoli} alt="Impresa Cingoli" className="h-10" />
@@ -137,7 +176,6 @@ const Candidatura = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* ── NAVBAR ── */}
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border">
         <div className="max-w-2xl mx-auto px-6 h-14 flex items-center justify-between">
           <a href="https://impresacingoli.it" target="_blank" rel="noopener noreferrer" className="-my-1">
@@ -149,11 +187,8 @@ const Candidatura = () => {
         </div>
       </nav>
 
-      {/* ── MAIN ── */}
       <main className="flex-1 flex flex-col items-center px-4 py-8">
         <div className="w-full max-w-xl">
-
-          {/* Title */}
           <div className="text-center mb-6">
             <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary block mb-1">
               Modulo di candidatura
@@ -163,16 +198,13 @@ const Candidatura = () => {
             </h1>
           </div>
 
-          {/* ── PROGRESS ── */}
           <div className="mb-6">
-            {/* Bar */}
             <div className="w-full h-1.5 bg-border rounded-full overflow-hidden mb-3">
               <div
                 className="h-full bg-primary rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
-            {/* Step labels */}
             <div className="flex justify-between">
               {STEPS.map((s, i) => (
                 <span key={s}
@@ -185,7 +217,6 @@ const Candidatura = () => {
             </div>
           </div>
 
-          {/* ── STEP CARD ── */}
           <div className="bg-muted rounded-xl border border-border p-6 mb-4 shadow-sm">
             {step === 0 && <Step1Anagrafica tipo={tipo} form={form} update={update} inputClass={inputClass} />}
             {step === 1 && <Step2Edificio tipo={tipo} form={form} update={update} inputClass={inputClass} />}
@@ -200,7 +231,6 @@ const Candidatura = () => {
             </div>
           )}
 
-          {/* ── NAVIGATION ── */}
           <div className="flex items-center justify-between gap-4">
             {step > 0 ? (
               <button onClick={prev}
@@ -229,7 +259,6 @@ const Candidatura = () => {
             )}
           </div>
 
-          {/* Privacy */}
           <p className="text-[10px] text-muted-foreground mt-6 text-center leading-relaxed">
             Inviando questo form acconsenti al trattamento dei tuoi dati personali ai sensi del GDPR (Reg. UE 2016/679).
           </p>
