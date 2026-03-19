@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, type FormEvent } from "react";
+import { useState, useRef, useCallback, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Step1Anagrafica from "@/components/form/Step1Anagrafica";
@@ -24,7 +24,7 @@ type SubmitCandidaturaBody = {
 };
 
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];
-const REQUEST_TIMEOUT_MS = 10000;
+const SUBMIT_TIMEOUT_MS = 30_000; // timeout only for the final POST, not uploads
 const SUBMIT_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/submit-candidatura`;
 
 const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSignal) => {
@@ -47,10 +47,11 @@ const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSigna
       signal,
     });
   } catch (error) {
-    console.error("[candidatura] request:network_error", { requestId: body.client_request_id, error });
     if (error instanceof DOMException && error.name === "AbortError") {
+      console.error("[candidatura] request:abort", { requestId: body.client_request_id });
       throw new Error("Timeout durante l'invio della candidatura. Riprova.");
     }
+    console.error("[candidatura] request:network_error", { requestId: body.client_request_id, error });
     throw new Error("Errore di rete. Controlla la connessione e riprova.");
   }
 
@@ -94,36 +95,13 @@ const Candidatura = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  const [isFinalStepArmed, setIsFinalStepArmed] = useState(false);
 
+  // Guard: true while a submit is in-flight. Survives re-renders.
+  // NEVER reset this from cleanup/unmount — only the submit handler itself resets it.
   const isSubmittingRef = useRef(false);
+  // Tracks whether the submit was accepted (response.ok). Once true, navigation is guaranteed.
+  const acceptedRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const mountedRef = useRef(true);
-
-  useEffect(() => {
-    mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-      isSubmittingRef.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (step !== 2) {
-      setIsFinalStepArmed(false);
-      return;
-    }
-
-    const armTimeoutId = window.setTimeout(() => {
-      if (mountedRef.current) {
-        setIsFinalStepArmed(true);
-      }
-    }, 250);
-
-    return () => {
-      window.clearTimeout(armTimeoutId);
-    };
-  }, [step]);
 
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
@@ -281,20 +259,6 @@ const Candidatura = () => {
     }
   }, []);
 
-  const transitionToSuccess = useCallback(() => {
-    if (!mountedRef.current) return;
-
-    console.info("[candidatura] reset:start");
-    setError("");
-    setForm({});
-    clearSelectedFiles();
-    console.info("[candidatura] reset:end");
-
-    console.info("[candidatura] navigate:start");
-    setSuccess(true);
-    console.info("[candidatura] navigate:end");
-  }, [clearSelectedFiles]);
-
   const uploadFile = async (file: File) => {
     const ext = file.name.split(".").pop() || "file";
     const path = `${crypto.randomUUID()}.${ext}`;
@@ -314,37 +278,28 @@ const Candidatura = () => {
     return urlData.publicUrl;
   };
 
-  const runTracking = useCallback((requestId: string) => {
-    window.setTimeout(() => {
-      try {
-        console.info("[candidatura] tracking:start", { requestId });
-        console.info("[candidatura] tracking:done", { requestId });
-      } catch (trackingErr) {
-        console.error("[candidatura] tracking:error", { requestId, trackingErr });
-      }
-    }, 0);
-  }, []);
-
+  // Prevent native form submit (Enter key, etc.)
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   };
 
-  const handleFinalSubmit = async () => {
+  // ──────────────────────────────────────────────
+  // SINGLE submit handler — the ONLY entry point
+  // ──────────────────────────────────────────────
+  const handleFinalSubmit = useCallback(async () => {
+    // Guard: must be on step 2
     if (step < 2) {
       console.warn("[candidatura] submit:blocked_not_final_step", { step });
       return;
     }
 
-    if (!isFinalStepArmed) {
-      console.warn("[candidatura] submit:blocked_step_transition");
-      return;
-    }
-
-    if (isSubmittingRef.current || loading) {
+    // Guard: anti double-submit (ref-based, survives re-renders)
+    if (isSubmittingRef.current) {
       console.warn("[candidatura] submit:blocked (already submitting)");
       return;
     }
 
+    // Validate ALL steps before submitting
     for (const stepIndex of [0, 1, 2]) {
       const stepError = getStepValidationError(stepIndex, form);
       if (stepError) {
@@ -371,16 +326,15 @@ const Candidatura = () => {
       email,
     });
 
+    // Lock submit
     isSubmittingRef.current = true;
+    acceptedRef.current = false;
     setError("");
     setLoading(true);
 
-    const requestController = new AbortController();
-    const requestTimeoutId = window.setTimeout(() => requestController.abort(), REQUEST_TIMEOUT_MS);
-
     try {
+      // ── Phase 1: Upload files (NO timeout — uploads can be slow) ──
       const fileUrls: string[] = [];
-
       if (submittedFiles.length > 0) {
         console.info("[candidatura] upload:start", { requestId, count: submittedFiles.length });
         for (const file of submittedFiles) {
@@ -389,44 +343,76 @@ const Candidatura = () => {
         console.info("[candidatura] upload:done", { requestId, fileUrls });
       }
 
+      // ── Phase 2: Submit (with its OWN AbortController + timeout) ──
+      const submitController = new AbortController();
+      const submitTimeoutId = window.setTimeout(() => {
+        console.warn("[candidatura] request:timeout", { requestId, timeoutMs: SUBMIT_TIMEOUT_MS });
+        submitController.abort();
+      }, SUBMIT_TIMEOUT_MS);
+
       const payload = { ...submittedForm, tipo, file_urls: fileUrls };
 
-      await submitCandidatura(
-        {
-          tipo,
-          nome,
-          email,
-          telefono,
-          comune,
-          denominazione: submittedForm.denominazione || "",
-          referente: submittedForm.referente_tipo || "",
-          payload,
-          file_url: fileUrls[0] || null,
-          client_request_id: requestId,
-        },
-        requestController.signal,
-      );
+      try {
+        await submitCandidatura(
+          {
+            tipo,
+            nome,
+            email,
+            telefono,
+            comune,
+            denominazione: submittedForm.denominazione || "",
+            referente: submittedForm.referente_tipo || "",
+            payload,
+            file_url: fileUrls[0] || null,
+            client_request_id: requestId,
+          },
+          submitController.signal,
+        );
+      } finally {
+        // Always clear the timeout — whether success or failure
+        window.clearTimeout(submitTimeoutId);
+      }
 
+      // ── Phase 3: ACCEPTED — from here, nothing can block navigation ──
+      acceptedRef.current = true;
       console.info("[candidatura] submit:accepted", { requestId });
-      console.info("[candidatura] postSubmit:start", { requestId });
 
-      transitionToSuccess();
-      runTracking(requestId);
+      // Reset form state
+      console.info("[candidatura] reset:start");
+      setError("");
+      setForm({});
+      clearSelectedFiles();
+      console.info("[candidatura] reset:end");
+
+      // Navigate to thank-you (synchronous state update — no dependency on GTM/tracking)
+      console.info("[candidatura] navigate:start");
+      setSuccess(true);
+      console.info("[candidatura] navigate:end");
+
+      // Fire-and-forget tracking AFTER navigation state is set
+      try {
+        console.info("[candidatura] tracking:start", { requestId });
+        // tracking runs here if needed in the future
+        console.info("[candidatura] tracking:done", { requestId });
+      } catch (trackingErr) {
+        // Tracking errors must NEVER affect the flow
+        console.error("[candidatura] tracking:error", { requestId, trackingErr });
+      }
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Errore durante l'invio della candidatura.";
-      console.error("[candidatura] submit:error", { requestId, err });
-      if (mountedRef.current) {
+      // Only show error if the submit was NOT already accepted
+      if (!acceptedRef.current) {
+        const message = err instanceof Error ? err.message : "Errore durante l'invio della candidatura.";
+        console.error("[candidatura] submit:error", { requestId, err });
         setError(message);
+      } else {
+        console.warn("[candidatura] submit:post_accept_error (ignored)", { requestId, err });
       }
     } finally {
       console.info("[candidatura] submit:finally", { requestId });
-      window.clearTimeout(requestTimeoutId);
       isSubmittingRef.current = false;
-      if (mountedRef.current) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
-  };
+  }, [step, form, files, tipo, clearSelectedFiles]);
 
   const inputClass =
     "w-full border border-border bg-background text-foreground px-4 py-3 text-sm rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder:text-muted-foreground transition-colors";
@@ -556,10 +542,10 @@ const Candidatura = () => {
               <button
                 type="button"
                 onClick={() => void handleFinalSubmit()}
-                disabled={loading || !isFinalStepArmed}
+                disabled={loading}
                 className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Invia candidatura
+                {loading ? "Invio in corso…" : "Invia candidatura"}
               </button>
             )}
           </div>
