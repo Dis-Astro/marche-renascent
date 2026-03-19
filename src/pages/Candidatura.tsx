@@ -442,7 +442,7 @@ const Candidatura = () => {
       console.info("[candidatura] submit:finally", { requestId });
       isSubmittingRef.current = false;
     }
-  }, [step, form, files, tipo, clearSelectedFiles]);
+  }, [step, form, files, tipo]);
 
   const inputClass =
     "w-full border border-border bg-background text-foreground px-4 py-3 text-sm rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder:text-muted-foreground transition-colors";
