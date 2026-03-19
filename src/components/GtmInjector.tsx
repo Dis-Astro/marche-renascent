@@ -93,7 +93,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         browserWindow.clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [location.pathname]);
 
   return null;
 };
