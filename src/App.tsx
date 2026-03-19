@@ -16,8 +16,8 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <GtmInjector />
       <BrowserRouter>
+        <GtmInjector />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/candidatura" element={<Candidatura />} />
