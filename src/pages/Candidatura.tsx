@@ -94,6 +94,7 @@ const Candidatura = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [isFinalStepArmed, setIsFinalStepArmed] = useState(false);
 
   const isSubmittingRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -106,6 +107,23 @@ const Candidatura = () => {
       isSubmittingRef.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (step !== 2) {
+      setIsFinalStepArmed(false);
+      return;
+    }
+
+    const armTimeoutId = window.setTimeout(() => {
+      if (mountedRef.current) {
+        setIsFinalStepArmed(true);
+      }
+    }, 250);
+
+    return () => {
+      window.clearTimeout(armTimeoutId);
+    };
+  }, [step]);
 
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
@@ -307,11 +325,18 @@ const Candidatura = () => {
     }, 0);
   }, []);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+  };
 
+  const handleFinalSubmit = async () => {
     if (step < 2) {
       console.warn("[candidatura] submit:blocked_not_final_step", { step });
+      return;
+    }
+
+    if (!isFinalStepArmed) {
+      console.warn("[candidatura] submit:blocked_step_transition");
       return;
     }
 
@@ -452,7 +477,7 @@ const Candidatura = () => {
       </nav>
 
       <main className="flex-1 flex flex-col items-center px-4 py-8">
-        <form className="w-full max-w-xl" onSubmit={handleSubmit}>
+        <form className="w-full max-w-xl" onSubmit={handleFormSubmit}>
           <div className="text-center mb-6">
             <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary block mb-1">
               Modulo di candidatura
@@ -529,8 +554,9 @@ const Candidatura = () => {
               </button>
             ) : (
               <button
-                type="submit"
-                disabled={loading}
+                type="button"
+                onClick={() => void handleFinalSubmit()}
+                disabled={loading || !isFinalStepArmed}
                 className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Invia candidatura
