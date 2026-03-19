@@ -110,8 +110,151 @@ const Candidatura = () => {
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
 
-  const next = () => setStep((s) => Math.min(s + 1, 2));
-  const prev = () => setStep((s) => Math.max(s - 1, 0));
+  const hasValue = (value: unknown) => {
+    if (typeof value === "string") return value.trim().length > 0;
+    return value !== undefined && value !== null;
+  };
+
+  const getStepValidationError = (currentStep: number, currentForm: FormData) => {
+    const requiredFields =
+      tipo === "proprietario"
+        ? [
+            [
+              { label: "Nome immobile", value: currentForm.denominazione },
+              { label: "Tipologia immobile", value: currentForm.tipologia_immobile },
+              { label: "Regione", value: currentForm.regione || "Marche" },
+              { label: "Provincia", value: currentForm.provincia },
+              { label: "Città", value: currentForm.citta },
+              { label: "Indirizzo", value: currentForm.via },
+              { label: "Referente", value: currentForm.referente_tipo },
+              { label: "Nome referente", value: currentForm.nome_referente },
+              { label: "Telefono", value: currentForm.telefono },
+              { label: "Email", value: currentForm.email },
+              { label: "Vincoli", value: currentForm.vincoli },
+              { label: "Tipo intervento", value: currentForm.tipo_intervento },
+              ...(currentForm.tipo_intervento === "Altro"
+                ? [{ label: "Specifica intervento", value: currentForm.tipo_intervento_altro }]
+                : []),
+            ],
+            [
+              { label: "Tipologia edificio", value: currentForm.class_ubicativa },
+              ...(currentForm.class_ubicativa === "Altro"
+                ? [{ label: "Specifica tipologia edificio", value: currentForm.class_ubicativa_altro }]
+                : []),
+              { label: "Superficie", value: currentForm.superficie },
+              { label: "Unità immobiliari", value: currentForm.unita_immobiliari },
+              { label: "Pertinenze", value: currentForm.pertinenze },
+            ],
+            [],
+          ]
+        : [
+            [
+              { label: "Denominazione edificio", value: currentForm.denominazione },
+              { label: "Regione", value: currentForm.regione || "Marche" },
+              { label: "Provincia", value: currentForm.provincia },
+              { label: "Città", value: currentForm.citta },
+              { label: "Indirizzo", value: currentForm.via },
+              { label: "Referente", value: currentForm.referente_tipo },
+              { label: "Nome referente", value: currentForm.nome_referente },
+              { label: "Telefono", value: currentForm.telefono },
+              { label: "Email", value: currentForm.email },
+              { label: "Vincoli", value: currentForm.vincoli },
+              { label: "Tipo intervento", value: currentForm.tipo_intervento },
+              ...(currentForm.tipo_intervento === "Altro"
+                ? [{ label: "Specifica intervento", value: currentForm.tipo_intervento_altro }]
+                : []),
+            ],
+            [
+              { label: "Classificazione ubicativa", value: currentForm.class_ubicativa },
+              ...(currentForm.class_ubicativa === "Altro"
+                ? [{ label: "Specifica classificazione", value: currentForm.class_ubicativa_altro }]
+                : []),
+              { label: "Superficie", value: currentForm.superficie },
+              { label: "Unità immobiliari", value: currentForm.unita_immobiliari },
+              { label: "Pertinenze", value: currentForm.pertinenze },
+              { label: "Struttura portante", value: currentForm.tipo_struttura },
+              ...(currentForm.tipo_struttura === "Altro"
+                ? [{ label: "Specifica struttura", value: currentForm.tipo_struttura_altro }]
+                : []),
+              { label: "Area circostante", value: currentForm.area_circostante },
+              { label: "Tipologia orizzontamenti", value: currentForm.tipo_orizzontamenti },
+              ...(currentForm.tipo_orizzontamenti === "Altro"
+                ? [{ label: "Specifica orizzontamenti", value: currentForm.tipo_orizzontamenti_altro }]
+                : []),
+              { label: "Tipologia copertura", value: currentForm.tipo_copertura },
+              ...(currentForm.tipo_copertura === "Altro"
+                ? [{ label: "Specifica copertura", value: currentForm.tipo_copertura_altro }]
+                : []),
+              { label: "Scheda FAST / AEDES", value: currentForm.fast_aedes },
+              { label: "Visure / Planimetrie", value: currentForm.visure },
+              { label: "Rilievo / Quadro fessurativo", value: currentForm.rilievo },
+            ],
+            [
+              { label: "Progetto", value: currentForm.progetto },
+              { label: "Buono contributo", value: currentForm.buono_contributo },
+              ...(currentForm.buono_contributo === "Rilasciato"
+                ? [
+                    { label: "Data rilascio buono contributo", value: currentForm.buono_contributo_data },
+                    { label: "Importo concesso", value: currentForm.importo_concesso },
+                  ]
+                : []),
+              { label: "Livello operatività", value: currentForm.livello_operativita },
+              { label: "Calcolo contributo massimo", value: currentForm.calcolo_contributo },
+              ...(currentForm.calcolo_contributo === "Fatto"
+                ? [{ label: "Importo max concedibile", value: currentForm.importo_max }]
+                : []),
+              { label: "Progetto architettonico", value: currentForm.prog_architettonico },
+              { label: "Progetto strutturale", value: currentForm.prog_strutturale },
+              { label: "Progetto impianti", value: currentForm.prog_impianti },
+              { label: "PSC", value: currentForm.psc },
+              { label: "Layout cantiere", value: currentForm.layout_cantiere },
+              { label: "Cronoprogramma", value: currentForm.cronoprogramma },
+              { label: "Computo metrico", value: currentForm.computo },
+              { label: "Autorizzazione Comune", value: currentForm.aut_comune },
+              ...(currentForm.aut_comune === "Rilasciato"
+                ? [{ label: "Data rilascio autorizzazione Comune", value: currentForm.aut_comune_data }]
+                : []),
+              { label: "Autorizzazione Genio Civile", value: currentForm.aut_genio },
+              ...(currentForm.aut_genio === "Rilasciato"
+                ? [{ label: "Data rilascio autorizzazione Genio Civile", value: currentForm.aut_genio_data }]
+                : []),
+              { label: "Autorizzazione Soprintendenza", value: currentForm.aut_soprintendenza },
+              ...(currentForm.aut_soprintendenza === "Rilasciato"
+                ? [{ label: "Data rilascio autorizzazione Soprintendenza", value: currentForm.aut_soprintendenza_data }]
+                : []),
+              { label: "Incarico progettista architettonico", value: currentForm.incarico_progettista_architettonico },
+              { label: "Incarico progettista strutturale", value: currentForm.incarico_progettista_strutturale },
+              { label: "Incarico progettista impianti", value: currentForm.incarico_progettista_impianti },
+              { label: "Incarico geologo", value: currentForm.incarico_geologo },
+              { label: "Incarico coordinatore sicurezza", value: currentForm.incarico_coordinatore_sicurezza },
+              { label: "Incarico direttore lavori", value: currentForm.incarico_direttore_lavori },
+            ],
+          ];
+
+    const missingFields = (requiredFields[currentStep] ?? [])
+      .filter((field) => !hasValue(field.value))
+      .map((field) => field.label);
+
+    if (missingFields.length === 0) return null;
+
+    return `Completa i campi obbligatori di ${STEPS[currentStep]}: ${missingFields.join(", ")}.`;
+  };
+
+  const next = () => {
+    const stepError = getStepValidationError(step, form);
+    if (stepError) {
+      setError(stepError);
+      return;
+    }
+
+    setError("");
+    setStep((s) => Math.min(s + 1, 2));
+  };
+
+  const prev = () => {
+    setError("");
+    setStep((s) => Math.max(s - 1, 0));
+  };
 
   const clearSelectedFiles = useCallback(() => {
     setFiles([]);
@@ -177,6 +320,16 @@ const Candidatura = () => {
       return;
     }
 
+    for (const stepIndex of [0, 1, 2]) {
+      const stepError = getStepValidationError(stepIndex, form);
+      if (stepError) {
+        console.warn("[candidatura] submit:validation_failed", { stepIndex, stepError });
+        setError(stepError);
+        setStep(stepIndex);
+        return;
+      }
+    }
+
     const requestId = crypto.randomUUID();
     const submittedForm = { ...form };
     const submittedFiles = [...files];
@@ -192,12 +345,6 @@ const Candidatura = () => {
       comune,
       email,
     });
-
-    if (!nome.trim() || !email.trim() || !telefono.trim() || !comune.trim()) {
-      console.warn("[candidatura] submit:validation_failed", { requestId });
-      setError("Per favore compila tutti i campi obbligatori: Nome, Email, Telefono e Città.");
-      return;
-    }
 
     isSubmittingRef.current = true;
     setError("");
