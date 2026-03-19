@@ -99,8 +99,34 @@ const Candidatura = () => {
   const isSubmittingRef = useRef(false);
   const acceptedRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  // Fallback success UI — shown if hard redirect doesn't fire within 1s
+  const fallbackTimerRef = useRef<number | null>(null);
   const [showFallbackSuccess, setShowFallbackSuccess] = useState(false);
+
+  // ── Central reset: brings the component back to "virgin" state ──
+  const resetSubmissionFlow = useCallback(() => {
+    console.info("[candidatura] flow:reset:start");
+    // Clear any pending fallback timer
+    if (fallbackTimerRef.current !== null) {
+      window.clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
+    // Reset all refs
+    isSubmittingRef.current = false;
+    acceptedRef.current = false;
+    // Reset all state
+    setStep(0);
+    setForm({});
+    setFiles([]);
+    setLoading(false);
+    setSuccess(false);
+    setShowFallbackSuccess(false);
+    setError("");
+    // Clear file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    console.info("[candidatura] flow:reset:end");
+  }, []);
 
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
