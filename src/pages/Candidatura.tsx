@@ -417,22 +417,18 @@ const Candidatura = () => {
       }
 
       // Fallback: if redirect hasn't happened in 1s, show fallback UI
-      setTimeout(() => {
+      fallbackTimerRef.current = window.setTimeout(() => {
         if (document.location.pathname !== "/") {
           console.warn("[candidatura] redirect:fallback_ui");
           setShowFallbackSuccess(true);
         }
+        fallbackTimerRef.current = null;
       }, 1000);
 
       // Fire-and-forget cleanup AFTER success is guaranteed
-      try {
-        console.info("[candidatura] reset:start");
-        setForm({});
-        clearSelectedFiles();
-        console.info("[candidatura] reset:end");
-      } catch (resetErr) {
-        console.error("[candidatura] reset:error (ignored)", { resetErr });
-      }
+      // NOTE: do NOT reset form here — it causes re-render issues
+      // Form will be reset via resetSubmissionFlow on "Nuova candidatura"
+      console.info("[candidatura] reset:deferred_to_new_submission");
     } catch (err) {
       if (!acceptedRef.current) {
         const message = err instanceof Error ? err.message : "Errore durante l'invio della candidatura.";
