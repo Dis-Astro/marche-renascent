@@ -447,7 +447,7 @@ const Candidatura = () => {
   const inputClass =
     "w-full border border-border bg-background text-foreground px-4 py-3 text-sm rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder:text-muted-foreground transition-colors";
 
-  if (success || showFallbackSuccess || acceptedRef.current) {
+  if (success || showFallbackSuccess) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <nav className="border-b border-border px-6 h-14 flex items-center">
@@ -465,12 +465,21 @@ const Candidatura = () => {
             </h1>
             <p className="text-muted-foreground text-sm mb-1">Abbiamo ricevuto la tua richiesta.</p>
             <p className="text-muted-foreground text-sm">Ti contatteremo dopo una prima valutazione tecnica.</p>
-            <a
-              href="/"
-              className="inline-block mt-8 bg-primary text-primary-foreground px-6 py-3 text-sm font-bold rounded tracking-wide hover:opacity-90 transition-opacity"
-            >
-              Torna alla home
-            </a>
+            <div className="flex flex-col gap-3 mt-8">
+              <a
+                href="/"
+                className="inline-block bg-primary text-primary-foreground px-6 py-3 text-sm font-bold rounded tracking-wide hover:opacity-90 transition-opacity"
+              >
+                Torna alla home
+              </a>
+              <button
+                type="button"
+                onClick={resetSubmissionFlow}
+                className="text-sm text-primary hover:underline font-medium"
+              >
+                Invia un'altra candidatura
+              </button>
+            </div>
           </div>
         </div>
       </div>
