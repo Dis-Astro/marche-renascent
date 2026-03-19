@@ -99,8 +99,34 @@ const Candidatura = () => {
   const isSubmittingRef = useRef(false);
   const acceptedRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  // Fallback success UI — shown if hard redirect doesn't fire within 1s
+  const fallbackTimerRef = useRef<number | null>(null);
   const [showFallbackSuccess, setShowFallbackSuccess] = useState(false);
+
+  // ── Central reset: brings the component back to "virgin" state ──
+  const resetSubmissionFlow = useCallback(() => {
+    console.info("[candidatura] flow:reset:start");
+    // Clear any pending fallback timer
+    if (fallbackTimerRef.current !== null) {
+      window.clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
+    // Reset all refs
+    isSubmittingRef.current = false;
+    acceptedRef.current = false;
+    // Reset all state
+    setStep(0);
+    setForm({});
+    setFiles([]);
+    setLoading(false);
+    setSuccess(false);
+    setShowFallbackSuccess(false);
+    setError("");
+    // Clear file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    console.info("[candidatura] flow:reset:end");
+  }, []);
 
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
@@ -391,22 +417,18 @@ const Candidatura = () => {
       }
 
       // Fallback: if redirect hasn't happened in 1s, show fallback UI
-      setTimeout(() => {
+      fallbackTimerRef.current = window.setTimeout(() => {
         if (document.location.pathname !== "/") {
           console.warn("[candidatura] redirect:fallback_ui");
           setShowFallbackSuccess(true);
         }
+        fallbackTimerRef.current = null;
       }, 1000);
 
       // Fire-and-forget cleanup AFTER success is guaranteed
-      try {
-        console.info("[candidatura] reset:start");
-        setForm({});
-        clearSelectedFiles();
-        console.info("[candidatura] reset:end");
-      } catch (resetErr) {
-        console.error("[candidatura] reset:error (ignored)", { resetErr });
-      }
+      // NOTE: do NOT reset form here — it causes re-render issues
+      // Form will be reset via resetSubmissionFlow on "Nuova candidatura"
+      console.info("[candidatura] reset:deferred_to_new_submission");
     } catch (err) {
       if (!acceptedRef.current) {
         const message = err instanceof Error ? err.message : "Errore durante l'invio della candidatura.";
@@ -420,12 +442,12 @@ const Candidatura = () => {
       console.info("[candidatura] submit:finally", { requestId });
       isSubmittingRef.current = false;
     }
-  }, [step, form, files, tipo, clearSelectedFiles]);
+  }, [step, form, files, tipo]);
 
   const inputClass =
     "w-full border border-border bg-background text-foreground px-4 py-3 text-sm rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder:text-muted-foreground transition-colors";
 
-  if (success || showFallbackSuccess || acceptedRef.current) {
+  if (success || showFallbackSuccess) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <nav className="border-b border-border px-6 h-14 flex items-center">
@@ -443,12 +465,21 @@ const Candidatura = () => {
             </h1>
             <p className="text-muted-foreground text-sm mb-1">Abbiamo ricevuto la tua richiesta.</p>
             <p className="text-muted-foreground text-sm">Ti contatteremo dopo una prima valutazione tecnica.</p>
-            <a
-              href="/"
-              className="inline-block mt-8 bg-primary text-primary-foreground px-6 py-3 text-sm font-bold rounded tracking-wide hover:opacity-90 transition-opacity"
-            >
-              Torna alla home
-            </a>
+            <div className="flex flex-col gap-3 mt-8">
+              <a
+                href="/"
+                className="inline-block bg-primary text-primary-foreground px-6 py-3 text-sm font-bold rounded tracking-wide hover:opacity-90 transition-opacity"
+              >
+                Torna alla home
+              </a>
+              <button
+                type="button"
+                onClick={resetSubmissionFlow}
+                className="text-sm text-primary hover:underline font-medium"
+              >
+                Invia un'altra candidatura
+              </button>
+            </div>
           </div>
         </div>
       </div>
