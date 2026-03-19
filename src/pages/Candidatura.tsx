@@ -25,6 +25,7 @@ type SubmitCandidaturaBody = {
 
 const STEPS = ["Anagrafica", "Edificio", "Documenti"];
 const SUBMIT_TIMEOUT_MS = 30_000; // timeout only for the final POST, not uploads
+const SUCCESS_PATHNAME = "/grazie";
 const SUBMIT_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/submit-candidatura`;
 
 const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSignal) => {
@@ -62,18 +63,23 @@ const submitCandidatura = async (body: SubmitCandidaturaBody, signal: AbortSigna
   });
 
   if (response.ok) {
+    console.info("[candidatura] request:response_ok", { requestId: body.client_request_id, status: response.status });
+    console.info("[candidatura] request:response_body_parse:start", { requestId: body.client_request_id, skipped: true });
+    console.info("[candidatura] request:response_body_parse:success", { requestId: body.client_request_id, skipped: true });
     return { success: true };
   }
 
   let errorMessage = `Errore durante l'invio (${response.status}).`;
   try {
+    console.info("[candidatura] request:response_body_parse:start", { requestId: body.client_request_id });
     const text = await response.text();
     if (text) {
       const parsed = JSON.parse(text);
       if (parsed?.error) errorMessage = parsed.error;
     }
-  } catch {
-    // fallback error message already set
+    console.info("[candidatura] request:response_body_parse:success", { requestId: body.client_request_id });
+  } catch (error) {
+    console.warn("[candidatura] request:response_body_parse:error", { requestId: body.client_request_id, error });
   }
 
   console.error("[candidatura] request:error_response", {
@@ -102,18 +108,23 @@ const Candidatura = () => {
   const fallbackTimerRef = useRef<number | null>(null);
   const [showFallbackSuccess, setShowFallbackSuccess] = useState(false);
 
-  // ── Central reset: brings the component back to "virgin" state ──
+  console.info("[candidatura] flow:init", {
+    acceptedRef: acceptedRef.current,
+    isSubmittingRef: isSubmittingRef.current,
+    success,
+    showFallbackSuccess,
+  });
+
   const resetSubmissionFlow = useCallback(() => {
     console.info("[candidatura] flow:reset:start");
-    // Clear any pending fallback timer
     if (fallbackTimerRef.current !== null) {
       window.clearTimeout(fallbackTimerRef.current);
       fallbackTimerRef.current = null;
     }
-    // Reset all refs
+
     isSubmittingRef.current = false;
     acceptedRef.current = false;
-    // Reset all state
+
     setStep(0);
     setForm({});
     setFiles([]);
@@ -121,10 +132,15 @@ const Candidatura = () => {
     setSuccess(false);
     setShowFallbackSuccess(false);
     setError("");
-    // Clear file input
+
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+
+    console.info("[candidatura] flow:acceptedRef:value", { value: acceptedRef.current });
+    console.info("[candidatura] flow:isSubmittingRef:value", { value: isSubmittingRef.current });
+    console.info("[candidatura] flow:success:value", { value: false });
+    console.info("[candidatura] flow:showFallbackSuccess:value", { value: false });
     console.info("[candidatura] flow:reset:end");
   }, []);
 
@@ -303,28 +319,21 @@ const Candidatura = () => {
     return urlData.publicUrl;
   };
 
-  // Prevent native form submit (Enter key, etc.)
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   };
 
-  // ──────────────────────────────────────────────
-  // SINGLE submit handler — the ONLY entry point
-  // ──────────────────────────────────────────────
   const handleFinalSubmit = useCallback(async () => {
-    // Guard: must be on step 2
     if (step < 2) {
       console.warn("[candidatura] submit:blocked_not_final_step", { step });
       return;
     }
 
-    // Guard: anti double-submit (ref-based, survives re-renders)
     if (isSubmittingRef.current) {
       console.warn("[candidatura] submit:blocked (already submitting)");
       return;
     }
 
-    // Validate ALL steps before submitting
     for (const stepIndex of [0, 1, 2]) {
       const stepError = getStepValidationError(stepIndex, form);
       if (stepError) {
@@ -351,14 +360,19 @@ const Candidatura = () => {
       email,
     });
 
-    // Lock submit
     isSubmittingRef.current = true;
     acceptedRef.current = false;
     setError("");
     setLoading(true);
+    setSuccess(false);
+    setShowFallbackSuccess(false);
+
+    console.info("[candidatura] flow:acceptedRef:value", { value: acceptedRef.current });
+    console.info("[candidatura] flow:isSubmittingRef:value", { value: isSubmittingRef.current });
+    console.info("[candidatura] flow:success:value", { value: false });
+    console.info("[candidatura] flow:showFallbackSuccess:value", { value: false });
 
     try {
-      // ── Phase 1: Upload files (NO timeout — uploads can be slow) ──
       const fileUrls: string[] = [];
       if (submittedFiles.length > 0) {
         console.info("[candidatura] upload:start", { requestId, count: submittedFiles.length });
@@ -368,7 +382,6 @@ const Candidatura = () => {
         console.info("[candidatura] upload:done", { requestId, fileUrls });
       }
 
-      // ── Phase 2: Submit (with its OWN AbortController + timeout) ──
       const submitController = new AbortController();
       const submitTimeoutId = window.setTimeout(() => {
         console.warn("[candidatura] request:timeout", { requestId, timeoutMs: SUBMIT_TIMEOUT_MS });
@@ -394,40 +407,66 @@ const Candidatura = () => {
           submitController.signal,
         );
       } finally {
-        // Always clear the timeout — whether success or failure
         window.clearTimeout(submitTimeoutId);
       }
 
-      // ── Phase 3: ACCEPTED — from here, NOTHING can block user confirmation ──
       acceptedRef.current = true;
       console.info("[candidatura] submit:accepted", { requestId });
+      console.info("[candidatura] flow:acceptedRef:value", { value: acceptedRef.current });
 
-      // Show success state IMMEDIATELY (before any cleanup)
-      console.info("[candidatura] success_ui:start");
+      console.info("[candidatura] success_ui:start", { targetPathname: SUCCESS_PATHNAME });
       setSuccess(true);
       setError("");
       setLoading(false);
+      console.info("[candidatura] flow:success:value", { value: true });
 
-      // Hard redirect — guaranteed, independent of React lifecycle
-      console.info("[candidatura] redirect:hard:start");
-      try {
-        window.location.assign("/");
-      } catch (redirectErr) {
-        console.error("[candidatura] redirect:hard:error", { redirectErr });
+      if (fallbackTimerRef.current !== null) {
+        window.clearTimeout(fallbackTimerRef.current);
+        fallbackTimerRef.current = null;
       }
 
-      // Fallback: if redirect hasn't happened in 1s, show fallback UI
-      fallbackTimerRef.current = window.setTimeout(() => {
-        if (document.location.pathname !== "/") {
-          console.warn("[candidatura] redirect:fallback_ui");
-          setShowFallbackSuccess(true);
-        }
-        fallbackTimerRef.current = null;
-      }, 1000);
+      const targetUrl = new URL(SUCCESS_PATHNAME, window.location.origin).toString();
+      const currentPathnameBeforeAssign = window.location.pathname;
 
-      // Fire-and-forget cleanup AFTER success is guaranteed
-      // NOTE: do NOT reset form here — it causes re-render issues
-      // Form will be reset via resetSubmissionFlow on "Nuova candidatura"
+      fallbackTimerRef.current = window.setTimeout(() => {
+        const currentPathnameAfterDelay = window.location.pathname;
+        console.info("[candidatura] redirect:hard:after_timeout_fallback", {
+          currentPathnameAfterDelay,
+          targetPathname: SUCCESS_PATHNAME,
+        });
+
+        if (currentPathnameAfterDelay !== SUCCESS_PATHNAME) {
+          console.warn("[candidatura] redirect:fallback_ui", {
+            currentPathnameAfterDelay,
+            targetPathname: SUCCESS_PATHNAME,
+            targetUrl,
+          });
+          setShowFallbackSuccess(true);
+          console.info("[candidatura] flow:showFallbackSuccess:value", { value: true });
+        }
+
+        fallbackTimerRef.current = null;
+      }, 700);
+
+      console.info("[candidatura] redirect:hard:start", {
+        targetUrl,
+        targetPathname: SUCCESS_PATHNAME,
+        currentPathnameBeforeAssign,
+      });
+      console.info("[candidatura] redirect:hard:before_assign", {
+        targetUrl,
+        targetPathname: SUCCESS_PATHNAME,
+        currentPathnameBeforeAssign,
+      });
+
+      try {
+        window.location.assign(targetUrl);
+      } catch (redirectErr) {
+        console.error("[candidatura] redirect:hard:error", { redirectErr, targetUrl });
+        setShowFallbackSuccess(true);
+        console.info("[candidatura] flow:showFallbackSuccess:value", { value: true });
+      }
+
       console.info("[candidatura] reset:deferred_to_new_submission");
     } catch (err) {
       if (!acceptedRef.current) {
@@ -441,6 +480,7 @@ const Candidatura = () => {
     } finally {
       console.info("[candidatura] submit:finally", { requestId });
       isSubmittingRef.current = false;
+      console.info("[candidatura] flow:isSubmittingRef:value", { value: isSubmittingRef.current });
     }
   }, [step, form, files, tipo]);
 
@@ -461,15 +501,18 @@ const Candidatura = () => {
               <span className="text-primary text-2xl font-bold">✓</span>
             </div>
             <h1 className="text-2xl font-extrabold text-foreground mb-4" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Candidatura inviata!
+              Candidatura inviata correttamente
             </h1>
             <p className="text-muted-foreground text-sm mb-1">Abbiamo ricevuto la tua richiesta.</p>
-            <p className="text-muted-foreground text-sm">Ti contatteremo dopo una prima valutazione tecnica.</p>
+            <p className="text-muted-foreground text-sm">Se il redirect automatico non parte, continua dalla pagina di conferma.</p>
             <div className="flex flex-col gap-3 mt-8">
               <a
-                href="/"
+                href={SUCCESS_PATHNAME}
                 className="inline-block bg-primary text-primary-foreground px-6 py-3 text-sm font-bold rounded tracking-wide hover:opacity-90 transition-opacity"
               >
+                Vai alla pagina di conferma
+              </a>
+              <a href="/" className="text-sm text-primary hover:underline font-medium">
                 Torna alla home
               </a>
               <button
