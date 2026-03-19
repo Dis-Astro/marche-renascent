@@ -542,10 +542,10 @@ const Candidatura = () => {
               <button
                 type="button"
                 onClick={() => void handleFinalSubmit()}
-                disabled={loading || !isFinalStepArmed}
+                disabled={loading}
                 className="bg-primary text-primary-foreground px-8 py-3 text-sm font-bold tracking-wide rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Invia candidatura
+                {loading ? "Invio in corso…" : "Invia candidatura"}
               </button>
             )}
           </div>
