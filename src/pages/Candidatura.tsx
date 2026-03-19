@@ -372,44 +372,53 @@ const Candidatura = () => {
         window.clearTimeout(submitTimeoutId);
       }
 
-      // ── Phase 3: ACCEPTED — from here, nothing can block navigation ──
+      // ── Phase 3: ACCEPTED — from here, NOTHING can block user confirmation ──
       acceptedRef.current = true;
       console.info("[candidatura] submit:accepted", { requestId });
 
-      // Reset form state
-      console.info("[candidatura] reset:start");
-      setError("");
-      setForm({});
-      clearSelectedFiles();
-      console.info("[candidatura] reset:end");
-
-      // Navigate to thank-you (synchronous state update — no dependency on GTM/tracking)
-      console.info("[candidatura] navigate:start");
+      // Show success state IMMEDIATELY (before any cleanup)
+      console.info("[candidatura] success_ui:start");
       setSuccess(true);
-      console.info("[candidatura] navigate:end");
+      setError("");
+      setLoading(false);
 
-      // Fire-and-forget tracking AFTER navigation state is set
+      // Hard redirect — guaranteed, independent of React lifecycle
+      console.info("[candidatura] redirect:hard:start");
       try {
-        console.info("[candidatura] tracking:start", { requestId });
-        // tracking runs here if needed in the future
-        console.info("[candidatura] tracking:done", { requestId });
-      } catch (trackingErr) {
-        // Tracking errors must NEVER affect the flow
-        console.error("[candidatura] tracking:error", { requestId, trackingErr });
+        window.location.assign("/");
+      } catch (redirectErr) {
+        console.error("[candidatura] redirect:hard:error", { redirectErr });
+      }
+
+      // Fallback: if redirect hasn't happened in 1s, show fallback UI
+      setTimeout(() => {
+        if (document.location.pathname !== "/") {
+          console.warn("[candidatura] redirect:fallback_ui");
+          setShowFallbackSuccess(true);
+        }
+      }, 1000);
+
+      // Fire-and-forget cleanup AFTER success is guaranteed
+      try {
+        console.info("[candidatura] reset:start");
+        setForm({});
+        clearSelectedFiles();
+        console.info("[candidatura] reset:end");
+      } catch (resetErr) {
+        console.error("[candidatura] reset:error (ignored)", { resetErr });
       }
     } catch (err) {
-      // Only show error if the submit was NOT already accepted
       if (!acceptedRef.current) {
         const message = err instanceof Error ? err.message : "Errore durante l'invio della candidatura.";
         console.error("[candidatura] submit:error", { requestId, err });
         setError(message);
+        setLoading(false);
       } else {
         console.warn("[candidatura] submit:post_accept_error (ignored)", { requestId, err });
       }
     } finally {
       console.info("[candidatura] submit:finally", { requestId });
       isSubmittingRef.current = false;
-      setLoading(false);
     }
   }, [step, form, files, tipo, clearSelectedFiles]);
 
