@@ -96,12 +96,11 @@ const Candidatura = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  // Guard: true while a submit is in-flight. Survives re-renders.
-  // NEVER reset this from cleanup/unmount — only the submit handler itself resets it.
   const isSubmittingRef = useRef(false);
-  // Tracks whether the submit was accepted (response.ok). Once true, navigation is guaranteed.
   const acceptedRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  // Fallback success UI — shown if hard redirect doesn't fire within 1s
+  const [showFallbackSuccess, setShowFallbackSuccess] = useState(false);
 
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
