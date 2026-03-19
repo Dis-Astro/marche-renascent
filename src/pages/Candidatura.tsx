@@ -425,7 +425,7 @@ const Candidatura = () => {
   const inputClass =
     "w-full border border-border bg-background text-foreground px-4 py-3 text-sm rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder:text-muted-foreground transition-colors";
 
-  if (success) {
+  if (success || showFallbackSuccess || acceptedRef.current) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <nav className="border-b border-border px-6 h-14 flex items-center">
