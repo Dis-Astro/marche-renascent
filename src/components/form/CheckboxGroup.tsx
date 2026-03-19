@@ -19,7 +19,6 @@ const CheckboxGroup = ({ label, value, options, onChange, required }: CheckboxGr
         <label
           key={option}
           className="flex items-center gap-2 cursor-pointer text-sm text-foreground"
-          onClick={() => onChange(value === option ? "" : option)}
         >
           <Checkbox
             checked={value === option}
