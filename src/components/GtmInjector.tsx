@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 const GTM_SCRIPT_ID = "gtm-script";
@@ -10,12 +11,26 @@ type WindowWithIdleCallback = Window & {
   cancelIdleCallback?: (handle: number) => void;
 };
 
+/** Remove all iubenda / GTM overlays from the DOM */
+const purgeGtmOverlays = () => {
+  // Remove iubenda cookie banner overlays
+  document.querySelectorAll('[class*="iubenda"], #iubenda-cs-banner').forEach((el) => el.remove());
+  // Remove GTM injected elements
+  const gtmScript = document.getElementById(GTM_SCRIPT_ID);
+  const gtmNoscript = document.getElementById(GTM_NOSCRIPT_ID);
+  if (gtmScript) gtmScript.remove();
+  if (gtmNoscript) gtmNoscript.remove();
+};
+
 const GtmInjector = () => {
+  const location = useLocation();
+
   useEffect(() => {
     const browserWindow = window as WindowWithIdleCallback;
 
-    if (browserWindow.location.pathname.startsWith(CANDIDATURA_PATH)) {
-      console.info("[gtm] skipped on candidatura route");
+    if (location.pathname.startsWith(CANDIDATURA_PATH)) {
+      console.info("[gtm] purging overlays on candidatura route");
+      purgeGtmOverlays();
       return;
     }
 
@@ -78,7 +93,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         browserWindow.clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [location.pathname]);
 
   return null;
 };
