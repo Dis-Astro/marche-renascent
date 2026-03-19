@@ -96,12 +96,11 @@ const Candidatura = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  // Guard: true while a submit is in-flight. Survives re-renders.
-  // NEVER reset this from cleanup/unmount — only the submit handler itself resets it.
   const isSubmittingRef = useRef(false);
-  // Tracks whether the submit was accepted (response.ok). Once true, navigation is guaranteed.
   const acceptedRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  // Fallback success UI — shown if hard redirect doesn't fire within 1s
+  const [showFallbackSuccess, setShowFallbackSuccess] = useState(false);
 
   const update = (field: string, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
@@ -373,51 +372,60 @@ const Candidatura = () => {
         window.clearTimeout(submitTimeoutId);
       }
 
-      // ── Phase 3: ACCEPTED — from here, nothing can block navigation ──
+      // ── Phase 3: ACCEPTED — from here, NOTHING can block user confirmation ──
       acceptedRef.current = true;
       console.info("[candidatura] submit:accepted", { requestId });
 
-      // Reset form state
-      console.info("[candidatura] reset:start");
-      setError("");
-      setForm({});
-      clearSelectedFiles();
-      console.info("[candidatura] reset:end");
-
-      // Navigate to thank-you (synchronous state update — no dependency on GTM/tracking)
-      console.info("[candidatura] navigate:start");
+      // Show success state IMMEDIATELY (before any cleanup)
+      console.info("[candidatura] success_ui:start");
       setSuccess(true);
-      console.info("[candidatura] navigate:end");
+      setError("");
+      setLoading(false);
 
-      // Fire-and-forget tracking AFTER navigation state is set
+      // Hard redirect — guaranteed, independent of React lifecycle
+      console.info("[candidatura] redirect:hard:start");
       try {
-        console.info("[candidatura] tracking:start", { requestId });
-        // tracking runs here if needed in the future
-        console.info("[candidatura] tracking:done", { requestId });
-      } catch (trackingErr) {
-        // Tracking errors must NEVER affect the flow
-        console.error("[candidatura] tracking:error", { requestId, trackingErr });
+        window.location.assign("/");
+      } catch (redirectErr) {
+        console.error("[candidatura] redirect:hard:error", { redirectErr });
+      }
+
+      // Fallback: if redirect hasn't happened in 1s, show fallback UI
+      setTimeout(() => {
+        if (document.location.pathname !== "/") {
+          console.warn("[candidatura] redirect:fallback_ui");
+          setShowFallbackSuccess(true);
+        }
+      }, 1000);
+
+      // Fire-and-forget cleanup AFTER success is guaranteed
+      try {
+        console.info("[candidatura] reset:start");
+        setForm({});
+        clearSelectedFiles();
+        console.info("[candidatura] reset:end");
+      } catch (resetErr) {
+        console.error("[candidatura] reset:error (ignored)", { resetErr });
       }
     } catch (err) {
-      // Only show error if the submit was NOT already accepted
       if (!acceptedRef.current) {
         const message = err instanceof Error ? err.message : "Errore durante l'invio della candidatura.";
         console.error("[candidatura] submit:error", { requestId, err });
         setError(message);
+        setLoading(false);
       } else {
         console.warn("[candidatura] submit:post_accept_error (ignored)", { requestId, err });
       }
     } finally {
       console.info("[candidatura] submit:finally", { requestId });
       isSubmittingRef.current = false;
-      setLoading(false);
     }
   }, [step, form, files, tipo, clearSelectedFiles]);
 
   const inputClass =
     "w-full border border-border bg-background text-foreground px-4 py-3 text-sm rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder:text-muted-foreground transition-colors";
 
-  if (success) {
+  if (success || showFallbackSuccess || acceptedRef.current) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <nav className="border-b border-border px-6 h-14 flex items-center">
